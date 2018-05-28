@@ -1,0 +1,186 @@
+RESOURCE_DEFINITION
+{
+	name = Minerite
+	displayName = Minerite
+	density = 0.0027
+	flowMode = ALL_VESSEL
+	transfer = PUMP
+	isTweakable = true
+   	isVisible = true
+	unitCost = 10.0
+	volume = 1
+}
+
+STORAGE_TEMPLATE
+{
+	name = Minerite
+	author = Angel-125
+	shortName = Minerite
+	logoPanel = WildBlueIndustries/000WildBlueTools/Decals/Minerals
+	glowPanel = WildBlueIndustries/000WildBlueTools/Decals/MineralsGlow
+	description = This kit stores minerite, a key component of making LiquidFuel and Oxidizer.
+	templateTags = stowage
+
+	RESOURCE
+	{
+		name = Minerite
+		amount = 5600
+		maxAmount = 5600
+	}
+
+}
+
+@PART[PotatoRoid]
+{
+	MODULE
+	{
+		name = ModuleAsteroidResource
+		resourceName = Minerite
+		presenceChance = 25
+		lowRange = 1
+		highRange = 10
+	}	
+}
+
+GLOBAL_RESOURCE
+{
+	ResourceName = Minerite
+	ResourceType = 0
+	
+	Distribution
+	{
+		PresenceChance = 70
+		MinAbundance = .001
+		MaxAbundance = 10
+		Variance = 50
+		Dispersal = 3
+	}
+}
+
+PLANETARY_RESOURCE
+{
+	ResourceName = Minerite
+	ResourceType = 0
+	PlanetName = Kerbin
+	
+	Distribution
+	{
+		PresenceChance = 100
+		MinAbundance = .001
+		MaxAbundance = 10
+		Variance = 50
+		Dispersal = 3
+	}
+}
+
+PLANETARY_RESOURCE
+{
+	ResourceName = Minerite
+	ResourceType = 0
+	PlanetName = Jool
+	
+	Distribution
+	{
+		PresenceChance = 0
+		MinAbundance = 0
+		MaxAbundance = 0
+		Variance = 0
+		Dispersal = 0
+	}
+}
+
+//Exospheric
+PLANETARY_RESOURCE
+{
+	ResourceName = Minerite
+	ResourceType = 3
+	PlanetName = Kerbin
+
+	Distribution
+	{
+		PresenceChance = 100
+		MinAbundance = .01
+		MaxAbundance = .5
+		Variance = 0
+		MinAltitude = 0.234 //Should begin right at edge of atmo
+		MaxAltitude = 0.234
+		MinRange = 1
+		MaxRange = 1
+	}
+}
+
+PLANETARY_RESOURCE
+{
+	ResourceName = Minerite
+	ResourceType = 3
+	PlanetName = Laythe
+
+	Distribution
+	{
+		PresenceChance = 100
+		MinAbundance = .01
+		MaxAbundance = .5
+		Variance = 0
+		MinAltitude = .2 //Should begin right at edge of atmo
+		MaxAltitude = .2
+		MinRange = 1
+		MaxRange = 1
+	}
+}
+
+PLANETARY_RESOURCE
+{
+	ResourceName = Minerite
+	ResourceType = 3
+	PlanetName = Eve
+
+	Distribution
+	{
+		PresenceChance = 100
+		MinAbundance = .1
+		MaxAbundance = .5
+		Variance = 0
+		MinAltitude = .257 //Should begin right at edge of atmo
+		MaxAltitude = .257
+		MinRange = 1
+		MaxRange = 1
+	}
+}
+
+PLANETARY_RESOURCE
+{
+	ResourceName = Minerite
+	ResourceType = 3
+	PlanetName = Duna
+
+	Distribution
+	{
+		PresenceChance = 100
+		MinAbundance = .001
+		MaxAbundance = .05
+		Variance = 0
+		MinAltitude = .001 //Should begin right at edge of atmo
+		MaxAltitude = .001
+		MinRange = 1
+		MaxRange = 1
+	}
+}
+
+PLANETARY_RESOURCE
+{
+	ResourceName = Minerite
+	ResourceType = 3
+	PlanetName = Jool
+
+	Distribution
+	{
+		PresenceChance = 100
+		MinAbundance = .1
+		MaxAbundance = .5
+		Variance = 0
+		MinAltitude = 0.0665 //Should begin right at edge of atmo
+		MaxAltitude = 0.0665
+		MinRange = 1
+		MaxRange = 1
+	}
+}

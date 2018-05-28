@@ -59,6 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parts\WBIGraviticEngine.cs" />
     <Compile Include="Parts\WBIModuleGraviticRCS.cs" />
+    <Compile Include="Parts\WBIModuleEngineCOMThrust.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BARIS\BARISBridge\BARISBridge.csproj">
