@@ -229,19 +229,13 @@ namespace WildBlueIndustries
             //Calculate base lift force
             float totalMass = vessel.GetTotalMass();
             float liftForce = totalMass * forceOfGravity;
+            liftForce = forceOfGravity;
 
             //Account for desired vertical acceleration
             liftForce += verticalSpeed;
 
             //Add lift force to part. We do this manually instead of letting ModuleEnginesFX do it so that the craft can have any orientation desired.
-//            this.part.AddForceAtPosition(liftVector * (float)liftForce, this.part.vessel.CoM);
-
-            vessel.precalc.calculateGravity = false;
-            vessel.precalc.gAccel.Zero();
-            vessel.precalc.gAccelTrue.Zero();
-            vessel.graviticAcceleration.Zero();
-            vessel.gravityMultiplier = 0.0f;
-            vessel.gravityForPos.Zero();
+            this.part.AddForceAtPosition(liftVector * (float)liftForce, this.part.vessel.CoM);
         }
 
         public void SetHoverMode(bool isActive)
