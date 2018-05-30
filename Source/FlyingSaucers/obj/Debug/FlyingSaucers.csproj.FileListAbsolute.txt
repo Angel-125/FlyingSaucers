@@ -23,3 +23,4 @@ C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\WildBlueTools.pdb
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.pdb
+C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.csprojResolveAssemblyReference.cache

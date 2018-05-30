@@ -223,7 +223,8 @@ namespace WildBlueIndustries
             float forceOfGravity = (float)FlightGlobals.ActiveVessel.gravityForPos.magnitude;
 
             //Get lift vector
-            Vector3d liftVector = (this.part.transform.position - this.vessel.mainBody.position).normalized;
+//            Vector3d liftVector = (this.part.transform.position - this.vessel.mainBody.position).normalized;
+            Vector3d liftVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized;
             
             //Calculate base lift force
             float totalMass = vessel.GetTotalMass();
@@ -233,7 +234,14 @@ namespace WildBlueIndustries
             liftForce += verticalSpeed;
 
             //Add lift force to part. We do this manually instead of letting ModuleEnginesFX do it so that the craft can have any orientation desired.
-            this.part.AddForceAtPosition(liftVector * (float)liftForce, this.part.vessel.CoM);
+//            this.part.AddForceAtPosition(liftVector * (float)liftForce, this.part.vessel.CoM);
+
+            vessel.precalc.calculateGravity = false;
+            vessel.precalc.gAccel.Zero();
+            vessel.precalc.gAccelTrue.Zero();
+            vessel.graviticAcceleration.Zero();
+            vessel.gravityMultiplier = 0.0f;
+            vessel.gravityForPos.Zero();
         }
 
         public void SetHoverMode(bool isActive)
@@ -945,9 +953,11 @@ namespace WildBlueIndustries
                 lineRenderer = thrustLine.AddComponent<LineRenderer>();
                 lineRenderer.useWorldSpace = false;
                 lineRenderer.material = mat;
-                lineRenderer.SetColors(lineColor, lineColor);
-                lineRenderer.SetWidth(0.25f, 0.05f);
-                lineRenderer.SetVertexCount(2);
+                lineRenderer.startColor = lineColor;
+                lineRenderer.endColor = lineColor;
+                lineRenderer.startWidth = 0.25f;
+                lineRenderer.endWidth = 0.125f;
+                lineRenderer.positionCount = 2;
                 lineRenderer.SetPosition(0, Vector3.zero);
                 lineRenderer.SetPosition(1, Vector3.zero);
             }
