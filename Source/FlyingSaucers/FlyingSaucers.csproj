@@ -40,9 +40,6 @@
     <Reference Include="KSPAssets">
       <HintPath>..\..\..\..\..\..\KSPDev\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
     </Reference>
-    <Reference Include="ModularFlightIntegrator">
-      <HintPath>..\..\..\..\..\..\KSPDev\GameData\ModularFlightIntegrator\ModularFlightIntegrator.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -63,7 +60,6 @@
     <Compile Include="Parts\WBIGraviticEngine.cs" />
     <Compile Include="Parts\WBIModuleGraviticRCS.cs" />
     <Compile Include="Parts\WBIModuleEngineCOMThrust.cs" />
-    <Compile Include="WBIMFIGravityOverride.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BARIS\BARISBridge\BARISBridge.csproj">

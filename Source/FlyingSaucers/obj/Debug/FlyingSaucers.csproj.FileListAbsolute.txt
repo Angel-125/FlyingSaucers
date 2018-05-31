@@ -24,5 +24,3 @@ C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.pdb
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.csprojResolveAssemblyReference.cache
-C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\ModularFlightIntegrator.dll
-C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\ModularFlightIntegrator.pdb

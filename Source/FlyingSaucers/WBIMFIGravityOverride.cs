@@ -32,14 +32,32 @@ namespace WildBlueIndustries
         protected void calculateGravity()
         {
             Vessel activeVessel = FlightGlobals.ActiveVessel;
+
+            //make sure the vessel has an active gravitic engine that's in hover mode, and the vessel is flying.
+
+            //Get the celestial body's original gravity at its center
             CelestialBody mainBody = FlightGlobals.getMainBody(activeVessel.CoMD);
             double originalGMag = mainBody.gMagnitudeAtCenter;
+
+            //Hack gravity! :)
             mainBody.gMagnitudeAtCenter = 0.0f;
+
+            //Get the ModularVesselPrecalculate
             if (activeVessel.precalc is ModularVesselPrecalculate)
             {
+                //Now let the base class do it's thing...
                 ModularVesselPrecalculate modularVesselPrecalc = (ModularVesselPrecalculate)activeVessel.precalc;
                 modularVesselPrecalc.BaseCalculateGravity();
+                
+                //Calculate the lift vector.
+                Vector3d liftVector = (activeVessel.CoM - activeVessel.mainBody.position).normalized;
+
+                //Add acceleration. integrationAccel appears to be related to gravity. Note that negative values make you fall towards the planet, positive falls away.
+                //Lift acceleration should be: liftVector * (1.0 + verticalSpeed)
+                modularVesselPrecalc.integrationAccel = liftVector * 1.0f;
             }
+
+            //Restore gravity.
             mainBody.gMagnitudeAtCenter = originalGMag;
         }
     }
