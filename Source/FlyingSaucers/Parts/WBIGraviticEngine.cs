@@ -987,6 +987,7 @@ namespace WildBlueIndustries
 
         public virtual void DrawThrustTransform()
         {
+            /*
             if (lineRenderer == null)
             {
                 Material mat = new Material(Shader.Find("Particles/Additive"));
@@ -1034,6 +1035,7 @@ namespace WildBlueIndustries
             endPoint = startPoint * 10.0f;
             comRenderer.SetPosition(0, startPoint);
             comRenderer.SetPosition(1, endPoint);
+             */
         }
 
         public virtual void SetupAnimations()
