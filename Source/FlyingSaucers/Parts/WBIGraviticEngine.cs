@@ -85,6 +85,9 @@ namespace WildBlueIndustries
 
         [KSPField]
         public string vtolThrustEffect = string.Empty;
+
+        [KSPField]
+        public FloatCurve accelerationCurve;
         #endregion
 
         #region Housekeeping
@@ -525,11 +528,27 @@ namespace WildBlueIndustries
             return info.ToString();
         }
 
+        public override void OnInactive()
+        {
+            base.OnInactive();
+            engineState = WBIEngineStates.Shutdown;
+            this.part.Effect(runningEffectName, 0f);
+            this.part.Effect(powerEffectName, 0f);
+            this.part.Effect(thrustEffect, 0f);
+            this.part.Effect(vtolThrustEffect, 0f);
+        }
+
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+        }
+
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
             setupIcons();
             SetupAnimations();
+            loadAccelerationCurve();
 
             //Get the gravity ring transform
             gravRingTransform = this.part.FindModelTransform(gravRingTransformName);
@@ -859,7 +878,6 @@ namespace WildBlueIndustries
         {
             if (!isOperational && !EngineIgnited)
                 return;
-
             //Get total mass
             float totalMass = 0.0f;
             if (HighLogic.LoadedSceneIsFlight)
@@ -878,10 +896,12 @@ namespace WildBlueIndustries
             finalAcceleration = this.finalThrust / totalMass;
 
             //Apply acceleration. We don't let ModuleEnginesFX do this because we want to simulate "falling" towards the artificial singularity.
+            if (engineState != WBIEngineStates.Running)
+                return;
             if (engineMode == WBIThrustModes.Forward || engineMode == WBIThrustModes.Reverse)
             {
                 //Get the acceleration speed.
-                float accelerationMagnitude = maxAcceleration * FlightInputHandler.state.mainThrottle;
+                float accelerationMagnitude = maxAcceleration * accelerationCurve.Evaluate(FlightInputHandler.state.mainThrottle * (thrustPercentage / 100.0f));
 
                 //Calcualte the acceleration vector
                 Vector3d accelerationVector = (this.part.vessel.GetReferenceTransformPart().transform.up).normalized * accelerationMagnitude;
@@ -922,6 +942,7 @@ namespace WildBlueIndustries
         #endregion
 
         #region Helpers
+
         public void ApplyAccelerationVector(Vector3d accelerationVector)
         {
             int partCount = vessel.parts.Count;
@@ -1141,6 +1162,38 @@ namespace WildBlueIndustries
             if (settingsNode != null)
                 baseIconURL = settingsNode.GetValue("iconsFolder");
             stopIcon = GameDatabase.Instance.GetTexture(baseIconURL + "Stop", false);
+        }
+
+        protected void loadAccelerationCurve()
+        {
+            if (accelerationCurve.Curve.length > 0)
+                return;
+            ConfigNode[] nodes = this.part.partInfo.partConfig.GetNodes("MODULE");
+            ConfigNode engineNode = null;
+            ConfigNode node = null;
+            string moduleName;
+
+            //Get the switcher config node.
+            for (int index = 0; index < nodes.Length; index++)
+            {
+                node = nodes[index];
+                if (node.HasValue("name"))
+                {
+                    moduleName = node.GetValue("name");
+                    if (moduleName == this.ClassName)
+                    {
+                        engineNode = node;
+                        break;
+                    }
+                }
+            }
+            if (engineNode == null)
+                return;
+            if (!engineNode.HasNode("accelerationCurve"))
+                return;
+
+            node = engineNode.GetNode("accelerationCurve");
+            accelerationCurve.Load(node);
         }
         #endregion
 
