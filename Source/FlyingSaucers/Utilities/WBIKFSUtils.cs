@@ -49,6 +49,7 @@ namespace WildBlueIndustries
         public static string kCrazyMode = "<color=orange><b>--- Crazy Mode ---</b></color>";
         public static string kCrazyModeVelocity = "<color=white><b>Velocity: </b>{0:n2}m/sec</color>";
         public static string kCrazyModeResource = "<color=white>Consumes {0:n2} units of {1} per second.</color>";
+        public static string kTerrainWarning = "TERRAIN TERRAIN PULL UP!";
         #endregion
 
         public static void Log(string message)

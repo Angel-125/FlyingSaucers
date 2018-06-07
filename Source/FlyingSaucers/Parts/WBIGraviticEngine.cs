@@ -117,6 +117,8 @@ namespace WildBlueIndustries
         protected GameObject comLine;
         protected bool isLiftingOff = false;
         protected string thrustEffect = string.Empty;
+        protected RaycastHit terrainHit;
+        protected LayerMask layerMask = -1;
         #endregion
 
         #region IHoverController
@@ -229,6 +231,7 @@ namespace WildBlueIndustries
                 liftAcceleration += verticalSpeed;
             else if (verticalSpeed < 0 && vessel.verticalSpeed > verticalSpeed)
                 liftAcceleration += verticalSpeed;
+            currentThrottle = maxAcceleration - liftAcceleration;
 
             //Get lift vector
             Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
@@ -546,6 +549,7 @@ namespace WildBlueIndustries
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
+            layerMask = 1 << LayerMask.NameToLayer("TerrainColliders") | 1 << LayerMask.NameToLayer("Local Scenery");
             setupIcons();
             SetupAnimations();
             loadAccelerationCurve();
@@ -837,10 +841,31 @@ namespace WildBlueIndustries
                     break;
             }
 
-            //Consume the resource
+            //Get throttle setting
             float throttleSetting = FlightInputHandler.state.mainThrottle;
             if (throttleSetting <= 0f)
                 return;
+
+            //Calculate offset position
+            Vector3d offsetPosition = this.part.vessel.transform.position + (direction * crazyModeVelocity * throttleSetting * TimeWarp.fixedDeltaTime);
+
+            //Make sure we won't collide with the terrain
+            if (Physics.Raycast(vessel.transform.position, direction, out terrainHit, (float)offsetPosition.magnitude, layerMask))
+            {
+                //See if we found the ground. 15 = Local Scenery, 28 = TerrainColliders
+                if (terrainHit.collider.gameObject.layer == 15 || terrainHit.collider.gameObject.layer == 28)
+                {
+                    //If we would warp into the ground then stop Crazy Mode.
+                    if (terrainHit.distance <= Math.Abs(offsetPosition.magnitude))
+                    {
+                        ScreenMessages.PostScreenMessage(WBIKFSUtils.kTerrainWarning, 3.0f, ScreenMessageStyle.UPPER_CENTER);
+                        warpDirection = WBIWarpDirections.Stop;
+                        return;
+                    }
+                }
+            }
+
+            //Consume the resource
             if (!string.IsNullOrEmpty(crazyModeResource))
             {
                 //Don't drop below reserve amount of the resource. This is to avoide flameouts.
@@ -866,8 +891,7 @@ namespace WildBlueIndustries
                 }
             }
 
-            //Now reposition the craft
-            Vector3d offsetPosition = this.part.vessel.transform.position + (direction * crazyModeVelocity * throttleSetting * TimeWarp.fixedDeltaTime);
+            //A-OK! Warp the ship.
             FloatingOrigin.SetOutOfFrameOffset(offsetPosition);
         }
 
