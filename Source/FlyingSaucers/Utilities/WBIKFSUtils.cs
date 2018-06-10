@@ -50,6 +50,7 @@ namespace WildBlueIndustries
         public static string kCrazyModeVelocity = "<color=white><b>Velocity: </b>{0:n2}m/sec</color>";
         public static string kCrazyModeResource = "<color=white>Consumes {0:n2} units of {1} per second.</color>";
         public static string kTerrainWarning = "TERRAIN TERRAIN PULL UP!";
+        public static string kRestrictedResource = " cannot be added in the VAB/SPH, it will be added at launch.";
         #endregion
 
         public static void Log(string message)

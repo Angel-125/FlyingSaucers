@@ -842,7 +842,7 @@ namespace WildBlueIndustries
             }
 
             //Get throttle setting
-            float throttleSetting = FlightInputHandler.state.mainThrottle;
+            float throttleSetting = FlightInputHandler.state.mainThrottle * (thrustPercentage / 100.0f);
             if (throttleSetting <= 0f)
                 return;
 
@@ -852,6 +852,18 @@ namespace WildBlueIndustries
             //Make sure we won't collide with the terrain
             if (Physics.Raycast(vessel.transform.position, direction, out terrainHit, (float)offsetPosition.magnitude, layerMask))
             {
+                Debug.Log("Direction: " + warpDirection);
+                Part prt = terrainHit.collider.gameObject.GetComponent<Part>();
+                if (prt != null)
+                {
+                    Debug.Log("collided with " + prt.partInfo.title);
+                    Debug.Log("Layer: " + terrainHit.collider.gameObject.layer);
+                }
+                else
+                {
+                    Debug.Log("hit detection on something..");
+                    Debug.Log("Layer: " + terrainHit.collider.gameObject.layer);
+                }
                 //See if we found the ground. 15 = Local Scenery, 28 = TerrainColliders
                 if (terrainHit.collider.gameObject.layer == 15 || terrainHit.collider.gameObject.layer == 28)
                 {
@@ -892,7 +904,8 @@ namespace WildBlueIndustries
             }
 
             //A-OK! Warp the ship.
-            FloatingOrigin.SetOutOfFrameOffset(offsetPosition);
+            this.part.vessel.SetPosition(offsetPosition);
+//            FloatingOrigin.SetOutOfFrameOffset(offsetPosition); //Use this for warp drive?
         }
 
         /// <summary>
