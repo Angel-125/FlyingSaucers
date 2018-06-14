@@ -43,8 +43,6 @@ Temporary Items
 .apdisk
 
 # Remove this when ready to release
-/GameData/
-
 /Archives/
 /CKAN/
 /Docs/

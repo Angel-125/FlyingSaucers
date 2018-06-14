@@ -20,8 +20,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 namespace WildBlueIndustries
 {
+    /// <summary>
+    /// Derived from IWarpController, this interface is used to control Crazy Mode.
+    /// </summary>
+    public interface ICrazyModeController : IWarpController
+    {
+        /// <summary>
+        /// Determines whether or not Crazy Mode has been unlocked.
+        /// </summary>
+        /// <returns></returns>
+        bool IsCrazyModeUnlocked();
+    }
+
     [KSPModule("Gravitic Engine")]
-    public class WBIGraviticEngine : ModuleEnginesFX, IHoverController, IThrustVectorController, ICustomController
+    public class WBIGraviticEngine : ModuleEnginesFX, IHoverController, IThrustVectorController, ICustomController, ICrazyModeController
     {
         public const string ICON_PATH = "WildBlueIndustries/FlyingSaucers/Icons/";
         protected const int kDefaultAnimationLayer = 2;
@@ -389,11 +401,49 @@ namespace WildBlueIndustries
         public static Texture rightIconSel = null;
 
         /// <summary>
-        /// Determines if the custom controller UI is visible. Only the first gravitic engine in the vessel will draw its controls
-        /// and only if the engine has its crazy mode enabled.
+        /// Determines whether or not Crazy Mode has been unlocked.
         /// </summary>
         /// <returns></returns>
-        public bool IsVisible()
+        public bool IsCrazyModeUnlocked()
+        {
+            return crazyModeUnlocked;
+        }
+
+        /// <summary>
+        /// Returns the current warp direction.
+        /// </summary>
+        /// <returns>A WBIWarpDirections enumerator describing the current warp direction.</returns>
+        public WBIWarpDirections GetWarpDirection()
+        {
+            return warpDirection;
+        }
+
+        /// <summary>
+        /// Sets the desired warp direction, but only if crazyModeUnlocked = true.
+        /// </summary>
+        /// <param name="direction">A WBIWarpDirections enumerator specifying the desired direction.</param>
+        public void SetWarpDirection(WBIWarpDirections direction)
+        {
+            if (crazyModeUnlocked)
+            {
+                warpDirection = direction;
+            }
+
+            //Update other engines
+            List<WBIGraviticEngine> graviticEngines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+            int count = graviticEngines.Count;
+            for (int index = 0; index < count; index++)
+            {
+                if (graviticEngines[index] != this)
+                    graviticEngines[index].warpDirection = direction;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether or not the controller is active. For instance, you might only have the first controller on a vessel set to active while the rest are inactive.
+        /// </summary>
+        /// <returns>True if the controller is active, false if not.</returns>
+        public bool IsActive()
         {
             //Check to make sure crazy mode is unlocked.
             if (!crazyModeUnlocked)
@@ -401,9 +451,16 @@ namespace WildBlueIndustries
 
             List<WBIGraviticEngine> graviticEngines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
             if (graviticEngines[0] == this)
-                return true;
+            {
+                if (EngineIgnited && isOperational)
+                    return true;
+                else
+                    return false;
+            }
             else
+            {
                 return false;
+            }
         }
 
         /// <summary>
@@ -852,18 +909,8 @@ namespace WildBlueIndustries
             //Make sure we won't collide with the terrain
             if (Physics.Raycast(vessel.transform.position, direction, out terrainHit, (float)offsetPosition.magnitude, layerMask))
             {
-                Debug.Log("Direction: " + warpDirection);
                 Part prt = terrainHit.collider.gameObject.GetComponent<Part>();
-                if (prt != null)
-                {
-                    Debug.Log("collided with " + prt.partInfo.title);
-                    Debug.Log("Layer: " + terrainHit.collider.gameObject.layer);
-                }
-                else
-                {
-                    Debug.Log("hit detection on something..");
-                    Debug.Log("Layer: " + terrainHit.collider.gameObject.layer);
-                }
+
                 //See if we found the ground. 15 = Local Scenery, 28 = TerrainColliders
                 if (terrainHit.collider.gameObject.layer == 15 || terrainHit.collider.gameObject.layer == 28)
                 {
@@ -904,8 +951,10 @@ namespace WildBlueIndustries
             }
 
             //A-OK! Warp the ship.
-            this.part.vessel.SetPosition(offsetPosition);
-//            FloatingOrigin.SetOutOfFrameOffset(offsetPosition); //Use this for warp drive?
+            if (FlightGlobals.VesselsLoaded.Count > 1)
+                this.part.vessel.SetPosition(offsetPosition);
+            else
+                FloatingOrigin.SetOutOfFrameOffset(offsetPosition); //Use this for warp drive?
         }
 
         /// <summary>
@@ -915,6 +964,7 @@ namespace WildBlueIndustries
         {
             if (!isOperational && !EngineIgnited)
                 return;
+
             //Get total mass
             float totalMass = 0.0f;
             if (HighLogic.LoadedSceneIsFlight)
@@ -938,7 +988,7 @@ namespace WildBlueIndustries
             if (engineMode == WBIThrustModes.Forward || engineMode == WBIThrustModes.Reverse)
             {
                 //Get the acceleration speed.
-                float accelerationMagnitude = maxAcceleration * accelerationCurve.Evaluate(FlightInputHandler.state.mainThrottle * (thrustPercentage / 100.0f));
+                float accelerationMagnitude = maxAcceleration * accelerationCurve.Evaluate(currentThrottle);
 
                 //Calcualte the acceleration vector
                 Vector3d accelerationVector = (this.part.vessel.GetReferenceTransformPart().transform.up).normalized * accelerationMagnitude;
@@ -955,7 +1005,7 @@ namespace WildBlueIndustries
                 float forceOfGravity = (float)this.part.vessel.gravityForPos.magnitude;
 
                 //Calculate lift acceleration
-                float liftAcceleration = maxAcceleration * FlightInputHandler.state.mainThrottle;
+                float liftAcceleration = maxAcceleration * currentThrottle;
 
                 //Get lift vector
                 Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
@@ -988,7 +1038,9 @@ namespace WildBlueIndustries
             {
                 vesselPart = vessel.parts[index];
                 if (vesselPart.rb != null)
+                {
                     vesselPart.rb.AddForce(accelerationVector, ForceMode.Acceleration);
+                }
             }
         }
 

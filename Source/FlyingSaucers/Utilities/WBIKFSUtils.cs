@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP.IO;
+using KerbalActuators;
 
 /*
 Source code copyright 2018, by Michael Billard (Angel-125)
@@ -18,6 +19,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 namespace WildBlueIndustries
 {
+    /// <summary>
+    /// This enumerator describes various engine states.
+    /// </summary>
     public enum WBIEngineStates
     {
         Shutdown,
@@ -27,6 +31,9 @@ namespace WildBlueIndustries
         Flameout
     }
 
+    /// <summary>
+    /// This enumerator is used to describe which direction the engine is warping in.
+    /// </summary>
     public enum WBIWarpDirections
     {
         Stop,
@@ -36,6 +43,21 @@ namespace WildBlueIndustries
         Right,
         Up,
         Down
+    }
+
+    public interface IWarpController : IGenericController
+    {
+        /// <summary>
+        /// Returns the current warp direction.
+        /// </summary>
+        /// <returns>A WBIWarpDirections enumerator describing the current warp direction.</returns>
+        WBIWarpDirections GetWarpDirection();
+
+        /// <summary>
+        /// Sets the desired warp direction, but only if crazyModeUnlocked = true.
+        /// </summary>
+        /// <param name="direction">A WBIWarpDirections enumerator specifying the desired direction.</param>
+        void SetWarpDirection(WBIWarpDirections direction);
     }
 
     public class WBIKFSUtils
