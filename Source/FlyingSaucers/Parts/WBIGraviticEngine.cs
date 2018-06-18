@@ -294,6 +294,11 @@ namespace WildBlueIndustries
                 isLiftingOff = true;
         }
 
+        public float GetVerticalSpeed()
+        {
+            return verticalSpeed;
+        }
+
         public void KillVerticalSpeed()
         {
             verticalSpeed = 0.0f;
@@ -988,7 +993,7 @@ namespace WildBlueIndustries
             if (engineMode == WBIThrustModes.Forward || engineMode == WBIThrustModes.Reverse)
             {
                 //Get the acceleration speed.
-                float accelerationMagnitude = maxAcceleration * accelerationCurve.Evaluate(currentThrottle);
+                float accelerationMagnitude = maxAcceleration * accelerationCurve.Evaluate(vessel.ctrlState.mainThrottle);
 
                 //Calcualte the acceleration vector
                 Vector3d accelerationVector = (this.part.vessel.GetReferenceTransformPart().transform.up).normalized * accelerationMagnitude;
@@ -1005,7 +1010,7 @@ namespace WildBlueIndustries
                 float forceOfGravity = (float)this.part.vessel.gravityForPos.magnitude;
 
                 //Calculate lift acceleration
-                float liftAcceleration = maxAcceleration * currentThrottle;
+                float liftAcceleration = maxAcceleration * vessel.ctrlState.mainThrottle;
 
                 //Get lift vector
                 Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;

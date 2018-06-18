@@ -17,10 +17,14 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.2.7
+- Fixed issue where the throttle wouldn't be updated during Hover Mode and forward flight.
+
 0.2.6
 - Fixed issue where the gravitic engine wouldn't produce acceleration when MechJeb tried to execute a maneuver node.
 - Added infrastructure to KerbalActuators to support MOARdV Avionics Systems.
 - Removed debug code left over from last release.
+- Improved Crazy Mode performance when there are no other vessels in physics range.
 
 0.2.5
 - In the flight scene, you now have the ability to recovery resources that are normally stored in the Refinery.
