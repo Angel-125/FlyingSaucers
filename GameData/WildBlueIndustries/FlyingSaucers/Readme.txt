@@ -17,6 +17,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.2.8
+- Fixed issues where the Flapjack docking port and Gravitic Engine's RCS thrusters wouldn't work with the cargo bay attached. Thanks for the solution, MOARdv! :)
+
 0.2.7
 - Fixed issue where the throttle wouldn't be updated during Hover Mode and forward flight.
 
