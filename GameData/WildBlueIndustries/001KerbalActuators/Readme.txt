@@ -24,6 +24,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 ---REVISION HISORY---
 
+1.4.6
+- Recompiled for KSP 1.4.4
+
 1.4.5
 - Added additional infrastructure to support 3rd party mods like MOARdV Avionics Systems.
 

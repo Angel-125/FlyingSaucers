@@ -17,6 +17,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.2.9
+- Added A-51 Half Keel for those times when only half a saucer will suffice.
+- Recompiled for KSP 1.4.4
+
 0.2.8
 - Fixed issues where the Flapjack docking port and Gravitic Engine's RCS thrusters wouldn't work with the cargo bay attached. Thanks for the solution, MOARdv! :)
 
