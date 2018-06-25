@@ -317,9 +317,13 @@ namespace WildBlueIndustries
 
         public void DeactivateHover()
         {
+            if (vessel.LandedOrSplashed)
+            {
+                vessel.ctrlState.mainThrottle = 0f;
+                FlightInputHandler.state.mainThrottle = 0f;
+            }
+
             //Switch to normal transform
-            vessel.ctrlState.mainThrottle = 0f;
-            FlightInputHandler.state.mainThrottle = 0f;
             engineMode = WBIThrustModes.Forward;
             SetupEngineMode();
         }

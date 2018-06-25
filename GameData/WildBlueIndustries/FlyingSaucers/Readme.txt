@@ -17,6 +17,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.2.10
+- Fixed missing collider on the Half Keel.
+- The Gravitic Engine won't kill the throttle if you turn off Hover Mode and have forward thrust set during flight. This should make it easier to transition from VTOL to forward flight.
+
 0.2.9
 - Added A-51 Half Keel for those times when only half a saucer will suffice.
 - Recompiled for KSP 1.4.4
