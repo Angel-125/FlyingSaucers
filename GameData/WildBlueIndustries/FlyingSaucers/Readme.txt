@@ -17,6 +17,11 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.3.0
+- Flapjack IVA upgraded courtesy of MOARdv :) NOTE: You'll need MOARdv Avionics Systems 0.20.1 or later.
+- Added new S-4 Excalibur parts category.
+- Added test parts for the S-4 Excalibur mothership. THESE ARE SUBJECT TO CHANGE WITHOUT NOTICE.
+
 0.2.11
 - Un-broke the template managers.
 - Finally straightened out the Half Keel to have the proper model and colliders.
