@@ -17,6 +17,20 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.3.1
+- Updated part symmetry axis. Thanks for the investigation, Vardicd & shdwlrd! :)
+- You can now set the gravitic engine's forward, reverse, and VTOL thrust modes through action groups.
+- You can now toggle Crazy Mode on and off through action groups. NOTE: this only works in the forward direction.
+- Added new sounds to the Excalibur Engineering Core's generators.
+- The Excalibur Inner Section now has node toggles to make it easier to switch between adding two standard-sized outer sections, or one standard outer section and two half-sections.
+- Made a better sound loop for the gravitic engine.
+- More infrastructure work done on KerbalActuators for kOS support.
+- Updated a couple of part tool tips for clarity.
+- Re-added IVA props that I missed during latest MAS integration.
+- Fixed mesh gaps as best as possible for Excalibur's template parts and adjusted the shape to better fit 2.5m tall payloads.
+- Fixed top node placement on the fusion reactor.
+- Fix for multiple part tool tips appearing when you attach new parts. Hopefully this will solve it once and for all!
+
 0.3.0
 - Flapjack IVA upgraded courtesy of MOARdv :) NOTE: You'll need MOARdv Avionics Systems 0.20.1 or later.
 - Added new S-4 Excalibur parts category.
