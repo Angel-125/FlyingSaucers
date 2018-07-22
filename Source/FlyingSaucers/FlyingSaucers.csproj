@@ -61,6 +61,7 @@
     <Compile Include="Parts\WBIModuleGraviticRCS.cs" />
     <Compile Include="Parts\WBIModuleEngineCOMThrust.cs" />
     <Compile Include="Parts\WBIGraviticGenerator.cs" />
+    <Compile Include="WBINodeToggle.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BARIS\BARISBridge\BARISBridge.csproj">

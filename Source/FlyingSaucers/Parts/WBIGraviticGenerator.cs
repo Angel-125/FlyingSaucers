@@ -44,5 +44,19 @@ namespace WildBlueIndustries
                 }
             }
         }
+
+        /*
+        protected override void PostProcess(ConverterResults result, double deltaTime)
+        {
+            base.PostProcess(result, deltaTime);
+
+            //If we're missing resources then stop the converter.
+            if (!string.IsNullOrEmpty(result.Status))
+            {
+                if (result.Status.Contains(Localizer.Format("#autoLOC_261263")))
+                    StopResourceConverter();
+            }
+        }
+        */
     }
 }

@@ -335,6 +335,12 @@ namespace WildBlueIndustries
             return engineMode;
         }
 
+        [KSPAction("Set Forward Thrust")]
+        public void SetFwdThrustAction(KSPActionParam param)
+        {
+            SetForwardThrust(WBIVTOLManager.Instance);
+        }
+
         public void SetForwardThrust(WBIVTOLManager vtolManager)
         {
             engineMode = WBIThrustModes.Forward;
@@ -342,11 +348,23 @@ namespace WildBlueIndustries
             SetupEngineMode();
         }
 
+        [KSPAction("Set Reverse Thrust")]
+        public void SetReverseThrustAction(KSPActionParam param)
+        {
+            SetReverseThrust(WBIVTOLManager.Instance);
+        }
+
         public void SetReverseThrust(WBIVTOLManager vtolManager)
         {
             engineMode = WBIThrustModes.Reverse;
             vtolManager.thrustMode = engineMode;
             SetupEngineMode();
+        }
+
+        [KSPAction("Set VTOL Thrust")]
+        public void SetVTOLThrustAction(KSPActionParam param)
+        {
+            SetVTOLThrust(WBIVTOLManager.Instance);
         }
 
         public void SetVTOLThrust(WBIVTOLManager vtolManager)
@@ -470,6 +488,18 @@ namespace WildBlueIndustries
             {
                 return false;
             }
+        }
+
+        [KSPAction("Toggle Crazy Mode (Fwd only)")]
+        public void ToggleCrazyModeAction(KSPActionParam param)
+        {
+            if (!IsActive())
+                return;
+
+            if (warpDirection != WBIWarpDirections.Stop)
+                warpDirection = WBIWarpDirections.Forward;
+            else
+                warpDirection = WBIWarpDirections.Stop;
         }
 
         /// <summary>
