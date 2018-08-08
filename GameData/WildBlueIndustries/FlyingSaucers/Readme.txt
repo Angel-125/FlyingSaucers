@@ -17,6 +17,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.3.2
+- WildBlueTools update.
+
 0.3.1
 - Updated part symmetry axis. Thanks for the investigation, Vardicd & shdwlrd! :)
 - You can now set the gravitic engine's forward, reverse, and VTOL thrust modes through action groups.
