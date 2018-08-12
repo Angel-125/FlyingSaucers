@@ -17,6 +17,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.3.3
+- Added experiment lab to MPL and experiment container to the Science Box.
+- Bug fixes for experiments.
+
 0.3.2
 - WildBlueTools update.
 
