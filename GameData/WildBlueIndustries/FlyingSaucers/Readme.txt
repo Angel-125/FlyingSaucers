@@ -17,6 +17,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.3.5
+- Minor update to the Hydroscoop to use the new WBIResourceHarvester.
+
 0.3.4
 - WBT update.
 - Fixed click-through issues with windows displayed in the editor.
