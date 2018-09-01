@@ -17,7 +17,7 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
-0.3.6
+0.3.7
 - Fix for Stardust not collecting Graviolium.
 
 0.3.5
