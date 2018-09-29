@@ -29,7 +29,7 @@ namespace WildBlueIndustries
         [KSPField]
         public float specificImpulse = 1.0f;
 
-        [KSPField]
+        [KSPField(guiActive = true, guiName = "Throttle Controlled")]
         [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
         public bool throttleControlled;
         #endregion
@@ -64,7 +64,7 @@ namespace WildBlueIndustries
             if (!IsActivated)
                 return;
 
-            isMissingResources = result.TimeFactor > 0f ? true : false;
+            isMissingResources = result.TimeFactor > 0f ? false : true;
         }
         #endregion
 
@@ -98,11 +98,6 @@ namespace WildBlueIndustries
 
         public void SetHoverMode(bool isActive)
         {
-            if (isActive)
-                this.StartResourceConverter();
-            else
-                this.StopResourceConverter();
-
             if (this.part.vessel.situation == Vessel.Situations.ESCAPING ||
                 this.part.vessel.situation == Vessel.Situations.DOCKED ||
                 this.part.vessel.situation == Vessel.Situations.ORBITING ||
@@ -113,7 +108,7 @@ namespace WildBlueIndustries
             }
 
             //Set the mode
-            if (this.IsActivated)
+            if (isActive)
                 ActivateHover();
             else
                 DeactivateHover();
@@ -139,6 +134,8 @@ namespace WildBlueIndustries
         {
             if (verticalSpeed > 0f)
                 isLiftingOff = true;
+
+            this.verticalSpeed = verticalSpeed;
         }
 
         public void StartEngine()
@@ -216,7 +213,8 @@ namespace WildBlueIndustries
         {
             verticalSpeed = 0.0f;
 
-            this.StartResourceConverter();
+            if (!IsActivated)
+                this.StartResourceConverter();
         }
 
         public void DeactivateHover()
@@ -227,7 +225,8 @@ namespace WildBlueIndustries
                 FlightInputHandler.state.mainThrottle = 0f;
             }
 
-            this.StopResourceConverter();
+            if (IsActivated)
+                this.StopResourceConverter();
         }
 
         public void ApplyAccelerationVector(Vector3d accelerationVector)

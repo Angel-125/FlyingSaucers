@@ -19,6 +19,48 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 0.3.10
 - Added missing parts.
+- Added new WBIGraviticLift module. You can control it via the Flight Operations Managar, or via throttle. Example config:
+
+	MODULE
+	{
+		name = WBIGraviticLift
+		ConverterName = Gravitic Lift
+		StartActionName = Start Gravitic Lift
+		StopActionName = Stop Gravitic Lift
+		ToggleActionName = Toggle Gravitic Lift
+		FillAmount = 1.0
+		AutoShutdown = false
+		GeneratesHeat = false
+		UseSpecialistBonus = false
+		startEffect = effectStart
+		stopEffect = effectStop
+		runningEffect = effectRunning
+
+		//Maximum acceleration in meters per second per second.
+		maxAcceleration = 20
+
+		//EfficiencyBonus is auto-calculated. The more massive the craft, the higher the "bonus," which translates into
+		//consuming and producing input/output resources faster.
+		//So instead of EfficiencyBonus, we use specific impulse to determine how well we use the resources.
+		//Math: acceleration * total vessel mass = lift force.
+		//EfficiencyBonus = lift force / (9.81 * specificImpulse).
+		//Resources are consumed & produced at Ratio * EfficiencyBonus.
+		specificImpulse = 1
+		 
+		//...or liquid fuel, or whatever...
+		INPUT_RESOURCE
+		{
+			ResourceName = Graviolium
+			Ratio = 0.0016875
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		OUTPUT_RESOURCE
+		{
+			ResourceName = StaticCharge
+			Ratio = 0.05
+			DumpExcess = false
+		}
+	}
 
 0.3.9
 
