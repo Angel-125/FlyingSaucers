@@ -1,12 +1,12 @@
 ﻿PART
 {
-	name = wbiS4InnerStorageSection
+	name = wbiS4DblOuterStorageSection
 	module = Part
 	author = Angel-125
 
 	MODEL
 	{
-		model = WildBlueIndustries/FlyingSaucers/Parts/Excalibur/InnerStorageSection
+		model = WildBlueIndustries/FlyingSaucers/Parts/Excalibur/DblOuterStorageSection
 	}
 
 	rescaleFactor = 1
@@ -17,35 +17,6 @@
 		transform = Node1
 		size = 2
 	}
-	NODE
-	{
-		name = Mount2
-		transform = Node2
-		size = 2
-	}
-	NODE
-	{
-		name = Mount3
-		transform = Node3
-		size = 2
-	}
-	NODE
-	{
-		name = Mount4
-		transform = Node4
-		size = 2
-	}
-	NODE
-	{
-		name = Mount5
-		transform = Node5
-		size = 2
-	}	NODE
-	{
-		name = Mount6
-		transform = Node6
-		size = 2
-	}
 
 	TechRequired = wbiMothershipTech
 	category = Aero
@@ -53,16 +24,15 @@
 	entryCost = 50000
 	cost = 27500
 
-	title = (DEV) S-4 Inner Storage Section
+	title = (DEV) S-4 Double Outer Storage Section
 	manufacturer = <CLASSIFIED>
 	description = TBD
 	attachRules = 1,0,1,1,0
-	mass = 2
+	mass = 8
 	dragModelType = none
 	maximum_drag = 0.02
 	minimum_drag = 0.02
 	angularDrag = 0.2
-	stackSymmetry = 1
 	crashTolerance = 26
 	thermalMassModifier = 8.0
 	emissiveConstant = 0.95
@@ -80,22 +50,11 @@
 		convectionFluxThreshold = 3000
 	}
 
-	MODULE
-	{
-		name = WBINodeToggle
-		primaryNodesString = Nodes: 2 Standard Outer Sections
-		primaryMeshName = StandardHatches
-		primaryNodes = Mount5;Mount6
-		secondaryNodesString = Nodes: 1 Standard Outer, 2 Half
-		secondaryMeshName = HalfHatches
-		secondaryNodes = Mount1;Mount2;Mount3
-	}
-
 	//65% of the total volume is dedicated to storage. The rest is crawlspace.
 	MODULE:NEEDS[KIS]
 	{
 	    name = ModuleKISInventory
-	    maxVolume = 70000
+	    maxVolume = 155000
 	    externalAccess = true
 	    internalAccess = true
 	    slotsX = 6
@@ -122,7 +81,7 @@
 		name = WBIOmniStorage
 
 		//In liters, how much can the part store.
-		storageVolume = 70000
+		storageVolume = 155000
 
 		//Skill required to reconfigure the container.
 		reconfigureSkill = ConverterSkill
@@ -153,7 +112,7 @@
 	{
 		name = StaticCharge
 		amount = 0
-		maxAmount = 150
+		maxAmount = 300
 	}
 
 	MODULE

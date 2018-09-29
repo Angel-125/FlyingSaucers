@@ -78,7 +78,7 @@ namespace WildBlueIndustries
         public float finalAcceleration;
 
         [KSPField(isPersistant = true)]
-        public bool managedHover = false;
+        public bool hoverIsActive = false;
 
         [KSPField]
         public string reverseTransformName = string.Empty;
@@ -199,7 +199,7 @@ namespace WildBlueIndustries
 
         public bool GetHoverState()
         {
-            return managedHover;
+            return hoverIsActive;
         }
 
         public bool IsEngineActive()
@@ -217,8 +217,11 @@ namespace WildBlueIndustries
             Shutdown();
         }
 
-        public void UpdateHoverState(float throttleValue)
+        public void UpdateHoverState()
         {
+            if (!hoverIsActive)
+                return;
+
             //If we just landed then kill vertical speed and exit
             if ((this.part.vessel.situation == Vessel.Situations.LANDED ||
                 this.part.vessel.situation == Vessel.Situations.SPLASHED ||
@@ -229,16 +232,13 @@ namespace WildBlueIndustries
             }
 
             //Once we're flying again, remove the flag.
-            else if (this.part.vessel.situation == Vessel.Situations.FLYING)
+            else if (VesselIsAirborne())
             {
                 isLiftingOff = false;
             }
 
-            //Get force of gravity
-            float forceOfGravity = (float)this.part.vessel.gravityForPos.magnitude;
-
             //Calculate lift acceleration
-            float liftAcceleration = forceOfGravity;
+            float liftAcceleration = (float)this.part.vessel.graviticAcceleration.magnitude;
             if (verticalSpeed > 0 && vessel.verticalSpeed < verticalSpeed)
                 liftAcceleration += verticalSpeed;
             else if (verticalSpeed < 0 && vessel.verticalSpeed > verticalSpeed)
@@ -259,13 +259,13 @@ namespace WildBlueIndustries
                 this.part.vessel.situation == Vessel.Situations.ORBITING ||
                 this.part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
             {
-                managedHover = false;
+                hoverIsActive = false;
                 return;
             }
-            managedHover = isActive;
+            hoverIsActive = isActive;
 
             //Set the mode
-            if (managedHover)
+            if (hoverIsActive)
                 ActivateHover();
             else
                 DeactivateHover();
@@ -278,7 +278,7 @@ namespace WildBlueIndustries
                     WBIGraviticEngine graviticEngine = symmetryPart.GetComponent<WBIGraviticEngine>();
                     if (graviticEngine != null)
                     {
-                        if (managedHover)
+                        if (hoverIsActive)
                             graviticEngine.ActivateHover();
                         else
                             graviticEngine.DeactivateHover();
@@ -476,18 +476,10 @@ namespace WildBlueIndustries
             if (!crazyModeUnlocked)
                 return false;
 
-            List<WBIGraviticEngine> graviticEngines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
-            if (graviticEngines[0] == this)
-            {
-                if (EngineIgnited && isOperational)
-                    return true;
-                else
-                    return false;
-            }
+            if (EngineIgnited && isOperational)
+                return true;
             else
-            {
                 return false;
-            }
         }
 
         [KSPAction("Toggle Crazy Mode (Fwd only)")]
@@ -508,7 +500,7 @@ namespace WildBlueIndustries
         public void DrawCustomController()
         {
             //Available only during flight.
-            if (this.part.vessel.situation != Vessel.Situations.FLYING)
+            if (!VesselIsAirborne())
                 return;
 
             GUILayout.BeginVertical();
@@ -583,6 +575,9 @@ namespace WildBlueIndustries
             base.OnFixedUpdate();
             if (!HighLogic.LoadedSceneIsFlight)
                 return;
+
+            //Update the hover state
+            UpdateHoverState();
 
             //Check for flameout
             CheckFlameout();
@@ -819,7 +814,7 @@ namespace WildBlueIndustries
                     float powerLevel = vessel.ctrlState.mainThrottle;
                     if (powerLevel < runningPowerMin)
                         powerLevel = runningPowerMin;
-                    if (!managedHover)
+                    if (!hoverIsActive)
                     {
                         this.part.Effect(powerEffectName, powerLevel);
                         this.part.Effect(thrustEffect, powerLevel);
@@ -836,7 +831,7 @@ namespace WildBlueIndustries
                     //Spin the grav ring
                     if (gravRingTransform != null)
                     {
-                        if (managedHover)
+                        if (hoverIsActive)
                             powerLevel = 0.5f;
                         rotationPerFrame = ((spinRateRPMMax * 60.0f) * TimeWarp.fixedDeltaTime) * powerLevel;
                         if (rotationPerFrame < rotationPerFrameMin)
@@ -898,7 +893,7 @@ namespace WildBlueIndustries
                 return;
 
             //Make sure we're flying. If not, then turn off crazy mode.
-            if (this.part.vessel.situation != Vessel.Situations.FLYING)
+            if (!VesselIsAirborne())
             {
                 warpDirection = WBIWarpDirections.Stop;
                 return;
@@ -1038,7 +1033,7 @@ namespace WildBlueIndustries
                 ApplyAccelerationVector(accelerationVector);
             }
 
-            else if (engineMode == WBIThrustModes.VTOL && !managedHover)
+            else if (engineMode == WBIThrustModes.VTOL && !hoverIsActive)
             {
                 //Get force of gravity
                 float forceOfGravity = (float)this.part.vessel.gravityForPos.magnitude;
@@ -1068,6 +1063,14 @@ namespace WildBlueIndustries
         #endregion
 
         #region Helpers
+
+        public bool VesselIsAirborne()
+        {
+            if (this.part.vessel.situation == Vessel.Situations.FLYING || this.part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
+                return true;
+
+            return false;
+        }
 
         public void ApplyAccelerationVector(Vector3d accelerationVector)
         {

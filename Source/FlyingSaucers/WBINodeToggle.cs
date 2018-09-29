@@ -29,10 +29,16 @@ namespace WildBlueIndustries
         public string primaryNodesString = "Outer";
 
         [KSPField]
+        public string primaryMeshName = string.Empty;
+
+        [KSPField]
         public string secondaryNodes = "Node3;Node4";
 
         [KSPField]
         public string secondaryNodesString = "Inner";
+
+        [KSPField]
+        public string secondaryMeshName = string.Empty;
 
         [KSPField(isPersistant = true)]
         public bool usePrimaryNodes = true;
@@ -78,6 +84,8 @@ namespace WildBlueIndustries
                 updateNodeStates(nodeNames, true);
                 nodeNames = secondaryNodes.Split(delimiters);
                 updateNodeStates(nodeNames, false);
+                setMeshVisible(primaryMeshName, true);
+                setMeshVisible(secondaryMeshName, false);
             }
             else
             {
@@ -85,6 +93,35 @@ namespace WildBlueIndustries
                 updateNodeStates(nodeNames, false);
                 nodeNames = secondaryNodes.Split(delimiters);
                 updateNodeStates(nodeNames, true);
+                setMeshVisible(primaryMeshName, false);
+                setMeshVisible(secondaryMeshName, true);
+            }
+        }
+
+        protected void setMeshVisible(string meshName, bool isVisible)
+        {
+            if (string.IsNullOrEmpty(meshName))
+                return;
+            string[] nameTransforms = meshName.Split(';');
+            Transform[] targets;
+
+            foreach (string transform in nameTransforms)
+            {
+                //Get the targets
+                targets = part.FindModelTransforms(transform);
+                if (targets == null)
+                {
+                    Debug.Log("No targets found for " + transform);
+                    return;
+                }
+
+                foreach (Transform target in targets)
+                {
+                    target.gameObject.SetActive(isVisible);
+                    Collider collider = target.gameObject.GetComponent<Collider>();
+                    if (collider != null)
+                        collider.enabled = isVisible;
+                }
             }
         }
 

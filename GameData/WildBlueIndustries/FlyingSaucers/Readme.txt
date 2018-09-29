@@ -17,6 +17,27 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.3.10
+- Added missing parts.
+
+0.3.9
+
+Excalibur (WORK IN PROGRESS!)
+- Added Large Body Flap. It works the same way as the Flapjack's body flap.
+- Added S-4 "Excalibur" Cockpit prototype.
+- Finished modeling and unwrap of the storage sections and engineering core- texturing to follow.
+- Removed Double Outer Section.
+- Updated wording on node switching for the Inner Section, and added visual cues to help identify configuration for the outer sections.
+- Added particle effects to the engineering core.
+
+Bug Fixes & Enhancements
+- Fixed Crazy Mode controls vanishing when a vessel without a gravitic engine is loaded into scene.
+- Fixed NRE produced by converters when BARIS isn't installed.
+- Fixed issue preventing multiple saucers within physics range of each other from hovering at the same time.
+- Fixed issue where craft wouldn't hover on airless bodies.
+- Graviolium won't be stripped from your vessels upon launching from the VAB/SPH if you're in Sandbox or Science mode.
+- Crazy Mode can now be used when the craft is considered to be sub-orbital as well as when it is flying.
+
 0.3.8
 - Fixes Play Mode failing to rename certain files. NOTE: You might need to reset your current play mode. Simply open the WBT app from the Space Center, choose another mode, press OK, and again open the app, selecting your original play mode. Then be sure to restart KSP.
 
