@@ -17,6 +17,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.3.11
+- Added Large Tail Fin: This is a larger version of the Flapjack's tail fin for use on the Excalibur.
+
 0.3.10
 - Added missing parts.
 - Added new WBIGraviticLift module. You can control it via the Flight Operations Managar, or via throttle. Example config:

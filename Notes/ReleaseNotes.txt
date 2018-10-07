@@ -1,15 +1,6 @@
-Excalibur (WORK IN PROGRESS!)
-- Added Large Body Flap. It works the same way as the Flapjack's body flap.
-- Added S-4 "Excalibur" Cockpit prototype.
-- Finished modeling and unwrap of the storage sections and engineering core- texturing to follow.
-- Removed Double Outer Section.
-- Updated wording on node switching for the Inner Section, and added visual cues to help identify configuration for the outer sections.
-- Added particle effects to the engineering core.
+Omni Converters & Storage
+- Added search functions to OmniStorage and OmniConverter GUI.
+- Play Mode now lists which mods support a particular mode.
 
-Bug Fixes & Enhancements
-- Fixed Crazy Mode controls vanishing when a vessel without a gravitic engine is loaded into scene.
-- Fixed NRE produced by converters when BARIS isn't installed.
-- Fixed issue preventing multiple saucers within physics range of each other from hovering at the same time.
-- Fixed issue where craft wouldn't hover on airless bodies.
-- Graviolium won't be stripped from your vessels upon launching from the VAB/SPH if you're in Sandbox or Science mode.
-- Crazy Mode can now be used when the craft is considered to be sub-orbital as well as when it is flying.
+Classic Stock
+- Added new Classic Stock omni converters: Propellium Distiller, Oxium Distiller, Snack Grinder (requres Snacks), Soil Dehydrator (requires Snacks).

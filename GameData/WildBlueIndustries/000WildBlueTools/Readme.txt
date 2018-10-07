@@ -6,6 +6,15 @@ A KSP mod that provides common functionality for mods by Wild Blue Industries.
 
 Copy the contents of the mod's GameData directory into your GameData folder.
 
+1.58
+
+Omni Converters & Storage
+- Added search functions to OmniStorage and OmniConverter GUI.
+- Play Mode now lists which mods support a particular mode.
+
+Classic Stock
+- Added new Classic Stock omni converters: Propellium Distiller, Oxium Distiller, Snack Grinder (requres Snacks), Soil Dehydrator (requires Snacks).
+
 1.57.5
 - Fixed an issue where drills would generate an NRE upon startup when BARIS isn't installed.
 

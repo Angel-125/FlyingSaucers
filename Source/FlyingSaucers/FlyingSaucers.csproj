@@ -90,7 +90,7 @@ xcopy /Y /E  "C:\KSPDev\GameData\WildBlueIndustries\000WildBlueTools\*.*" "C:\Pr
 xcopy /Y /E  "C:\KSPDev\GameData\WildBlueIndustries\FlyingSaucers\*.*" "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\GameData\WildBlueIndustries\FlyingSaucers\"
 xcopy /Y /E  "C:\KSPDev\GameData\WildBlueIndustries\ClassicStockResources\*.*" "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\GameData\WildBlueIndustries\ClassicStockResources\"
 xcopy /Y /E  "C:\KSPDev\GameData\WildBlueIndustries\001KerbalActuators\*.*" "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\GameData\WildBlueIndustries\001KerbalActuators\"
-xcopy /Y /E  "C:\KSPDev\GameData\WildBlueIndustries\FlyingSaucers\KFS.version" "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Notes\"
+xcopy /Y  "C:\KSPDev\GameData\WildBlueIndustries\FlyingSaucers\KFS.version" "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Notes\"
 
 del "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\GameData\WildBlueIndustries\000WildBlueTools\MiniAVC.xml"
 del "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\GameData\WildBlueIndustries\001KerbalActuators\MiniAVC.xml"
