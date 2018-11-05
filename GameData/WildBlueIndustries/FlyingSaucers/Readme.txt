@@ -17,6 +17,11 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.4
+- Updated to KSP 1.5.X
+- Fixed issues with the Kray Kray experiment not working properly.
+- The Kray Kray now properly unlocks whole tech tree nodes upon a successful breakthrough research result.
+
 0.3.12
 Last release for KSP 1.4.5!
 
