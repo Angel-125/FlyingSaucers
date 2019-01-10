@@ -15,7 +15,6 @@ C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\WildBlueTools.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\KSPTrackIR.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\Mono.Cecil.dll
-C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\Ionic.Zip.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\TDx.TDxInput.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\BARISBridge.pdb
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\KerbalActuators.pdb
@@ -25,3 +24,4 @@ C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.csproj.CopyComplete
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.pdb
+C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\Ionic.Zip.dll
