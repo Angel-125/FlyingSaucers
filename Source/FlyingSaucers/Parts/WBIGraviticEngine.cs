@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using KSP.IO;
 using KerbalActuators;
+using KSP.Localization;
 
 /*
 Source code copyright 2018, by Michael Billard (Angel-125)
@@ -19,9 +20,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 namespace WildBlueIndustries
 {
-    [KSPModule("Gravitic Engine")]
-    public class WBIGraviticEngine : ModuleEnginesFX, IHoverController, IThrustVectorController, ICustomController
+    /// <summary>
+    /// Derived from IWarpController, this interface is used to control Crazy Mode.
+    /// </summary>
+    public interface ICrazyModeController : IWarpController
     {
+        /// <summary>
+        /// Determines whether or not Crazy Mode has been unlocked.
+        /// </summary>
+        /// <returns></returns>
+        bool IsCrazyModeUnlocked();
+    }
+
+    [KSPModule("Gravitic Engine")]
+    public class WBIGraviticEngine : ModuleEnginesFX, IHoverController, IThrustVectorController, ICustomController, ICrazyModeController
+    {
+        public const string ICON_PATH = "WildBlueIndustries/FlyingSaucers/Icons/";
         protected const int kDefaultAnimationLayer = 2;
 
         [KSPField]
@@ -64,7 +78,7 @@ namespace WildBlueIndustries
         public float finalAcceleration;
 
         [KSPField(isPersistant = true)]
-        public bool managedHover = false;
+        public bool hoverIsActive = false;
 
         [KSPField]
         public string reverseTransformName = string.Empty;
@@ -83,6 +97,9 @@ namespace WildBlueIndustries
 
         [KSPField]
         public string vtolThrustEffect = string.Empty;
+
+        [KSPField]
+        public FloatCurve accelerationCurve;
         #endregion
 
         #region Housekeeping
@@ -107,9 +124,13 @@ namespace WildBlueIndustries
         protected Transform vtolFXTransform = null;
         protected Vector3 gravSpinAxis = Vector3.zero;
         protected LineRenderer lineRenderer;
+        protected LineRenderer comRenderer;
         protected GameObject thrustLine;
+        protected GameObject comLine;
         protected bool isLiftingOff = false;
         protected string thrustEffect = string.Empty;
+        protected RaycastHit terrainHit;
+        protected LayerMask layerMask = -1;
         #endregion
 
         #region IHoverController
@@ -148,7 +169,6 @@ namespace WildBlueIndustries
             {
                 default:
                 case WBIThrustModes.Forward:
-                    thrustTransforms.Add(thrustTransform);
                     thrustEffect = fwdThrustEffect;
                     if (!string.IsNullOrEmpty(revThrustEffect))
                         this.part.Effect(revThrustEffect, 0f, -1);
@@ -157,7 +177,6 @@ namespace WildBlueIndustries
                     break;
 
                 case WBIThrustModes.Reverse:
-                    thrustTransforms.Add(reverseThrustTransform);
                     thrustEffect = revThrustEffect;
                     if (!string.IsNullOrEmpty(vtolThrustEffect))
                         this.part.Effect(vtolThrustEffect, 0f, -1);
@@ -167,8 +186,6 @@ namespace WildBlueIndustries
 
                 case WBIThrustModes.VTOL:
                     thrustEffect = vtolThrustEffect;
-                    if (!managedHover)
-                        thrustTransforms.Add(vtolThrustTransform);
                     if (!string.IsNullOrEmpty(revThrustEffect))
                         this.part.Effect(revThrustEffect, 0f, -1);
                     if (!string.IsNullOrEmpty(fwdThrustEffect))
@@ -178,6 +195,11 @@ namespace WildBlueIndustries
 
             if (HighLogic.LoadedSceneIsFlight)
                 UpdateCenterOfThrust();
+        }
+
+        public bool GetHoverState()
+        {
+            return hoverIsActive;
         }
 
         public bool IsEngineActive()
@@ -195,8 +217,11 @@ namespace WildBlueIndustries
             Shutdown();
         }
 
-        public void UpdateHoverState(float throttleValue)
+        public void UpdateHoverState()
         {
+            if (!hoverIsActive)
+                return;
+
             //If we just landed then kill vertical speed and exit
             if ((this.part.vessel.situation == Vessel.Situations.LANDED ||
                 this.part.vessel.situation == Vessel.Situations.SPLASHED ||
@@ -207,26 +232,24 @@ namespace WildBlueIndustries
             }
 
             //Once we're flying again, remove the flag.
-            else if (this.part.vessel.situation == Vessel.Situations.FLYING)
+            else if (VesselIsAirborne())
             {
                 isLiftingOff = false;
             }
 
-            //Get force of gravity
-            float forceOfGravity = (float)FlightGlobals.ActiveVessel.gravityForPos.magnitude;
+            //Calculate lift acceleration
+            float liftAcceleration = (float)this.part.vessel.graviticAcceleration.magnitude;
+            if (verticalSpeed > 0 && vessel.verticalSpeed < verticalSpeed)
+                liftAcceleration += verticalSpeed;
+            else if (verticalSpeed < 0 && vessel.verticalSpeed > verticalSpeed)
+                liftAcceleration += verticalSpeed;
+            currentThrottle = maxAcceleration - liftAcceleration;
 
             //Get lift vector
-            Vector3d liftVector = (this.part.transform.position - this.vessel.mainBody.position).normalized;
+            Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
             
-            //Calculate base lift force
-            float totalMass = vessel.GetTotalMass();
-            float liftForce = totalMass * forceOfGravity;
-
-            //Account for desired vertical acceleration
-            liftForce += verticalSpeed;
-
-            //Add lift force to part. We do this manually instead of letting ModuleEnginesFX do it so that the craft can have any orientation desired.
-            this.part.AddForceAtPosition(liftVector * (float)liftForce, this.part.vessel.CoM);
+            //Add acceleration. We do this manually instead of letting ModuleEnginesFX do it so that the craft can have any orientation desired.
+            ApplyAccelerationVector(accelerationVector);
         }
 
         public void SetHoverMode(bool isActive)
@@ -236,18 +259,13 @@ namespace WildBlueIndustries
                 this.part.vessel.situation == Vessel.Situations.ORBITING ||
                 this.part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
             {
-                managedHover = false;
+                hoverIsActive = false;
                 return;
             }
-            if (flameout)
-            {
-                managedHover = false;
-                return;
-            }
-            managedHover = isActive;
+            hoverIsActive = isActive;
 
             //Set the mode
-            if (isActive)
+            if (hoverIsActive)
                 ActivateHover();
             else
                 DeactivateHover();
@@ -260,14 +278,13 @@ namespace WildBlueIndustries
                     WBIGraviticEngine graviticEngine = symmetryPart.GetComponent<WBIGraviticEngine>();
                     if (graviticEngine != null)
                     {
-                        if (isActive)
+                        if (hoverIsActive)
                             graviticEngine.ActivateHover();
                         else
                             graviticEngine.DeactivateHover();
                     }
                 }
             }
-
         }
 
         public void SetVerticalSpeed(float verticalSpeed)
@@ -275,6 +292,11 @@ namespace WildBlueIndustries
             this.verticalSpeed = verticalSpeed;
             if (verticalSpeed > 0f)
                 isLiftingOff = true;
+        }
+
+        public float GetVerticalSpeed()
+        {
+            return verticalSpeed;
         }
 
         public void KillVerticalSpeed()
@@ -295,9 +317,13 @@ namespace WildBlueIndustries
 
         public void DeactivateHover()
         {
+            if (vessel.LandedOrSplashed)
+            {
+                vessel.ctrlState.mainThrottle = 0f;
+                FlightInputHandler.state.mainThrottle = 0f;
+            }
+
             //Switch to normal transform
-            vessel.ctrlState.mainThrottle = 0f;
-            FlightInputHandler.state.mainThrottle = 0f;
             engineMode = WBIThrustModes.Forward;
             SetupEngineMode();
         }
@@ -309,6 +335,12 @@ namespace WildBlueIndustries
             return engineMode;
         }
 
+        [KSPAction("Set Forward Thrust")]
+        public void SetFwdThrustAction(KSPActionParam param)
+        {
+            SetForwardThrust(WBIVTOLManager.Instance);
+        }
+
         public void SetForwardThrust(WBIVTOLManager vtolManager)
         {
             engineMode = WBIThrustModes.Forward;
@@ -316,11 +348,23 @@ namespace WildBlueIndustries
             SetupEngineMode();
         }
 
+        [KSPAction("Set Reverse Thrust")]
+        public void SetReverseThrustAction(KSPActionParam param)
+        {
+            SetReverseThrust(WBIVTOLManager.Instance);
+        }
+
         public void SetReverseThrust(WBIVTOLManager vtolManager)
         {
             engineMode = WBIThrustModes.Reverse;
             vtolManager.thrustMode = engineMode;
             SetupEngineMode();
+        }
+
+        [KSPAction("Set VTOL Thrust")]
+        public void SetVTOLThrustAction(KSPActionParam param)
+        {
+            SetVTOLThrust(WBIVTOLManager.Instance);
         }
 
         public void SetVTOLThrust(WBIVTOLManager vtolManager)
@@ -358,28 +402,96 @@ namespace WildBlueIndustries
         public double crazyModeResourcePerSec = 50.0f;
 
         /// <summary>
+        /// Stop crazy mode when the resource drops below the ratio (5% default)
+        /// </summary>
+        [KSPField]
+        public double crazyModeResourceReserve = 0.05f;
+
+        /// <summary>
         /// Current direction for crazy mode travel
         /// </summary>
         protected WBIWarpDirections warpDirection;
 
         GUILayoutOption[] buttonOptions = new GUILayoutOption[] { GUILayout.Height(32), GUILayout.Width(32) };
+        public static Texture stopIcon = null;
+        public static Texture fwdIcon = null;
+        public static Texture revIcon = null;
+        public static Texture upIcon = null;
+        public static Texture dnIcon = null;
+        public static Texture leftIcon = null;
+        public static Texture rightIcon = null;
+        public static Texture fwdIconSel = null;
+        public static Texture revIconSel = null;
+        public static Texture upIconSel = null;
+        public static Texture dnIconSel = null;
+        public static Texture leftIconSel = null;
+        public static Texture rightIconSel = null;
 
         /// <summary>
-        /// Determines if the custom controller UI is visible. Only the first gravitic engine in the vessel will draw its controls
-        /// and only if the engine has its crazy mode enabled.
+        /// Determines whether or not Crazy Mode has been unlocked.
         /// </summary>
         /// <returns></returns>
-        public bool IsVisible()
+        public bool IsCrazyModeUnlocked()
+        {
+            return crazyModeUnlocked;
+        }
+
+        /// <summary>
+        /// Returns the current warp direction.
+        /// </summary>
+        /// <returns>A WBIWarpDirections enumerator describing the current warp direction.</returns>
+        public WBIWarpDirections GetWarpDirection()
+        {
+            return warpDirection;
+        }
+
+        /// <summary>
+        /// Sets the desired warp direction, but only if crazyModeUnlocked = true.
+        /// </summary>
+        /// <param name="direction">A WBIWarpDirections enumerator specifying the desired direction.</param>
+        public void SetWarpDirection(WBIWarpDirections direction)
+        {
+            if (crazyModeUnlocked)
+            {
+                warpDirection = direction;
+            }
+
+            //Update other engines
+            List<WBIGraviticEngine> graviticEngines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+            int count = graviticEngines.Count;
+            for (int index = 0; index < count; index++)
+            {
+                if (graviticEngines[index] != this)
+                    graviticEngines[index].warpDirection = direction;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether or not the controller is active. For instance, you might only have the first controller on a vessel set to active while the rest are inactive.
+        /// </summary>
+        /// <returns>True if the controller is active, false if not.</returns>
+        public bool IsActive()
         {
             //Check to make sure crazy mode is unlocked.
             if (!crazyModeUnlocked)
                 return false;
 
-            List<WBIGraviticEngine> graviticEngines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
-            if (graviticEngines[0] == this)
+            if (EngineIgnited && isOperational)
                 return true;
             else
                 return false;
+        }
+
+        [KSPAction("Toggle Crazy Mode (Fwd only)")]
+        public void ToggleCrazyModeAction(KSPActionParam param)
+        {
+            if (!IsActive())
+                return;
+
+            if (warpDirection != WBIWarpDirections.Stop)
+                warpDirection = WBIWarpDirections.Forward;
+            else
+                warpDirection = WBIWarpDirections.Stop;
         }
 
         /// <summary>
@@ -388,7 +500,7 @@ namespace WildBlueIndustries
         public void DrawCustomController()
         {
             //Available only during flight.
-            if (this.part.vessel.situation != Vessel.Situations.FLYING)
+            if (!VesselIsAirborne())
                 return;
 
             GUILayout.BeginVertical();
@@ -403,22 +515,53 @@ namespace WildBlueIndustries
             //Forward, Stop, Backward
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("FWD", buttonOptions))
-                warpDirection = WBIWarpDirections.Forward;
-            if (GUILayout.Button("STP", buttonOptions))
+            if (GUILayout.Button(stopIcon, buttonOptions))
                 warpDirection = WBIWarpDirections.Stop;
-            if (GUILayout.Button("REV", buttonOptions))
+
+            Texture buttonIcon = fwdIconSel;
+            if (warpDirection == WBIWarpDirections.Forward)
+                buttonIcon = fwdIconSel;
+            else
+                buttonIcon = fwdIcon;
+            if (GUILayout.Button(buttonIcon, buttonOptions))
+                warpDirection = WBIWarpDirections.Forward;
+
+            if (warpDirection == WBIWarpDirections.Back)
+                buttonIcon = revIconSel;
+            else
+                buttonIcon = revIcon;
+            if (GUILayout.Button(buttonIcon, buttonOptions))
                 warpDirection = WBIWarpDirections.Back;
 
             //Left, Up, Right, Down
-            if (GUILayout.Button("LT", buttonOptions))
+            if (warpDirection == WBIWarpDirections.Left)
+                buttonIcon = leftIconSel;
+            else
+                buttonIcon = leftIcon;
+            if (GUILayout.Button(buttonIcon, buttonOptions))
                 warpDirection = WBIWarpDirections.Left;
-            if (GUILayout.Button("UP", buttonOptions))
-                warpDirection = WBIWarpDirections.Up;
-            if (GUILayout.Button("RT", buttonOptions))
+
+            if (warpDirection == WBIWarpDirections.Right)
+                buttonIcon = rightIconSel;
+            else
+                buttonIcon = rightIcon;
+            if (GUILayout.Button(buttonIcon, buttonOptions))
                 warpDirection = WBIWarpDirections.Right;
-            if (GUILayout.Button("DN", buttonOptions))
+
+            if (warpDirection == WBIWarpDirections.Up)
+                buttonIcon = upIconSel;
+            else
+                buttonIcon = upIcon;
+            if (GUILayout.Button(buttonIcon, buttonOptions))
+                warpDirection = WBIWarpDirections.Up;
+
+            if (warpDirection == WBIWarpDirections.Down)
+                buttonIcon = dnIconSel;
+            else
+                buttonIcon = dnIcon;
+            if (GUILayout.Button(buttonIcon, buttonOptions))
                 warpDirection = WBIWarpDirections.Down;
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -433,59 +576,19 @@ namespace WildBlueIndustries
             if (!HighLogic.LoadedSceneIsFlight)
                 return;
 
-            if (!crazyModeUnlocked)
-                return;
+            //Update the hover state
+            UpdateHoverState();
 
-            //Setup the warp direction
-            Vector3 direction = Vector3.zero;
-            switch (warpDirection)
-            {
-                default:
-                case WBIWarpDirections.Stop:
-                    return;
+            //Check for flameout
+            CheckFlameout();
 
-                case WBIWarpDirections.Forward:
-                    direction = this.transform.up;
-                    break;
+            //Make sure center of thrust is at vessel CoM
+            UpdateCenterOfThrust();
 
-                case WBIWarpDirections.Back:
-                    direction = this.transform.up * -1;
-                    break;
+            //Adjust thrust & mass flow rate based on current gravity
+            UpdateThrust();
 
-                case WBIWarpDirections.Left:
-                    direction = this.transform.right * -1;
-                    break;
-
-                case WBIWarpDirections.Right:
-                    direction = this.part.vessel.transform.up;
-                    break;
-
-                case WBIWarpDirections.Up:
-                    direction = this.part.vessel.transform.forward * -1;
-                    break;
-
-                case WBIWarpDirections.Down:
-                    direction = this.transform.forward;
-                    break;
-            }
-
-            //Consume the resource
-            if (!string.IsNullOrEmpty(crazyModeResource))
-            {
-                double amountRequested = crazyModeResourcePerSec * TimeWarp.fixedDeltaTime;
-                double amountObtained = this.part.RequestResource(crazyModeResource, amountRequested, ResourceFlowMode.ALL_VESSEL);
-
-                //Make sure we got enough of the requested resource.
-                if ((amountObtained / amountRequested) < 0.25f)
-                {
-                    warpDirection = WBIWarpDirections.Stop;
-                    return;
-                }
-            }
-
-            //Now reposition the craft
-            Vector3d offsetPosition = this.part.vessel.transform.position + (direction * crazyModeVelocity * TimeWarp.fixedDeltaTime);
-            FloatingOrigin.SetOutOfFrameOffset(offsetPosition);
+            UpdateCrazyMode();
         }
 
         public override string GetInfo()
@@ -519,10 +622,28 @@ namespace WildBlueIndustries
             return info.ToString();
         }
 
+        public override void OnInactive()
+        {
+            base.OnInactive();
+            engineState = WBIEngineStates.Shutdown;
+            this.part.Effect(runningEffectName, 0f);
+            this.part.Effect(powerEffectName, 0f);
+            this.part.Effect(thrustEffect, 0f);
+            this.part.Effect(vtolThrustEffect, 0f);
+        }
+
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+        }
+
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
+            layerMask = 1 << LayerMask.NameToLayer("TerrainColliders") | 1 << LayerMask.NameToLayer("Local Scenery");
+            setupIcons();
             SetupAnimations();
+            loadAccelerationCurve();
 
             //Get the gravity ring transform
             gravRingTransform = this.part.FindModelTransform(gravRingTransformName);
@@ -579,11 +700,45 @@ namespace WildBlueIndustries
             }
         }
 
+        public override void Flameout(string message, bool statusOnly = false, bool showFX = true)
+        {
+            base.Flameout(message, statusOnly, showFX);
+
+            if (engineState != WBIEngineStates.Shutdown && engineState != WBIEngineStates.ShuttingDown)
+            {
+                SetHoverMode(false);
+                PlayAnimation(true);
+                engineState = WBIEngineStates.ShuttingDown;
+                currentStartStopLerp = 1.0f;
+            }
+        }
+
+        public override void UnFlameout(bool showFX = true)
+        {
+            base.UnFlameout(showFX);
+            if (!isOperational || !EngineIgnited)
+                return;
+
+            if (engineState != WBIEngineStates.Running && engineState != WBIEngineStates.Starting)
+            {
+                PlayAnimation(false);
+
+                engineState = WBIEngineStates.Starting;
+
+                currentStartStopLerp = 0.0f;
+                if (vessel.ctrlState.mainThrottle > 0)
+                    rotationPerFrame = ((spinRateRPMMax * 60.0f) * TimeWarp.fixedDeltaTime) * FlightInputHandler.state.mainThrottle;
+                else
+                    rotationPerFrame = ((spinRateRPMMin * 60.0f) * TimeWarp.fixedDeltaTime);
+            }
+        }
+
         public override void Activate()
         {
             UnFlameout();
 
             base.Activate();
+            this.part.force_activate();
 
             PlayAnimation(false);
 
@@ -605,6 +760,8 @@ namespace WildBlueIndustries
             engineState = WBIEngineStates.ShuttingDown;
 
             currentStartStopLerp = 1.0f;
+
+            SetHoverMode(false);
         }
 
         public override void UpdateThrottle()
@@ -633,13 +790,6 @@ namespace WildBlueIndustries
         {
             if (!HighLogic.LoadedSceneIsFlight)
                 return;
-            //Adjust thrust & mass flow rate based on current gravity
-            UpdateCenterOfThrust();
-            UpdateThrust();
-
-            //Point VTOL FX at main body
-            if (vtolFXTransform != null)
-                vtolFXTransform.LookAt(this.part.vessel.mainBody.position);
 
             //Account for flameout
             if (flameout && engineState != WBIEngineStates.ShuttingDown && engineState != WBIEngineStates.Shutdown)
@@ -664,7 +814,7 @@ namespace WildBlueIndustries
                     float powerLevel = vessel.ctrlState.mainThrottle;
                     if (powerLevel < runningPowerMin)
                         powerLevel = runningPowerMin;
-                    if (!managedHover)
+                    if (!hoverIsActive)
                     {
                         this.part.Effect(powerEffectName, powerLevel);
                         this.part.Effect(thrustEffect, powerLevel);
@@ -681,7 +831,7 @@ namespace WildBlueIndustries
                     //Spin the grav ring
                     if (gravRingTransform != null)
                     {
-                        if (managedHover)
+                        if (hoverIsActive)
                             powerLevel = 0.5f;
                         rotationPerFrame = ((spinRateRPMMax * 60.0f) * TimeWarp.fixedDeltaTime) * powerLevel;
                         if (rotationPerFrame < rotationPerFrameMin)
@@ -711,6 +861,7 @@ namespace WildBlueIndustries
                     this.part.Effect(runningEffectName, currentStartStopLerp);
                     if (!string.IsNullOrEmpty(thrustEffect))
                         this.part.Effect(thrustEffect, 0f);
+                    this.part.Effect(powerEffectName, 0f);
 
                     if (gravRingTransform != null)
                         gravRingTransform.Rotate(gravSpinAxis * rotationPerFrame * currentStartStopLerp);
@@ -731,21 +882,123 @@ namespace WildBlueIndustries
 
         #endregion
 
-        #region Helpers
-        protected Vector3 getVesselPosition()
+        #region Propulsion Systems
+        /// <summary>
+        /// Updates Crazy Mode propulsion, consuming resources and repositioning the craft as needed.
+        /// </summary>
+        public virtual void UpdateCrazyMode()
         {
-            PQS pqs = this.part.vessel.mainBody.pqsController;
-            double alt = pqs.GetSurfaceHeight(vessel.mainBody.GetRelSurfaceNVector(this.part.vessel.latitude, this.part.vessel.longitude)) - vessel.mainBody.Radius;
-            alt = Math.Max(alt, 0); // Underwater!
-            return this.part.vessel.mainBody.GetRelSurfacePosition(this.part.vessel.latitude, this.part.vessel.longitude, alt);
+            //If crazy mode isn't enabled then we're done.
+            if (!crazyModeUnlocked)
+                return;
+
+            //Make sure we're flying. If not, then turn off crazy mode.
+            if (!VesselIsAirborne())
+            {
+                warpDirection = WBIWarpDirections.Stop;
+                return;
+            }
+
+            //Setup the warp direction
+            Vector3 direction = Vector3.zero;
+            switch (warpDirection)
+            {
+                default:
+                case WBIWarpDirections.Stop:
+                    return;
+
+                case WBIWarpDirections.Forward:
+                    direction = this.transform.up;
+                    break;
+
+                case WBIWarpDirections.Back:
+                    direction = this.transform.up * -1;
+                    break;
+
+                case WBIWarpDirections.Left:
+                    direction = this.transform.right * -1;
+                    break;
+
+                case WBIWarpDirections.Right:
+                    direction = this.transform.right;
+                    break;
+
+                case WBIWarpDirections.Up:
+                    direction = this.transform.forward * -1;
+                    break;
+
+                case WBIWarpDirections.Down:
+                    direction = this.transform.forward;
+                    break;
+            }
+
+            //Get throttle setting
+            float throttleSetting = FlightInputHandler.state.mainThrottle * (thrustPercentage / 100.0f);
+            if (throttleSetting <= 0f)
+                return;
+
+            //Calculate offset position
+            Vector3d offsetPosition = this.part.vessel.transform.position + (direction * crazyModeVelocity * throttleSetting * TimeWarp.fixedDeltaTime);
+
+            //Make sure we won't collide with the terrain
+            if (Physics.Raycast(vessel.transform.position, direction, out terrainHit, (float)offsetPosition.magnitude, layerMask))
+            {
+                Part prt = terrainHit.collider.gameObject.GetComponent<Part>();
+
+                //See if we found the ground. 15 = Local Scenery, 28 = TerrainColliders
+                if (terrainHit.collider.gameObject.layer == 15 || terrainHit.collider.gameObject.layer == 28)
+                {
+                    //If we would warp into the ground then stop Crazy Mode.
+                    if (terrainHit.distance <= Math.Abs(offsetPosition.magnitude))
+                    {
+                        ScreenMessages.PostScreenMessage(WBIKFSUtils.kTerrainWarning, 3.0f, ScreenMessageStyle.UPPER_CENTER);
+                        warpDirection = WBIWarpDirections.Stop;
+                        return;
+                    }
+                }
+            }
+
+            //Consume the resource
+            if (!string.IsNullOrEmpty(crazyModeResource))
+            {
+                //Don't drop below reserve amount of the resource. This is to avoide flameouts.
+                PartResourceDefinition def = PartResourceLibrary.Instance.resourceDefinitions[crazyModeResource];
+                double amount;
+                double maxAmount;
+                this.part.GetConnectedResourceTotals(def.id, out amount, out maxAmount, true);
+                if (amount / maxAmount < crazyModeResourceReserve)
+                {
+                    FlightInputHandler.state.mainThrottle = 0.0f;
+                    warpDirection = WBIWarpDirections.Stop;
+                    return;
+                }
+
+                double amountRequested = crazyModeResourcePerSec * throttleSetting * TimeWarp.fixedDeltaTime;
+                double amountObtained = this.part.RequestResource(crazyModeResource, amountRequested, ResourceFlowMode.ALL_VESSEL);
+
+                //Make sure we got enough of the requested resource.
+                if ((amountObtained / amountRequested) < 0.25f)
+                {
+                    warpDirection = WBIWarpDirections.Stop;
+                    return;
+                }
+            }
+
+            //A-OK! Warp the ship.
+            if (FlightGlobals.VesselsLoaded.Count > 1)
+                this.part.vessel.SetPosition(offsetPosition);
+            else
+                FloatingOrigin.SetOutOfFrameOffset(offsetPosition); //Use this for warp drive?
         }
 
         /// <summary>
         /// Updates thrust based on vessel mass and maximum possible acceleration.
-        /// This is for non-vtol forward and reverse thrust.
         /// </summary>
         public virtual void UpdateThrust()
         {
+            if (!isOperational && !EngineIgnited)
+                return;
+
             //Get total mass
             float totalMass = 0.0f;
             if (HighLogic.LoadedSceneIsFlight)
@@ -763,9 +1016,37 @@ namespace WildBlueIndustries
             //Determine current acceleration
             finalAcceleration = this.finalThrust / totalMass;
 
-            //Update VTOL thrust transform
-            if (vtolThrustTransform != null && HighLogic.LoadedSceneIsFlight)
-                vtolThrustTransform.LookAt(this.part.vessel.mainBody.position);
+            //Apply acceleration. We don't let ModuleEnginesFX do this because we want to simulate "falling" towards the artificial singularity.
+            if (engineState != WBIEngineStates.Running)
+                return;
+            if (engineMode == WBIThrustModes.Forward || engineMode == WBIThrustModes.Reverse)
+            {
+                //Get the acceleration speed.
+                float accelerationMagnitude = maxAcceleration * accelerationCurve.Evaluate(vessel.ctrlState.mainThrottle);
+
+                //Calcualte the acceleration vector
+                Vector3d accelerationVector = (this.part.vessel.GetReferenceTransformPart().transform.up).normalized * accelerationMagnitude;
+                if (engineMode == WBIThrustModes.Reverse)
+                    accelerationVector *= -1.0f;
+
+                //Apply acceleration
+                ApplyAccelerationVector(accelerationVector);
+            }
+
+            else if (engineMode == WBIThrustModes.VTOL && !hoverIsActive)
+            {
+                //Get force of gravity
+                float forceOfGravity = (float)this.part.vessel.gravityForPos.magnitude;
+
+                //Calculate lift acceleration
+                float liftAcceleration = maxAcceleration * vessel.ctrlState.mainThrottle;
+
+                //Get lift vector
+                Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
+
+                //Apply acceleration
+                ApplyAccelerationVector(accelerationVector);
+            }
         }
 
         public virtual void UpdateCenterOfThrust()
@@ -775,9 +1056,75 @@ namespace WildBlueIndustries
             //Move the thrust transform to the ship's center of mass
             int transformCount = thrustTransforms.Count;
             for (int index = 0; index < transformCount; index++)
-                thrustTransforms[index].transform.position = vessel.CurrentCoM;
+                thrustTransforms[index].transform.position = vessel.CoM;
             if (debugEnabled)
                 DrawThrustTransform();
+        }
+        #endregion
+
+        #region Helpers
+
+        public bool VesselIsAirborne()
+        {
+            if (this.part.vessel.situation == Vessel.Situations.FLYING || this.part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
+                return true;
+
+            return false;
+        }
+
+        public void ApplyAccelerationVector(Vector3d accelerationVector)
+        {
+            int partCount = vessel.parts.Count;
+            Part vesselPart;
+            for (int index = 0; index < partCount; index++)
+            {
+                vesselPart = vessel.parts[index];
+                if (vesselPart.rb != null)
+                {
+                    vesselPart.rb.AddForce(accelerationVector, ForceMode.Acceleration);
+                }
+            }
+        }
+
+        public void CheckFlameout()
+        {
+            if (EngineIgnited)
+            {
+                int propellantCount = this.propellants.Count;
+                Propellant propellant;
+                for (int index = 0; index < propellantCount; index++)
+                {
+                    propellant = this.propellants[index];
+
+                    //Check for un-flameout
+                    if (propellant.actualTotalAvailable > 0.0f && !isOperational)
+                    {
+                        UnFlameout();
+                        break;
+                    }
+
+                    //Check for flameout in hover mode
+                    else if (propellant.actualTotalAvailable <= 0.0f && engineMode == WBIThrustModes.VTOL)
+                    {
+                        Debug.Log("Hover mode flameout");
+                        SetHoverMode(false);
+                        PlayAnimation(true);
+                        engineState = WBIEngineStates.ShuttingDown;
+                        currentStartStopLerp = 1.0f;
+                        Flameout(Localizer.Format("#autoLOC_219016"));
+                        break;
+                    }
+
+                }
+            }
+        }
+
+        protected Vector3 getVesselPosition()
+        {
+            PQS pqs = this.part.vessel.mainBody.pqsController;
+            double alt = pqs.GetSurfaceHeight(vessel.mainBody.GetRelSurfaceNVector(this.part.vessel.latitude, this.part.vessel.longitude)) - vessel.mainBody.Radius;
+            alt = Math.Max(alt, 0); // Underwater!
+            return this.part.vessel.mainBody.GetRelSurfacePosition(this.part.vessel.latitude, this.part.vessel.longitude, alt);
         }
 
         public virtual void Destroy()
@@ -792,6 +1139,7 @@ namespace WildBlueIndustries
 
         public virtual void DrawThrustTransform()
         {
+            /*
             if (lineRenderer == null)
             {
                 Material mat = new Material(Shader.Find("Particles/Additive"));
@@ -802,17 +1150,44 @@ namespace WildBlueIndustries
                 lineRenderer = thrustLine.AddComponent<LineRenderer>();
                 lineRenderer.useWorldSpace = false;
                 lineRenderer.material = mat;
-                lineRenderer.SetColors(lineColor, lineColor);
-                lineRenderer.SetWidth(0.25f, 0.05f);
-                lineRenderer.SetVertexCount(2);
+                lineRenderer.startColor = lineColor;
+                lineRenderer.endColor = lineColor;
+                lineRenderer.startWidth = 0.25f;
+                lineRenderer.endWidth = 0.25f;
+                lineRenderer.positionCount = 2;
                 lineRenderer.SetPosition(0, Vector3.zero);
                 lineRenderer.SetPosition(1, Vector3.zero);
             }
 
-            Vector3 startPoint = thrustTransforms[0].transform.position;
+            if (comRenderer == null)
+            {
+                Material mat = new Material(Shader.Find("Particles/Additive"));
+                comLine = new GameObject();
+                comLine.name = "CoMLine";
+                comRenderer = comLine.AddComponent<LineRenderer>();
+                comRenderer.useWorldSpace = false;
+                comRenderer.material = mat;
+                comRenderer.startColor = XKCDColors.Yellow;
+                comRenderer.endColor = XKCDColors.Yellow;
+                comRenderer.startWidth = 0.25f;
+                comRenderer.endWidth = 0.25f;
+                comRenderer.positionCount = 2;
+                comRenderer.SetPosition(0, Vector3.zero);
+                comRenderer.SetPosition(1, Vector3.zero);
+            }
+            Vector3 startPoint = vessel.CoM;
+            if (thrustTransforms.Count > 0)
+                startPoint = thrustTransforms[0].transform.position;
             Vector3 endPoint = startPoint * 10.0f;
             lineRenderer.SetPosition(0, startPoint);
             lineRenderer.SetPosition(1, endPoint);
+
+//            startPoint = (this.part.transform.position - this.vessel.mainBody.position).normalized;
+            startPoint = (vessel.CoM - vessel.mainBody.position).normalized;
+            endPoint = startPoint * 10.0f;
+            comRenderer.SetPosition(0, startPoint);
+            comRenderer.SetPosition(1, endPoint);
+             */
         }
 
         public virtual void SetupAnimations()
@@ -891,6 +1266,65 @@ namespace WildBlueIndustries
 
             Debug.Log(this.ClassName + " [" + this.GetInstanceID().ToString("X")
                 + "][" + Time.time.ToString("0.0000") + "]: " + message);
+        }
+
+        protected void setupIcons()
+        {
+            string baseIconURL = ICON_PATH;
+            ConfigNode settingsNode = GameDatabase.Instance.GetConfigNode("FlyingSaucers");
+            if (settingsNode != null)
+                baseIconURL = settingsNode.GetValue("iconsFolder");
+            fwdIcon = GameDatabase.Instance.GetTexture(baseIconURL + "UFOFwd", false);
+            revIcon = GameDatabase.Instance.GetTexture(baseIconURL + "UFORev", false);
+            upIcon = GameDatabase.Instance.GetTexture(baseIconURL + "UFOUp", false);
+            dnIcon = GameDatabase.Instance.GetTexture(baseIconURL + "UFODn", false);
+            leftIcon = GameDatabase.Instance.GetTexture(baseIconURL + "UFOLeft", false);
+            rightIcon = GameDatabase.Instance.GetTexture(baseIconURL + "UFORight", false);
+
+            fwdIconSel = GameDatabase.Instance.GetTexture(baseIconURL + "UFOFwdSel", false);
+            revIconSel = GameDatabase.Instance.GetTexture(baseIconURL + "UFORevSel", false);
+            upIconSel = GameDatabase.Instance.GetTexture(baseIconURL + "UFOUpSel", false);
+            dnIconSel = GameDatabase.Instance.GetTexture(baseIconURL + "UFODnSel", false);
+            leftIconSel = GameDatabase.Instance.GetTexture(baseIconURL + "UFOLeftSel", false);
+            rightIconSel = GameDatabase.Instance.GetTexture(baseIconURL + "UFORightSel", false);
+
+            baseIconURL = WBIServoManager.ICON_PATH;
+            settingsNode = GameDatabase.Instance.GetConfigNode("KerbalActuators");
+            if (settingsNode != null)
+                baseIconURL = settingsNode.GetValue("iconsFolder");
+            stopIcon = GameDatabase.Instance.GetTexture(baseIconURL + "Stop", false);
+        }
+
+        protected void loadAccelerationCurve()
+        {
+            if (accelerationCurve.Curve.length > 0)
+                return;
+            ConfigNode[] nodes = this.part.partInfo.partConfig.GetNodes("MODULE");
+            ConfigNode engineNode = null;
+            ConfigNode node = null;
+            string moduleName;
+
+            //Get the switcher config node.
+            for (int index = 0; index < nodes.Length; index++)
+            {
+                node = nodes[index];
+                if (node.HasValue("name"))
+                {
+                    moduleName = node.GetValue("name");
+                    if (moduleName == this.ClassName)
+                    {
+                        engineNode = node;
+                        break;
+                    }
+                }
+            }
+            if (engineNode == null)
+                return;
+            if (!engineNode.HasNode("accelerationCurve"))
+                return;
+
+            node = engineNode.GetNode("accelerationCurve");
+            accelerationCurve.Load(node);
         }
         #endregion
 

@@ -59,6 +59,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parts\WBIGraviticEngine.cs" />
     <Compile Include="Parts\WBIModuleGraviticRCS.cs" />
+    <Compile Include="Parts\WBIModuleEngineCOMThrust.cs" />
+    <Compile Include="Parts\WBIGraviticGenerator.cs" />
+    <Compile Include="Parts\WBIGraviticLift.cs" />
+    <Compile Include="WBINodeToggle.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BARIS\BARISBridge\BARISBridge.csproj">
@@ -75,6 +79,19 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"C:\Projects\KSP\WildBlueIndustries\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
+xcopy /Y "$(TargetPath)" "C:\KSPDev\GameData\WildBlueIndustries\FlyingSaucers\Plugins\"﻿
+xcopy /Y "$(TargetDir)$(TargetName).pdb" "C:\KSPDev\GameData\WildBlueIndustries\FlyingSaucers\Plugins\"
+xcopy /Y "$(TargetDir)$(TargetName).dll.mdb" "C:\KSPDev\GameData\WildBlueIndustries\FlyingSaucers\Plugins\"
+xcopy /Y "$(TargetDir)$(TargetName).dll" "C:\KSPDev\GameData\WildBlueIndustries\FlyingSaucers\Plugins\"
+
+xcopy /Y  "C:\KSPDev\GameData\WildBlueIndustries\FlyingSaucers\KFS.version" "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Notes\"
+
+del "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\GameData\WildBlueIndustries\000WildBlueTools\MiniAVC.xml"
+del "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\GameData\WildBlueIndustries\001KerbalActuators\MiniAVC.xml"
+del "C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\GameData\WildBlueIndustries\FlyingSaucers\MiniAVC.xml"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

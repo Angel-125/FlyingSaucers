@@ -42,9 +42,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Remove this when ready to release
-/GameData/
-
 /Archives/
 /CKAN/
 /Docs/
@@ -61,3 +58,4 @@ Temporary Items
 /Renders/
 /Fonts/
 /SoundEffects/
+/Notes/
