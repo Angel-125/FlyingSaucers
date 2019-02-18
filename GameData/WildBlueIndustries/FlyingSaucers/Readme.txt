@@ -17,6 +17,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.4.3
+- Updated FX, icons, plumes, bulkhead profiles, and Flapjack breaking forces- thanks JadeOfMaar!
+
 0.4.2
 - Bug fixes
 

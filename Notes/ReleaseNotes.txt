@@ -1,1 +1,1 @@
-- Bug fixes
+- Updated FX, icons, plumes, bulkhead profiles, and Flapjack breaking forces- thanks JadeOfMaar!
