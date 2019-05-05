@@ -55,14 +55,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Utilities\WBIKFSUtils.cs" />
-    <Compile Include="Parts\WBIResourceDischarger.cs" />
+    <Compile Include="PartModules\WBIResourceDischarger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Parts\WBIGraviticEngine.cs" />
-    <Compile Include="Parts\WBIModuleGraviticRCS.cs" />
-    <Compile Include="Parts\WBIModuleEngineCOMThrust.cs" />
-    <Compile Include="Parts\WBIGraviticGenerator.cs" />
-    <Compile Include="Parts\WBIGraviticLift.cs" />
-    <Compile Include="WBINodeToggle.cs" />
+    <Compile Include="PartModules\WBIGraviticEngine.cs" />
+    <Compile Include="PartModules\WBIModuleGraviticRCS.cs" />
+    <Compile Include="PartModules\WBIModuleEngineCOMThrust.cs" />
+    <Compile Include="PartModules\WBIGraviticGenerator.cs" />
+    <Compile Include="PartModules\WBIGraviticLift.cs" />
+    <Compile Include="PartModules\WBINodeToggle.cs" />
+    <Compile Include="PartModules\WBIPlumeController.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BARIS\BARISBridge\BARISBridge.csproj">

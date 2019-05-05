@@ -17,6 +17,19 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.4.5.2
+- Removed part requirements on several experiments.
+
+0.4.5
+- Updated engine effects on Flapjack and Excalibur.
+- Performance tuned Excalibur's generators and engine.
+- Fixed Crazy Mode on Excalibur engine and updated max velocity.
+- Fixed part orientation on Excalibur engine.
+
+0.4.4
+- Updated for KSP 1.7
+- Decals courtesy of JadeOfMaar
+
 0.4.3
 - Updated FX, icons, plumes, bulkhead profiles, and Flapjack breaking forces- thanks JadeOfMaar!
 
