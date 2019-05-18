@@ -198,6 +198,11 @@ namespace WildBlueIndustries
                     }
                     return;
                 }
+                else
+                {
+                    engineMode = WBIThrustModes.Off;
+                    warpDirection = WBIWarpDirections.Stop;
+                }
             }
 
             //No engines active!
