@@ -17,6 +17,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.4.5.4
+- WBT update
+
 0.4.5.3
 - Added portsideCam, starbordCam, forwardCam, and bottomCam to the Flapjack and Excalibur cockpit parts.
 
