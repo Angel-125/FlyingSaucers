@@ -35,8 +35,11 @@ namespace WildBlueIndustries
     [KSPModule("Gravitic Engine")]
     public class WBIGraviticEngine : ModuleEnginesFX, IHoverController, IThrustVectorController, ICustomController, ICrazyModeController
     {
+        #region constants
         public const string ICON_PATH = "WildBlueIndustries/FlyingSaucers/Icons/";
         protected const int kDefaultAnimationLayer = 2;
+        protected float kMessageDuration = 3f;
+        #endregion
 
         [KSPField]
         public bool debugEnabled = false;
@@ -154,12 +157,6 @@ namespace WildBlueIndustries
             }
 
             SetupEngineMode();
-        }
-
-        [KSPAction("Toggle Engine Mode")]
-        public virtual void ToggleEngineModeAction()
-        {
-            ToggleEngineMode();
         }
 
         public virtual void SetupEngineMode()
@@ -335,12 +332,6 @@ namespace WildBlueIndustries
             return engineMode;
         }
 
-        [KSPAction("Set Forward Thrust")]
-        public void SetFwdThrustAction(KSPActionParam param)
-        {
-            SetForwardThrust(WBIVTOLManager.Instance);
-        }
-
         public void SetForwardThrust(WBIVTOLManager vtolManager)
         {
             engineMode = WBIThrustModes.Forward;
@@ -348,23 +339,11 @@ namespace WildBlueIndustries
             SetupEngineMode();
         }
 
-        [KSPAction("Set Reverse Thrust")]
-        public void SetReverseThrustAction(KSPActionParam param)
-        {
-            SetReverseThrust(WBIVTOLManager.Instance);
-        }
-
         public void SetReverseThrust(WBIVTOLManager vtolManager)
         {
             engineMode = WBIThrustModes.Reverse;
             vtolManager.thrustMode = engineMode;
             SetupEngineMode();
-        }
-
-        [KSPAction("Set VTOL Thrust")]
-        public void SetVTOLThrustAction(KSPActionParam param)
-        {
-            SetVTOLThrust(WBIVTOLManager.Instance);
         }
 
         public void SetVTOLThrust(WBIVTOLManager vtolManager)
@@ -454,6 +433,13 @@ namespace WildBlueIndustries
             if (crazyModeUnlocked)
             {
                 warpDirection = direction;
+
+                //Make sure we're in hover mode
+                if (!hoverIsActive)
+                    SetHoverMode(true);
+
+                //Kill any vertical speed that we have.
+                KillVerticalSpeed();
             }
 
             //Update other engines
@@ -462,7 +448,12 @@ namespace WildBlueIndustries
             for (int index = 0; index < count; index++)
             {
                 if (graviticEngines[index] != this)
+                {
                     graviticEngines[index].warpDirection = direction;
+                    if (!graviticEngines[index].hoverIsActive)
+                        graviticEngines[index].SetHoverMode(true);
+                    graviticEngines[index].KillVerticalSpeed();
+                }
             }
         }
 
@@ -480,18 +471,6 @@ namespace WildBlueIndustries
                 return true;
             else
                 return false;
-        }
-
-        [KSPAction("Toggle Crazy Mode (Fwd only)")]
-        public void ToggleCrazyModeAction(KSPActionParam param)
-        {
-            if (!IsActive())
-                return;
-
-            if (warpDirection != WBIWarpDirections.Stop)
-                warpDirection = WBIWarpDirections.Forward;
-            else
-                warpDirection = WBIWarpDirections.Stop;
         }
 
         /// <summary>
@@ -524,14 +503,14 @@ namespace WildBlueIndustries
             else
                 buttonIcon = fwdIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
-                warpDirection = WBIWarpDirections.Forward;
+                SetWarpDirection(WBIWarpDirections.Forward);
 
             if (warpDirection == WBIWarpDirections.Back)
                 buttonIcon = revIconSel;
             else
                 buttonIcon = revIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
-                warpDirection = WBIWarpDirections.Back;
+                SetWarpDirection(WBIWarpDirections.Back);
 
             //Left, Up, Right, Down
             if (warpDirection == WBIWarpDirections.Left)
@@ -539,33 +518,147 @@ namespace WildBlueIndustries
             else
                 buttonIcon = leftIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
-                warpDirection = WBIWarpDirections.Left;
+                SetWarpDirection(WBIWarpDirections.Left);
 
             if (warpDirection == WBIWarpDirections.Right)
                 buttonIcon = rightIconSel;
             else
                 buttonIcon = rightIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
-                warpDirection = WBIWarpDirections.Right;
+                SetWarpDirection(WBIWarpDirections.Right);
 
             if (warpDirection == WBIWarpDirections.Up)
                 buttonIcon = upIconSel;
             else
                 buttonIcon = upIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
-                warpDirection = WBIWarpDirections.Up;
+                SetWarpDirection(WBIWarpDirections.Up);
 
             if (warpDirection == WBIWarpDirections.Down)
                 buttonIcon = dnIconSel;
             else
                 buttonIcon = dnIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
-                warpDirection = WBIWarpDirections.Down;
+                SetWarpDirection(WBIWarpDirections.Down);
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
+        }
+        #endregion
+
+        #region Actions
+        [KSPAction("Set Forward Acceleration")]
+        public void SetFwdThrustAction(KSPActionParam param)
+        {
+            SetForwardThrust(WBIVTOLManager.Instance);
+            ScreenMessages.PostScreenMessage("Gravitic Acceleration: Forward", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("Set Reverse Acceleration")]
+        public void SetReverseThrustAction(KSPActionParam param)
+        {
+            SetReverseThrust(WBIVTOLManager.Instance);
+            ScreenMessages.PostScreenMessage("Gravitic Acceleration: Reverse", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("Set VTOL Acceleration")]
+        public void SetVTOLThrustAction(KSPActionParam param)
+        {
+            SetVTOLThrust(WBIVTOLManager.Instance);
+            ScreenMessages.PostScreenMessage("Gravitic Acceleration: VTOL", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("Toggle Engine Mode")]
+        public virtual void ToggleEngineModeAction()
+        {
+            ToggleEngineMode();
+            switch (engineMode)
+            {
+                default:
+                case WBIThrustModes.Forward:
+                    ScreenMessages.PostScreenMessage("Gravitic Acceleration: Forward", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+                    break;
+
+                case WBIThrustModes.Reverse:
+                    ScreenMessages.PostScreenMessage("Gravitic Acceleration: Reverse", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+                    break;
+
+                case WBIThrustModes.VTOL:
+                    ScreenMessages.PostScreenMessage("Gravitic Acceleration: VTOL", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+                    break;
+            }
+        }
+
+        [KSPAction("Crazy Mode Stop")]
+        public void ToggleCrazyModeAction(KSPActionParam param)
+        {
+            if (!IsActive())
+                return;
+
+            warpDirection = WBIWarpDirections.Stop;
+            ScreenMessages.PostScreenMessage("Crazy Mode: Stop", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("Crazy Mode Forward")]
+        public void ActionWarpForward(KSPActionParam param)
+        {
+            if (!IsActive())
+                return;
+
+            warpDirection = WBIWarpDirections.Forward;
+            ScreenMessages.PostScreenMessage("Crazy Mode: Forward", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("Crazy Mode Back")]
+        public void ActionWarpBack(KSPActionParam param)
+        {
+            if (!IsActive())
+                return;
+
+            warpDirection = WBIWarpDirections.Back;
+            ScreenMessages.PostScreenMessage("Crazy Mode: Back", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("Crazy Mode Left")]
+        public void ActionWarpLeft(KSPActionParam param)
+        {
+            if (!IsActive())
+                return;
+
+            warpDirection = WBIWarpDirections.Left;
+            ScreenMessages.PostScreenMessage("Crazy Mode: Left", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("Crazy Mode Right")]
+        public void ActionRightWarp(KSPActionParam param)
+        {
+            if (!IsActive())
+                return;
+
+            warpDirection = WBIWarpDirections.Right;
+            ScreenMessages.PostScreenMessage("Crazy Mode: Right", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("Crazy Mode Up")]
+        public void ActionWarpUp(KSPActionParam param)
+        {
+            if (!IsActive())
+                return;
+
+            warpDirection = WBIWarpDirections.Up;
+            ScreenMessages.PostScreenMessage("Crazy Mode: Up", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("Crazy Mode Down")]
+        public void ActionWarpDown(KSPActionParam param)
+        {
+            if (!IsActive())
+                return;
+
+            warpDirection = WBIWarpDirections.Down;
+            ScreenMessages.PostScreenMessage("Crazy Mode: Down", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
         }
         #endregion
 
@@ -959,7 +1052,7 @@ namespace WildBlueIndustries
             }
 
             //Consume the resource
-            if (!string.IsNullOrEmpty(crazyModeResource))
+            if (!string.IsNullOrEmpty(crazyModeResource) && !CheatOptions.InfinitePropellant)
             {
                 //Don't drop below reserve amount of the resource. This is to avoide flameouts.
                 PartResourceDefinition def = PartResourceLibrary.Instance.resourceDefinitions[crazyModeResource];

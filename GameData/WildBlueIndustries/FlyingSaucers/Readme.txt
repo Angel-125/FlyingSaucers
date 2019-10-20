@@ -17,6 +17,15 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.4.6
+- Updated to KSP 1.8
+- Completed texturing on the S-4 Outer Storage Section, S-4 Inner Storage Section, and S-4 Half Outer Storage Section.
+- Removed probe core functionality from the A-51 Flapjack and S-4 Excalibur cockpits.
+- Added static discharge ability to the S-4 Inner Storage Section.
+- Added additional attachment nodes to the S-4 Engineering Core. These nodes can be toggled.
+- Completed exterior of the S-4 "Excalibur" cockpit.
+NOTE: Cockpit IVA is a WORK IN PROGRESS!!!
+
 0.4.5.4
 - WBT update
 
