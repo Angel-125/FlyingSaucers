@@ -17,6 +17,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.4.7
+- Compatibility update
+
 0.4.6
 - Updated to KSP 1.8
 - Completed texturing on the S-4 Outer Storage Section, S-4 Inner Storage Section, and S-4 Half Outer Storage Section.
