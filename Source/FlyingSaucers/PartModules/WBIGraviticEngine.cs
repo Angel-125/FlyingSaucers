@@ -896,6 +896,9 @@ namespace WildBlueIndustries
             {
                 default:
                 case WBIEngineStates.Shutdown:
+                    this.part.Effect(powerEffectName, 0f, -1);
+                    this.part.Effect(thrustEffect, 0f, -1);
+                    this.part.Effect(vtolThrustEffect, 0f, -1);
                     break;
 
                 case WBIEngineStates.Running:
