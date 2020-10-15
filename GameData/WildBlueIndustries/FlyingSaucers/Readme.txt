@@ -17,6 +17,26 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.4.8
+IMPORTANT NOTE: Remove the existing S-4 Gravitic Engine part from your mothership before installing this update!
+
+Gravitic Engines (A-51 & S-4)
+- Crazy Mode now has an enabled/disabled toggle and action group item.
+- Crazy Mode now responds to input from axis action groups (F/B, L/R, U/D). If you enable Crazy Cruise Mode then you won't have to hold down the translation buttons to continue moving.
+- Crazy Mode now honors the engine thrust percent setting.
+- Reduced Crazy Mode max speed and rebalanced Gravity Waves cost. On a single gravitic generator, craft can go about 75% max speed without depleting the GravityWaves.
+- You can now halt Crazy Mode by tapping on the brakes.
+- Added new Toggle Hover Mode action and Enable/Disable Hover Mode PAW button.
+- When Hover Mode is active and Crazy Mode is inactive, you can tap the up/down translation axis keys to increase or decrease vertical velocity. Tap the brakes to kill vertical velocity.
+- Removed previous Crazy Mode action group items.
+
+Parts
+- At last the mothership texture is shiny and metallic! This was the intent from the start but I had to wait for the technology to catch up. Once more parts are done I'll make a more traditional non-shiny texture option.
+- Removed plume effects and RCS from the S-4 Engineering Core.
+- Removed the old S-4 Gravitic Engine part.
+- Added new version of the S-4 Gravitic Engine that is based on the engineering core. This revamped part is similar to the Flapjack's gravitic engine.
+- Refactored the normal maps to support mip-mapping (makes bumpiness look better from a distance).
+
 0.4.7
 - Compatibility update
 

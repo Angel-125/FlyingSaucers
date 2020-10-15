@@ -81,6 +81,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PartModules\WBIModuleGenerator.cs" />
     <Compile Include="Utilities\WBIKFSUtils.cs" />
     <Compile Include="PartModules\WBIResourceDischarger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="PartModules\WBIGraviticLift.cs" />
     <Compile Include="PartModules\WBINodeToggle.cs" />
     <Compile Include="PartModules\WBIPlumeController.cs" />
-    <Compile Include="WBIGraviticEngineVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BARIS\BARISBridge\BARISBridge.csproj">

@@ -7,7 +7,7 @@ using KSP.IO;
 using KerbalActuators;
 
 /*
-Source code copyright 2018, by Michael Billard (Angel-125)
+Source code copyright 2018-2020, by Michael Billard (Angel-125)
 License: GPLV3
 
 Wild Blue Industries is trademarked by Michael Billard and may be used for non-commercial purposes. All other rights reserved.
@@ -35,22 +35,10 @@ namespace WildBlueIndustries
         #region Housekeeping
         public WBIThrustModes engineMode = WBIThrustModes.Off;
 
-        protected WBIThrustModes prevEngineMode = WBIThrustModes.Off;
-        protected WBIWarpDirections warpDirection;
-        protected WBIWarpDirections prevWarpDirection;
         protected Transform plumeFXTransform;
         protected bool isRCSEnabled;
-        protected List<WBIGraviticEngine> engineList;
-        protected float engineThrottle;
-        protected float prevEngineThrottle;
-        protected bool hoverIsActive;
-        int vesselPartCount = 0;
+        protected WBIGraviticEngine engine = null;
         Quaternion originalRotation;
-        Quaternion reverseRotation;
-        Quaternion upRotation;
-        Quaternion downRotation;
-        Quaternion leftRotation;
-        Quaternion rightRotation;
         Quaternion targetRotation;
         #endregion
 
@@ -67,26 +55,6 @@ namespace WildBlueIndustries
                 //Setup rotations
                 originalRotation = plumeFXTransform.localRotation;
                 targetRotation = originalRotation;
-
-                plumeFXTransform.Rotate(Vector3.up, 180.0f);
-                reverseRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = originalRotation;
-
-                plumeFXTransform.Rotate(Vector3.up, -90f);
-                leftRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = originalRotation;
-
-                plumeFXTransform.Rotate(Vector3.up, 90f);
-                rightRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = originalRotation;
-
-                plumeFXTransform.Rotate(Vector3.right, -90f);
-                downRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = originalRotation;
-
-                plumeFXTransform.Rotate(Vector3.right, 90f);
-                upRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = originalRotation;
             }
         }
 
@@ -98,8 +66,13 @@ namespace WildBlueIndustries
             if (plumeFXTransform == null)
                 return;
 
-            //Get engine state
-            updateEngineState();
+            //Get engine
+            if (engine == null)
+            {
+                engine = this.part.FindModuleImplementing<WBIGraviticEngine>();
+                if (engine == null)
+                    return;
+            }
 
             //Get RCS state
             isRCSEnabled = FlightGlobals.ActiveVessel.ActionGroups[KSPActionGroup.RCS];
@@ -111,9 +84,9 @@ namespace WildBlueIndustries
             //Update thrust power
             //Priority goes to engine thrust, then RCS state.
             float fxPower = 0f;
-            if ((engineMode != WBIThrustModes.Off && engineThrottle > 0))
-                fxPower = engineThrottle;
-            if (isRCSEnabled || hoverIsActive || (warpDirection != WBIWarpDirections.Stop && engineThrottle > 0))
+            if ((engine.engineMode != WBIThrustModes.Off && engine.currentThrottle > 0))
+                fxPower = engine.currentThrottle;
+            if (isRCSEnabled || engine.hoverIsActive || (engine.warpVector != Vector3.zero && engine.currentThrottle > 0))
                 fxPower = 1.0f;
 
             //Update stationary fx
@@ -123,7 +96,7 @@ namespace WildBlueIndustries
             //Update plume fx
             //Disable if we're throttled down hover mode isn't active
             isRCSEnabled = state.X != 0 || state.Y != 0 || state.Z != 0;
-            if (engineThrottle <= 0 && !hoverIsActive && warpDirection == WBIWarpDirections.Stop && engineMode == WBIThrustModes.Off && !isRCSEnabled)
+            if (engine.currentThrottle <= 0 && !engine.hoverIsActive && engine.warpVector == Vector3.zero && !isRCSEnabled)
                 fxPower = 0;
             this.part.Effect(plumeFXName, fxPower, -1);
 
@@ -134,178 +107,228 @@ namespace WildBlueIndustries
             }
         }
 
-        protected void updateEngineState()
-        {
-            //Get the engine list
-            if (engineList == null || vesselPartCount != this.part.vessel.parts.Count || engineList.Count == 0)
-            {
-                engineThrottle = 0f;
-                prevEngineThrottle = 0f;
-                engineMode = WBIThrustModes.Off;
-                prevWarpDirection = WBIWarpDirections.Stop;
-                vesselPartCount = this.part.vessel.parts.Count;
-
-                engineList = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
-                if (engineList.Count == 0)
-                    return;
-            }
-
-            //If we have at least one engine that is active then use its state.
-            int count = engineList.Count;
-            WBIGraviticEngine engine;
-            for (int index = 0; index < count; index++)
-            {
-                engine = engineList[index];
-                if (engine.isOperational && engine.EngineIgnited)
-                {
-                    prevEngineMode = engineMode;
-                    engineMode = engine.engineMode;
-                    prevEngineThrottle = engineThrottle;
-                    engineThrottle = engine.currentThrottle;
-                    hoverIsActive = engine.hoverIsActive;
-
-                    //Translate warp direction into thrust mode
-                    prevWarpDirection = warpDirection;
-                    warpDirection = engine.GetWarpDirection();
-                    if (warpDirection != WBIWarpDirections.Stop)
-                    {
-                        switch (warpDirection)
-                        {
-                            case WBIWarpDirections.Left:
-                                engineMode = WBIThrustModes.Right;
-                                break;
-
-                            case WBIWarpDirections.Right:
-                                engineMode = WBIThrustModes.Left;
-                                break;
-
-                            case WBIWarpDirections.Forward:
-                                engineMode = WBIThrustModes.Forward;
-                                break;
-
-                            case WBIWarpDirections.Back:
-                                engineMode = WBIThrustModes.Reverse;
-                                break;
-
-                            case WBIWarpDirections.Up:
-                                engineMode = WBIThrustModes.VTOL;
-                                break;
-
-                            case WBIWarpDirections.Down:
-                                engineMode = WBIThrustModes.Down;
-                                break;
-                        }
-                    }
-                    return;
-                }
-                else
-                {
-                    engineMode = WBIThrustModes.Off;
-                    warpDirection = WBIWarpDirections.Stop;
-                }
-            }
-
-            //No engines active!
-            engineThrottle = 0f;
-            prevEngineThrottle = 0f;
-            engineMode = WBIThrustModes.Off;
-            prevWarpDirection = WBIWarpDirections.Stop;
-        }
-
         protected void updateThrustPlumeDirection()
         {
-            //No need to update if we haven't changed engine mode
-            if (engineMode == prevEngineMode && warpDirection == prevWarpDirection && prevEngineThrottle == engineThrottle)
-                return;
-
-            //Account for crazy mode & hover state. If crazy mode is on, hover is active, and throttle is zeroed, then set vtol plume direction.
-            if (warpDirection != WBIWarpDirections.Stop && hoverIsActive && engineThrottle <= 0)
+            //Hover: point down if hover is activated.
+            if (engine.hoverIsActive)
             {
-                targetRotation = downRotation;
-                return;
+                //While hovering, if crazy mode is activated, then check translation and create long plumes
+                if (engine.crazyModeEnabled)
+                    updateCrazyPlumeDirection();
+
+                //If we're flying and thrust mode is forward or reverse, then the hover plume is diagonally forward or back.
+                else if (engine.VesselIsAirborne() && (engine.engineMode == WBIThrustModes.Forward || engine.engineMode == WBIThrustModes.Reverse))
+                    updateHoverFlyingPlumeDirection();
+
+                //While hovering, if RCS is activated, then check translation and move downward plume slightly
+                else if (isRCSEnabled)
+                    updateHoverRCSPlumeDirection();
+
+                //Point the plume towards the ground
+                else
+                    updateHoverPlumeDirection();
             }
 
-            //Update plume fx: start with thrust direction.
-            switch (engineMode)
+            //No hover & not landed or splashed: long plume in opposite of thrust direction
+            else if (engine.VesselIsAirborne())
             {
-                case WBIThrustModes.Reverse:
-                    targetRotation = reverseRotation;
-                    break;
+                //If RCS is activated then check translation and move plume slightly.
+                updateFlyingDirection(isRCSEnabled);
+            }
 
-                case WBIThrustModes.Left:
-                    targetRotation = leftRotation;
-                    break;
-
-                case WBIThrustModes.Right:
-                    targetRotation = rightRotation;
-                    break;
-
-                case WBIThrustModes.VTOL:
-                    targetRotation = downRotation;
-                    break;
-
-                case WBIThrustModes.Down:
-                    targetRotation = upRotation;
-                    break;
-
-                default:
-                    targetRotation = originalRotation;
-                    break;
+            //Orbiting or escaping: long plume in opposite thrust direction if RCS is activated.
+            else if (engine.VesselIsOrbital())
+            {
+                updatePlumeDirection();
             }
         }
 
-        /*
-        protected void updateRCSPlumeDirection(FlightCtrlState state)
+        protected void updateFlyingDirection(bool rcsIsActive)
         {
-            //Left/right rotations
-            float rotationLtRt = 0f;
+            Quaternion currentRotation = plumeFXTransform.localRotation;
+            plumeFXTransform.localRotation = originalRotation;
 
-            //Fwd Left, plume goes back and right
-            //Fwd Right, plume goes back and left
-            if ((state.X > 0f && state.Z < 0f) || (state.X < 0f && state.Z < 0f))
-                rotationLtRt = -45f * state.X * state.Z;
+            if (engine.currentThrottle > 0 && engine.engineMode == WBIThrustModes.Reverse)
+                plumeFXTransform.Rotate(0, 180, 0);
 
-            //Back Left, plume goes front and right
-            //Back Right, plume goes front and left
-            else if ((state.X > 0f && state.Z > 0f) || (state.X < 0f && state.Z > 0f))
-                rotationLtRt = 135f * state.X * state.Z;
-
-            //Left or right
-            else if (state.X != 0f)
-                rotationLtRt = 90 * state.X;
-
-            //Up/down rotations
-            float rotationUpDn = 0f;
-
-            //Fwd up, plume goes back and down
-            //Fwd down, plume goes back and up
-            if ((state.Y > 0f && state.Z < 0f) || (state.Y < 0f && state.Z < 0f))
-                rotationUpDn = 45f * state.Y * state.Z;
-
-            //Back up, plume goes front and down
-            //Back down, plume goes front and up
-            else if ((state.Y > 0f && state.Z > 0f) || (state.Y < 0f && state.Z > 0f))
-                rotationUpDn = -135f * state.Y * state.Z;
-
-            //Up or down
-            else if (state.Y != 0f)
-                rotationUpDn = -90f * state.Y;
-
-            //If the throttle is off and we have no RCS inputs then keep the previous plume rotation.
-            if (state.X <= 0 && state.Y <= 0 && state.Z <= 0 && engineThrottle <= 0)
+            if (rcsIsActive && (engine.translateLtRt != 0 || engine.translateUpDn != 0))
             {
-                plumeFXTransform.localEulerAngles = previousRCSRotation;
+                if (engine.translateLtRt != 0)
+                {
+                    if (engine.translateLtRt > 0)
+                        plumeFXTransform.Rotate(engine.engineMode == WBIThrustModes.Forward ? -10 : 10, 0, 0);
+                    else
+                        plumeFXTransform.Rotate(engine.engineMode == WBIThrustModes.Forward ? 10 : -10, 0, 0);
+                }
+                if (engine.translateUpDn != 0)
+                {
+                    if (engine.translateUpDn > 0)
+                        plumeFXTransform.Rotate(0, engine.engineMode == WBIThrustModes.Forward ? 10 : -10, 0);
+                    else
+                        plumeFXTransform.Rotate(0, engine.engineMode == WBIThrustModes.Forward ? -10 : 10, 0);
+                }
+            }
+
+            targetRotation = plumeFXTransform.localRotation;
+            plumeFXTransform.localRotation = currentRotation;
+        }
+
+        protected void updateHoverFlyingPlumeDirection()
+        {
+            Quaternion currentRotation = plumeFXTransform.localRotation;
+            plumeFXTransform.localRotation = originalRotation;
+            plumeFXTransform.LookAt(this.part.vessel.mainBody.bodyTransform);
+
+            if (engine.currentThrottle > 0)
+            {
+                if (engine.engineMode == WBIThrustModes.Forward)
+                    plumeFXTransform.Rotate(0, -45 * engine.currentThrottle, 0);
+                else
+                    plumeFXTransform.Rotate(0, 45 * engine.currentThrottle, 0);
+            }
+
+            targetRotation = plumeFXTransform.localRotation;
+            plumeFXTransform.localRotation = currentRotation;
+        }
+
+        protected void updateHoverRCSPlumeDirection()
+        {
+            //Update the plume based on translation input.
+            if (engine.translateFwBk != 0 || engine.translateLtRt != 0 || engine.translateUpDn != 0)
+            {
+                Quaternion currentRotation = plumeFXTransform.localRotation;
+                plumeFXTransform.localRotation = originalRotation;
+                plumeFXTransform.LookAt(this.part.vessel.mainBody.bodyTransform);
+
+                if (engine.translateFwBk != 0)
+                {
+                    if (engine.translateFwBk > 0)
+                        plumeFXTransform.Rotate(0, -30, 0);
+                    else
+                        plumeFXTransform.Rotate(0, 30, 0);
+                }
+                if (engine.translateLtRt != 0)
+                {
+                    //Account for forward/back
+                    if (engine.translateLtRt > 0)
+                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? -30 : -15, 0, 0);
+                    else
+                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? 30 : 15, 0, 0);
+                }
+                if (engine.translateUpDn != 0)
+                {
+                    //Account for forward/back & left/right
+                    if (engine.translateUpDn > 0)
+                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? -30 : -15, engine.translateLtRt == 0 ? -30 : -15, 0);
+                    else
+                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? 30 : 15, engine.translateLtRt == 0 ? 30 : 15, 0);
+                }
+
+                targetRotation = plumeFXTransform.localRotation;
+                plumeFXTransform.localRotation = currentRotation;
+            }
+            else
+            {
+                updateHoverPlumeDirection();
+            }
+        }
+
+        protected void updateHoverPlumeDirection()
+        {
+            Quaternion currentRotation = plumeFXTransform.localRotation;
+            plumeFXTransform.localRotation = originalRotation;
+
+            plumeFXTransform.LookAt(this.part.vessel.mainBody.bodyTransform);
+
+            targetRotation = plumeFXTransform.localRotation;
+            plumeFXTransform.localRotation = currentRotation;
+        }
+
+        protected void updatePlumeDirection()
+        {
+            if (engine.translateFwBk != 0 || engine.translateLtRt != 0 || engine.translateUpDn != 0)
+            {
+                Quaternion currentRotation = plumeFXTransform.localRotation;
+                plumeFXTransform.localRotation = originalRotation;
+
+                if (engine.translateFwBk != 0)
+                {
+                    if (engine.translateFwBk > 0)
+                        targetRotation = originalRotation;
+                    else
+                        plumeFXTransform.Rotate(0, 180, 0);
+                }
+                if (engine.translateLtRt != 0)
+                {
+                    //Account for forward/back
+                    if (engine.translateLtRt > 0)
+                        plumeFXTransform.Rotate(0, engine.translateFwBk == 0 ? -90 : -45, 0);
+                    else
+                        plumeFXTransform.Rotate(0, engine.translateFwBk == 0 ? 90 : 45, 0);
+                }
+                if (engine.translateUpDn != 0)
+                {
+                    //Account for forward/back & left/right
+                    if (engine.translateUpDn > 0)
+                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? -90 : -45, engine.translateLtRt == 0 ? -90 : -45, 0);
+                    else
+                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? 90 : 45, engine.translateLtRt == 0 ? 90 : 45, 0);
+                }
+
+                targetRotation = plumeFXTransform.localRotation;
+                plumeFXTransform.localRotation = currentRotation;
+            }
+        }
+
+        protected void updateCrazyPlumeDirection()
+        {
+            //If current throttle is zero, then just update in hover and exit.
+            if (engine.currentThrottle <= 0)
+            {
+                updateHoverPlumeDirection();
                 return;
             }
 
-            //Rotate the plume fx transform
-            if (rotationLtRt != 0f)
-                plumeFXTransform.Rotate(Vector3.up, rotationLtRt);
-            if (rotationUpDn != 0f)
-                plumeFXTransform.Rotate(Vector3.right, rotationUpDn);
-            previousRCSRotation = plumeFXTransform.localEulerAngles;
+            //Update the plume based on translation input.
+            if (engine.translateFwBk != 0 || engine.translateLtRt != 0 || engine.translateUpDn != 0)
+            {
+                Quaternion currentRotation = plumeFXTransform.localRotation;
+                plumeFXTransform.localRotation = originalRotation;
+
+                if (engine.translateFwBk != 0)
+                {
+                    if (engine.translateFwBk > 0)
+                        targetRotation = originalRotation;
+                    else
+                        plumeFXTransform.Rotate(0, 180, 0);
+                }
+                if (engine.translateLtRt != 0)
+                {
+                    //Account for forward/back
+                    if (engine.translateLtRt > 0)
+                        plumeFXTransform.Rotate(0, engine.translateFwBk == 0 ? -90 : -45, 0);
+                    else
+                        plumeFXTransform.Rotate(0, engine.translateFwBk == 0 ? 90 : 45, 0);
+                }
+                if (engine.translateUpDn != 0)
+                {
+                    //Account for forward/back & left/right
+                    if (engine.translateUpDn > 0)
+                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? -90 : -45, engine.translateLtRt == 0 ? -90 : -45, 0);
+                    else
+                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? 90 : 45, engine.translateLtRt == 0 ? 90 : 45, 0);
+                }
+
+                targetRotation = plumeFXTransform.localRotation;
+                plumeFXTransform.localRotation = currentRotation;
+            }
+
+            //If not in cruise control then just update to hover mode.
+            else if (!engine.crazyCruiseControlEnabled)
+            {
+                updateHoverPlumeDirection();
+            }
         }
-        */
         #endregion
     }
 }

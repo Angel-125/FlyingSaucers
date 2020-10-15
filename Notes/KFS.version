@@ -6,14 +6,14 @@
     {
         "USERNAME":"Angel-125",
         "REPOSITORY":"FlyingSaucers",
-        "ALLOW_PRE_RELEASE":false,
+        "ALLOW_PRE_RELEASE":false
     },
     "VERSION":
     {
 	"MAJOR":0,
 	"MINOR":4,
 	"PATCH":7,
-	"BUILD":0
+	"BUILD":1
     },
     "KSP_VERSION_MIN":
     {

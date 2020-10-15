@@ -8,7 +8,7 @@ using KerbalActuators;
 using KSP.Localization;
 
 /*
-Source code copyright 2019, by Michael Billard (Angel-125)
+Source code copyright 2019-2020, by Michael Billard (Angel-125)
 License: GPLV3
 
 Wild Blue Industries is trademarked by Michael Billard and may be used for non-commercial purposes. All other rights reserved.
@@ -41,8 +41,24 @@ namespace WildBlueIndustries
         protected float kMessageDuration = 3f;
         #endregion
 
+        #region Fields
         [KSPField]
         public bool debugEnabled = false;
+
+        //Control axis groups
+        //KSPAxisGroup.TranslateX: L/R KSPAxisGroup.TranslateY: U/D KSPAxisGroup.TranslateZ: F/B
+        [KSPAxisField(axisGroup = KSPAxisGroup.TranslateZ, axisMode = KSPAxisMode.Absolute, guiActive = false, guiActiveEditor = false, guiName = "Crazy Mode: F/B", ignoreIncrementByZero = true, incrementalSpeed = 10f, isPersistant = true, maxValue = 1f, minValue = -1f)]
+        [UI_FloatRange(affectSymCounterparts = UI_Scene.All, maxValue = 1f, minValue = -1f, stepIncrement = 10f)]
+        public float translateFwBk;
+
+        [KSPAxisField(axisGroup = KSPAxisGroup.TranslateX, axisMode = KSPAxisMode.Absolute, guiActive = false, guiActiveEditor = false, guiName = "Crazy Mode: L/R", ignoreIncrementByZero = true, incrementalSpeed = 10f, isPersistant = true, maxValue = 1f, minValue = -1f)]
+        [UI_FloatRange(affectSymCounterparts = UI_Scene.All, maxValue = 1f, minValue = -1f, stepIncrement = 10f)]
+        public float translateLtRt;
+
+        [KSPAxisField(axisGroup = KSPAxisGroup.TranslateY, axisMode = KSPAxisMode.Absolute, guiActive = false, guiActiveEditor = false, guiName = "Crazy Mode: U/D", ignoreIncrementByZero = true, incrementalSpeed = 10f, isPersistant = true, maxValue = 1f, minValue = -1f)]
+        [UI_FloatRange(affectSymCounterparts = UI_Scene.All, maxValue = 1f, minValue = -1f, stepIncrement = 10f)]
+        public float translateUpDn;
+        #endregion
 
         #region Animation
         [KSPField]
@@ -103,17 +119,19 @@ namespace WildBlueIndustries
 
         [KSPField]
         public FloatCurve accelerationCurve;
+
         #endregion
 
         #region Housekeeping
         [KSPField(guiName = "Singularity Projector", guiActive = true, isPersistant = true)]
         public WBIEngineStates engineState;
 
-        [KSPField(guiName = "Current Mode", guiActive = true, isPersistant = true)]
+        [KSPField(guiName = "Acceleration Mode", guiActive = true, isPersistant = true)]
         public WBIThrustModes engineMode;
 
         public Animation animation = null;
         public float verticalSpeed = 0f;
+        public Vector3 warpVector = Vector3.zero;
 
         protected float rotationPerFrame = 0;
         protected float rotationPerFrameMin = 0;
@@ -134,66 +152,10 @@ namespace WildBlueIndustries
         protected string thrustEffect = string.Empty;
         protected RaycastHit terrainHit;
         protected LayerMask layerMask = -1;
+        protected bool translationKeysActive = false;
         #endregion
 
         #region IHoverController
-        [KSPEvent(guiActive = true, guiName = "Toggle Engine Mode")]
-        public virtual void ToggleEngineMode()
-        {
-            switch (engineMode)
-            {
-                default:
-                case WBIThrustModes.Forward:
-                    engineMode = WBIThrustModes.Reverse;
-                    break;
-
-                case WBIThrustModes.Reverse:
-                    engineMode = WBIThrustModes.VTOL;
-                    break;
-
-                case WBIThrustModes.VTOL:
-                    engineMode = WBIThrustModes.Forward;
-                    break;
-            }
-
-            SetupEngineMode();
-        }
-
-        public virtual void SetupEngineMode()
-        {
-            thrustTransforms.Clear();
-            switch (engineMode)
-            {
-                default:
-                case WBIThrustModes.Forward:
-                    thrustEffect = fwdThrustEffect;
-                    if (!string.IsNullOrEmpty(revThrustEffect))
-                        this.part.Effect(revThrustEffect, 0f, -1);
-                    if (!string.IsNullOrEmpty(vtolThrustEffect))
-                        this.part.Effect(vtolThrustEffect, 0f, -1);
-                    break;
-
-                case WBIThrustModes.Reverse:
-                    thrustEffect = revThrustEffect;
-                    if (!string.IsNullOrEmpty(vtolThrustEffect))
-                        this.part.Effect(vtolThrustEffect, 0f, -1);
-                    if (!string.IsNullOrEmpty(fwdThrustEffect))
-                        this.part.Effect(fwdThrustEffect, 0f, -1);
-                    break;
-
-                case WBIThrustModes.VTOL:
-                    thrustEffect = vtolThrustEffect;
-                    if (!string.IsNullOrEmpty(revThrustEffect))
-                        this.part.Effect(revThrustEffect, 0f, -1);
-                    if (!string.IsNullOrEmpty(fwdThrustEffect))
-                        this.part.Effect(fwdThrustEffect, 0f, -1);
-                    break;
-            }
-
-            if (HighLogic.LoadedSceneIsFlight)
-                UpdateCenterOfThrust();
-        }
-
         public bool GetHoverState()
         {
             return hoverIsActive;
@@ -201,7 +163,7 @@ namespace WildBlueIndustries
 
         public bool IsEngineActive()
         {
-            return isOperational;
+            return isOperational && EngineIgnited;
         }
 
         public void StartEngine()
@@ -212,41 +174,6 @@ namespace WildBlueIndustries
         public void StopEngine()
         {
             Shutdown();
-        }
-
-        public void UpdateHoverState()
-        {
-            if (!hoverIsActive)
-                return;
-
-            //If we just landed then kill vertical speed and exit
-            if ((this.part.vessel.situation == Vessel.Situations.LANDED ||
-                this.part.vessel.situation == Vessel.Situations.SPLASHED ||
-                this.part.vessel.situation == Vessel.Situations.PRELAUNCH) && !isLiftingOff)
-            {
-                verticalSpeed = 0f;
-                return;
-            }
-
-            //Once we're flying again, remove the flag.
-            else if (VesselIsAirborne())
-            {
-                isLiftingOff = false;
-            }
-
-            //Calculate lift acceleration
-            float liftAcceleration = (float)this.part.vessel.graviticAcceleration.magnitude;
-            if (verticalSpeed > 0 && vessel.verticalSpeed < verticalSpeed)
-                liftAcceleration += verticalSpeed;
-            else if (verticalSpeed < 0 && vessel.verticalSpeed > verticalSpeed)
-                liftAcceleration += verticalSpeed;
-            currentThrottle = maxAcceleration - liftAcceleration;
-
-            //Get lift vector
-            Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
-            
-            //Add acceleration. We do this manually instead of letting ModuleEnginesFX do it so that the craft can have any orientation desired.
-            ApplyAccelerationVector(accelerationVector);
         }
 
         public void SetHoverMode(bool isActive)
@@ -310,6 +237,7 @@ namespace WildBlueIndustries
             //Switch to vtol transform
             engineMode = WBIThrustModes.VTOL;
             SetupEngineMode();
+            updateHoverEventGUI();
         }
 
         public void DeactivateHover()
@@ -323,6 +251,7 @@ namespace WildBlueIndustries
             //Switch to normal transform
             engineMode = WBIThrustModes.Forward;
             SetupEngineMode();
+            updateHoverEventGUI();
         }
         #endregion
 
@@ -361,6 +290,20 @@ namespace WildBlueIndustries
         /// </summary>
         [KSPField]
         public bool crazyModeUnlocked;
+
+        /// <summary>
+        /// Flag to indicate if Crazy Mode is enabled.
+        /// </summary>
+        [KSPField(guiName = "Crazy Mode", isPersistant = true, guiActiveEditor = false, guiActive = true)]
+        [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
+        public bool crazyModeEnabled;
+
+        /// <summary>
+        /// Flag to indicate if Crazy Mode cruise control is enabled.
+        /// </summary>
+        [KSPField(guiName = "Crazy Cruise Control", isPersistant = true, guiActiveEditor = false, guiActive = true)]
+        [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
+        public bool crazyCruiseControlEnabled;
 
         /// <summary>
         /// How fast to warp the craft in crazy mode. Measured in meters per second.
@@ -495,7 +438,10 @@ namespace WildBlueIndustries
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             if (GUILayout.Button(stopIcon, buttonOptions))
-                warpDirection = WBIWarpDirections.Stop;
+            {
+                setCrazyCruiseMode(true);
+                StopWarp();
+            }
 
             Texture buttonIcon = fwdIconSel;
             if (warpDirection == WBIWarpDirections.Forward)
@@ -503,14 +449,22 @@ namespace WildBlueIndustries
             else
                 buttonIcon = fwdIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
+            {
+                setCrazyCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Forward);
+                updateWarpVector();
+            }
 
             if (warpDirection == WBIWarpDirections.Back)
                 buttonIcon = revIconSel;
             else
                 buttonIcon = revIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
+            {
+                setCrazyCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Back);
+                updateWarpVector();
+            }
 
             //Left, Up, Right, Down
             if (warpDirection == WBIWarpDirections.Left)
@@ -518,33 +472,84 @@ namespace WildBlueIndustries
             else
                 buttonIcon = leftIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
+            {
+                setCrazyCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Left);
+                updateWarpVector();
+            }
 
             if (warpDirection == WBIWarpDirections.Right)
                 buttonIcon = rightIconSel;
             else
                 buttonIcon = rightIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
+            {
+                setCrazyCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Right);
+                updateWarpVector();
+            }
 
             if (warpDirection == WBIWarpDirections.Up)
                 buttonIcon = upIconSel;
             else
                 buttonIcon = upIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
+            {
+                setCrazyCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Up);
+                updateWarpVector();
+            }
 
             if (warpDirection == WBIWarpDirections.Down)
                 buttonIcon = dnIconSel;
             else
                 buttonIcon = dnIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
+            {
+                setCrazyCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Down);
+                updateWarpVector();
+            }
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
+        }
+        #endregion
+
+        #region Events
+        [KSPEvent(guiActive = true, guiName = "Toggle Hover Mode")]
+        public virtual void ToggleHoverMode()
+        {
+            hoverIsActive = !hoverIsActive;
+            if (!hoverIsActive)
+            {
+                crazyModeEnabled = false;
+                engineMode = WBIThrustModes.Forward;
+                SetupEngineMode();
+            }
+            SetHoverMode(hoverIsActive);
+        }
+
+        [KSPEvent(guiActive = true, guiName = "Toggle Acceleration Mode")]
+        public virtual void ToggleThrustMode()
+        {
+            switch (engineMode)
+            {
+                default:
+                case WBIThrustModes.Forward:
+                    engineMode = WBIThrustModes.Reverse;
+                    break;
+
+                case WBIThrustModes.Reverse:
+                    engineMode = WBIThrustModes.VTOL;
+                    break;
+
+                case WBIThrustModes.VTOL:
+                    engineMode = WBIThrustModes.Forward;
+                    break;
+            }
         }
         #endregion
 
@@ -570,99 +575,47 @@ namespace WildBlueIndustries
             ScreenMessages.PostScreenMessage("Gravitic Acceleration: VTOL", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
         }
 
-        [KSPAction("Toggle Engine Mode")]
-        public virtual void ToggleEngineModeAction()
+        [KSPAction("Toggle Hover Mode")]
+        public virtual void ToggleHoverModeAction()
         {
-            ToggleEngineMode();
+            ToggleHoverMode();
             switch (engineMode)
             {
                 default:
                 case WBIThrustModes.Forward:
-                    ScreenMessages.PostScreenMessage("Gravitic Acceleration: Forward", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
-                    break;
-
-                case WBIThrustModes.Reverse:
-                    ScreenMessages.PostScreenMessage("Gravitic Acceleration: Reverse", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+                    ScreenMessages.PostScreenMessage("Hover Mode deactivated", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
                     break;
 
                 case WBIThrustModes.VTOL:
-                    ScreenMessages.PostScreenMessage("Gravitic Acceleration: VTOL", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+                    ScreenMessages.PostScreenMessage("Hover Mode activated", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
                     break;
             }
         }
 
-        [KSPAction("Crazy Mode Stop")]
-        public void ToggleCrazyModeAction(KSPActionParam param)
+        [KSPAction("Halt Crazy Moves", actionGroup = KSPActionGroup.Brakes)]
+        public void StopCrazyModeAction(KSPActionParam param)
         {
-            if (!IsActive())
+            if (!EngineIgnited || !isOperational)
                 return;
 
-            warpDirection = WBIWarpDirections.Stop;
-            ScreenMessages.PostScreenMessage("Crazy Mode: Stop", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
-        }
+            if (hoverIsActive)
+                KillVerticalSpeed();
 
-        [KSPAction("Crazy Mode Forward")]
-        public void ActionWarpForward(KSPActionParam param)
-        {
-            if (!IsActive())
-                return;
-
-            warpDirection = WBIWarpDirections.Forward;
-            ScreenMessages.PostScreenMessage("Crazy Mode: Forward", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
-        }
-
-        [KSPAction("Crazy Mode Back")]
-        public void ActionWarpBack(KSPActionParam param)
-        {
-            if (!IsActive())
-                return;
-
-            warpDirection = WBIWarpDirections.Back;
-            ScreenMessages.PostScreenMessage("Crazy Mode: Back", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
-        }
-
-        [KSPAction("Crazy Mode Left")]
-        public void ActionWarpLeft(KSPActionParam param)
-        {
-            if (!IsActive())
-                return;
-
-            warpDirection = WBIWarpDirections.Left;
-            ScreenMessages.PostScreenMessage("Crazy Mode: Left", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
-        }
-
-        [KSPAction("Crazy Mode Right")]
-        public void ActionRightWarp(KSPActionParam param)
-        {
-            if (!IsActive())
-                return;
-
-            warpDirection = WBIWarpDirections.Right;
-            ScreenMessages.PostScreenMessage("Crazy Mode: Right", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
-        }
-
-        [KSPAction("Crazy Mode Up")]
-        public void ActionWarpUp(KSPActionParam param)
-        {
-            if (!IsActive())
-                return;
-
-            warpDirection = WBIWarpDirections.Up;
-            ScreenMessages.PostScreenMessage("Crazy Mode: Up", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
-        }
-
-        [KSPAction("Crazy Mode Down")]
-        public void ActionWarpDown(KSPActionParam param)
-        {
-            if (!IsActive())
-                return;
-
-            warpDirection = WBIWarpDirections.Down;
-            ScreenMessages.PostScreenMessage("Crazy Mode: Down", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+            if (crazyModeUnlocked && crazyModeEnabled)
+            {
+                warpDirection = WBIWarpDirections.Stop;
+                warpVector = Vector3.zero;
+            }
         }
         #endregion
 
         #region overrides
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+            updatePAWGUI();
+        }
+
         public override void OnFixedUpdate()
         {
             base.OnFixedUpdate();
@@ -784,6 +737,7 @@ namespace WildBlueIndustries
             //GUI setup
             Fields["realIsp"].guiActive = false;
             Fields["finalThrust"].guiActive = false;
+            updateHoverEventGUI();
 
             //Check to make sure crazy mode is unlocked for sandbox.
             if (HighLogic.LoadedSceneIsFlight)
@@ -979,65 +933,155 @@ namespace WildBlueIndustries
         #endregion
 
         #region Propulsion Systems
+
+        public virtual void SetupEngineMode()
+        {
+            thrustTransforms.Clear();
+            switch (engineMode)
+            {
+                default:
+                case WBIThrustModes.Forward:
+                    thrustEffect = fwdThrustEffect;
+                    if (!string.IsNullOrEmpty(revThrustEffect))
+                        this.part.Effect(revThrustEffect, 0f, -1);
+                    if (!string.IsNullOrEmpty(vtolThrustEffect))
+                        this.part.Effect(vtolThrustEffect, 0f, -1);
+                    break;
+
+                case WBIThrustModes.Reverse:
+                    thrustEffect = revThrustEffect;
+                    if (!string.IsNullOrEmpty(vtolThrustEffect))
+                        this.part.Effect(vtolThrustEffect, 0f, -1);
+                    if (!string.IsNullOrEmpty(fwdThrustEffect))
+                        this.part.Effect(fwdThrustEffect, 0f, -1);
+                    break;
+
+                case WBIThrustModes.VTOL:
+                    thrustEffect = vtolThrustEffect;
+                    if (!string.IsNullOrEmpty(revThrustEffect))
+                        this.part.Effect(revThrustEffect, 0f, -1);
+                    if (!string.IsNullOrEmpty(fwdThrustEffect))
+                        this.part.Effect(fwdThrustEffect, 0f, -1);
+                    break;
+            }
+
+            if (HighLogic.LoadedSceneIsFlight)
+                UpdateCenterOfThrust();
+        }
+
+        public void UpdateHoverState()
+        {
+            if (!hoverIsActive)
+                return;
+
+            //Translation axis (only applies when crazy mode is deactivated)
+            if (translateUpDn != 0 && !crazyModeEnabled && !translationKeysActive)
+            {
+                translationKeysActive = true;
+                if (translateUpDn > 0)
+                {
+                    verticalSpeed += 1f;
+                    if (verticalSpeed > 0f)
+                        isLiftingOff = true;
+                }
+                else
+                    verticalSpeed -= 1f;
+            }
+            else
+            {
+                translationKeysActive = false;
+            }
+
+            //If we just landed then kill vertical speed and exit
+            if ((this.part.vessel.situation == Vessel.Situations.LANDED ||
+                this.part.vessel.situation == Vessel.Situations.SPLASHED ||
+                this.part.vessel.situation == Vessel.Situations.PRELAUNCH) && !isLiftingOff)
+            {
+                verticalSpeed = 0f;
+                return;
+            }
+
+            //Once we're flying again, remove the flag.
+            else if (VesselIsAirborne())
+            {
+                isLiftingOff = false;
+            }
+
+            //Calculate lift acceleration
+            float liftAcceleration = (float)this.part.vessel.graviticAcceleration.magnitude;
+            if (verticalSpeed > 0 && vessel.verticalSpeed < verticalSpeed)
+                liftAcceleration += verticalSpeed;
+            else if (verticalSpeed < 0 && vessel.verticalSpeed > verticalSpeed)
+                liftAcceleration += verticalSpeed;
+            currentThrottle = maxAcceleration - liftAcceleration;
+
+            //Get lift vector
+            Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
+
+            //Add acceleration. We do this manually instead of letting ModuleEnginesFX do it so that the craft can have any orientation desired.
+            ApplyAccelerationVector(accelerationVector);
+        }
+
         /// <summary>
         /// Updates Crazy Mode propulsion, consuming resources and repositioning the craft as needed.
         /// </summary>
         public virtual void UpdateCrazyMode()
         {
             //If crazy mode isn't enabled then we're done.
-            if (!crazyModeUnlocked)
+            if (!crazyModeUnlocked || !crazyModeEnabled)
                 return;
 
             //Make sure we're flying. If not, then turn off crazy mode.
             if (!VesselIsAirborne())
             {
-                warpDirection = WBIWarpDirections.Stop;
+                StopWarp();
                 return;
             }
 
-            //Setup the warp direction
-            Vector3 direction = Vector3.zero;
-            switch (warpDirection)
+            //Handle translation axis
+            if (translateFwBk != 0 || translateLtRt != 0 || translateUpDn != 0)
             {
-                default:
-                case WBIWarpDirections.Stop:
-                    return;
-
-                case WBIWarpDirections.Forward:
-                    direction = this.transform.up;
-                    break;
-
-                case WBIWarpDirections.Back:
-                    direction = this.transform.up * -1;
-                    break;
-
-                case WBIWarpDirections.Left:
-                    direction = this.transform.right * -1;
-                    break;
-
-                case WBIWarpDirections.Right:
-                    direction = this.transform.right;
-                    break;
-
-                case WBIWarpDirections.Up:
-                    direction = this.transform.forward * -1;
-                    break;
-
-                case WBIWarpDirections.Down:
-                    direction = this.transform.forward;
-                    break;
+                warpVector = Vector3.zero;
+                if (translateFwBk != 0)
+                {
+                    if (translateFwBk > 0)
+                        warpVector += this.transform.up;
+                    else
+                        warpVector += this.transform.up * -1;
+                }
+                if (translateLtRt != 0)
+                {
+                    if (translateLtRt > 0)
+                        warpVector += this.transform.right;
+                    else
+                        warpVector += this.transform.right * -1;
+                }
+                if (translateUpDn != 0)
+                {
+                    if (translateUpDn > 0)
+                        warpVector += this.transform.forward * -1;
+                    else
+                        warpVector += this.transform.forward;
+                }
             }
+
+            // No direction? No translation.
+            if (warpVector == Vector3.zero)
+                return;
 
             //Get throttle setting
             float throttleSetting = FlightInputHandler.state.mainThrottle * (thrustPercentage / 100.0f);
             if (throttleSetting <= 0f)
                 return;
 
+            //Adjust by engine thrust
+            throttleSetting *= (thrustPercentage / 100f);
+
             //Calculate offset position
-            Vector3d offsetPosition = this.part.vessel.transform.position + (direction * crazyModeVelocity * throttleSetting * TimeWarp.fixedDeltaTime);
+            Vector3d offsetPosition = this.part.vessel.transform.position + (warpVector * crazyModeVelocity * throttleSetting * TimeWarp.fixedDeltaTime);
 
             //Make sure we won't collide with the terrain
-            if (Physics.Raycast(vessel.transform.position, direction, out terrainHit, (float)offsetPosition.magnitude, layerMask))
+            if (Physics.Raycast(vessel.transform.position, warpVector, out terrainHit, (float)offsetPosition.magnitude, layerMask))
             {
                 Part prt = terrainHit.collider.gameObject.GetComponent<Part>();
 
@@ -1048,7 +1092,7 @@ namespace WildBlueIndustries
                     if (terrainHit.distance <= Math.Abs(offsetPosition.magnitude))
                     {
                         ScreenMessages.PostScreenMessage(WBIKFSUtils.kTerrainWarning, 3.0f, ScreenMessageStyle.UPPER_CENTER);
-                        warpDirection = WBIWarpDirections.Stop;
+                        StopWarp();
                         return;
                     }
                 }
@@ -1065,7 +1109,7 @@ namespace WildBlueIndustries
                 if (amount / maxAmount < crazyModeResourceReserve)
                 {
                     FlightInputHandler.state.mainThrottle = 0.0f;
-                    warpDirection = WBIWarpDirections.Stop;
+                    StopWarp();
                     return;
                 }
 
@@ -1075,7 +1119,7 @@ namespace WildBlueIndustries
                 //Make sure we got enough of the requested resource.
                 if ((amountObtained / amountRequested) < 0.25f)
                 {
-                    warpDirection = WBIWarpDirections.Stop;
+                    StopWarp();
                     return;
                 }
             }
@@ -1085,6 +1129,13 @@ namespace WildBlueIndustries
                 this.part.vessel.SetPosition(offsetPosition);
             else
                 FloatingOrigin.SetOutOfFrameOffset(offsetPosition); //Use this for warp drive?
+
+            //Clear the warp vector if cruise control is disabled.
+            if (!crazyCruiseControlEnabled)
+            {
+                warpDirection = WBIWarpDirections.Stop;
+                warpVector = Vector3.zero;
+            }
         }
 
         /// <summary>
@@ -1170,6 +1221,14 @@ namespace WildBlueIndustries
             return false;
         }
 
+        public bool VesselIsOrbital()
+        {
+            if (this.part.vessel.situation == Vessel.Situations.ORBITING || this.part.vessel.situation == Vessel.Situations.ESCAPING)
+                return true;
+
+            return false;
+        }
+
         public void ApplyAccelerationVector(Vector3d accelerationVector)
         {
             int partCount = vessel.parts.Count;
@@ -1214,6 +1273,78 @@ namespace WildBlueIndustries
                     }
 
                 }
+            }
+        }
+
+        protected void updatePAWGUI()
+        {
+            //Hover mode disabled when engine isn't on.
+            bool isEngineActive = IsEngineActive();
+            Events["ToggleHoverMode"].active = isEngineActive;
+
+            //Thrust vector toggle is disabled when engine isn't on.
+            Events["ToggleThrustMode"].active = isEngineActive;
+
+            //Crazy mode is only available when the vessel is airborne.
+            bool isAirborne = VesselIsAirborne();
+            Fields["crazyModeEnabled"].guiActive = isAirborne;
+
+            //If vessel isn't airborne then make sure crazy mode is disabled.
+            if (!isAirborne && crazyModeEnabled)
+                crazyModeEnabled = false;
+
+            //Crazy cruise is only enabled when crazy mode is.
+            Fields["crazyCruiseControlEnabled"].guiActive = crazyModeEnabled;
+
+            //Make sure hover mode is on if crazy mode is on
+            if (crazyModeEnabled && !hoverIsActive)
+                hoverIsActive = true;
+        }
+
+        protected void updateHoverEventGUI()
+        {
+            Events["ToggleHoverMode"].guiName = hoverIsActive ? "Disable Hover Mode" : "Enable Hover Mode";
+        }
+
+        protected void setCrazyCruiseMode(bool enabled)
+        {
+            crazyModeEnabled = enabled;
+            crazyCruiseControlEnabled = enabled;
+        }
+
+        protected void updateWarpVector()
+        {
+            //Setup the warp direction based on UI buttons
+            switch (warpDirection)
+            {
+                default:
+                case WBIWarpDirections.Stop:
+                    warpVector = Vector3.zero;
+                    return;
+
+                case WBIWarpDirections.Forward:
+                    warpVector = this.transform.up;
+                    break;
+
+                case WBIWarpDirections.Back:
+                    warpVector = this.transform.up * -1;
+                    break;
+
+                case WBIWarpDirections.Left:
+                    warpVector = this.transform.right * -1;
+                    break;
+
+                case WBIWarpDirections.Right:
+                    warpVector = this.transform.right;
+                    break;
+
+                case WBIWarpDirections.Up:
+                    warpVector = this.transform.forward * -1;
+                    break;
+
+                case WBIWarpDirections.Down:
+                    warpVector = this.transform.forward;
+                    break;
             }
         }
 
@@ -1332,6 +1463,7 @@ namespace WildBlueIndustries
 
             float animationSpeed = playInReverse == false ? 1.0f : -1.0f;
             Animation anim = this.part.FindModelAnimators(animationName)[0];
+            Light[] lights = gravRingTransform.gameObject.GetComponentsInChildren<Light>();
 
             if (playInReverse)
             {
@@ -1350,6 +1482,12 @@ namespace WildBlueIndustries
                 else
                     anim[animationName].speed = animationSpeed * 100;
                 anim.Play(animationName);
+            }
+
+            if (lights != null)
+            {
+                foreach (Light light in lights)
+                    light.intensity = playInReverse ? 0 : 1;
             }
         }
 
@@ -1424,6 +1562,13 @@ namespace WildBlueIndustries
             node = engineNode.GetNode("accelerationCurve");
             accelerationCurve.Load(node);
         }
+
+        protected void StopWarp()
+        {
+            warpDirection = WBIWarpDirections.Stop;
+            warpVector = Vector3.zero;
+        }
+
         #endregion
 
     }

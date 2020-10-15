@@ -44,18 +44,20 @@ Temporary Items
 
 /Archives/
 /CKAN/
-/Docs/
+/DesignDocs/
+/Fonts/
+/Graphics/
 /GraphicsAndLogos/
 /Icons/
 /Models/
+/Notes/
 /Promos/
 /References/
 /Releases/
+/Renders/
 /Scenes/
+/SoundEffects/
 /Textures/
 /KFSUnity/
-/DesignDocs/
-/Renders/
-/Fonts/
-/SoundEffects/
-/Notes/
+/KFSUnityFX/
+/UVMaps/
