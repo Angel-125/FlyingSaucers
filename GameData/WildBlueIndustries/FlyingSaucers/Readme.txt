@@ -17,6 +17,14 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.4.9
+
+Gravitic Engines (A-51 & S-4)
+- All activated gravitic engines will synchronize their flight direction and controls. For instance, if one engine is set to forward thrust, then all activated engines will be set to forward thrust.
+- Effect plumes on multiple activated gravitic engines now all synchronize and travel in the same direction.
+- Fixed issue where hover mode with multiple engines would not be able to cancel out vertical acceleration.
+- Fixed issue where hover mode didn't consume resources.
+
 0.4.8
 IMPORTANT NOTE: Remove the existing S-4 Gravitic Engine part from your mothership before installing this update!
 

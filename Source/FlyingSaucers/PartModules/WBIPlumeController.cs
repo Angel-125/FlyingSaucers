@@ -38,7 +38,6 @@ namespace WildBlueIndustries
         protected Transform plumeFXTransform;
         protected bool isRCSEnabled;
         protected WBIGraviticEngine engine = null;
-        Quaternion originalRotation;
         Quaternion targetRotation;
         #endregion
 
@@ -51,10 +50,6 @@ namespace WildBlueIndustries
             if (!string.IsNullOrEmpty(plumeFXTransformName))
             {
                 plumeFXTransform = this.part.FindModelTransform(plumeFXTransformName);
-
-                //Setup rotations
-                originalRotation = plumeFXTransform.localRotation;
-                targetRotation = originalRotation;
             }
         }
 
@@ -137,7 +132,7 @@ namespace WildBlueIndustries
             }
 
             //Orbiting or escaping: long plume in opposite thrust direction if RCS is activated.
-            else if (engine.VesselIsOrbital())
+            else if (engine.VesselIsOrbital() && isRCSEnabled)
             {
                 updatePlumeDirection();
             }
@@ -145,60 +140,61 @@ namespace WildBlueIndustries
 
         protected void updateFlyingDirection(bool rcsIsActive)
         {
-            Quaternion currentRotation = plumeFXTransform.localRotation;
-            plumeFXTransform.localRotation = originalRotation;
+            Quaternion currentRotation = plumeFXTransform.rotation;
+            plumeFXTransform.rotation = this.part.vessel.transform.rotation;
 
-            if (engine.currentThrottle > 0 && engine.engineMode == WBIThrustModes.Reverse)
-                plumeFXTransform.Rotate(0, 180, 0);
+            if (engine.currentThrottle > 0 && engine.engineMode == WBIThrustModes.Forward)
+                plumeFXTransform.Rotate(90, 0, 0);
+            else if (engine.currentThrottle > 0 && engine.engineMode == WBIThrustModes.Reverse)
+                plumeFXTransform.Rotate(-90, 0, 0);
 
             if (rcsIsActive && (engine.translateLtRt != 0 || engine.translateUpDn != 0))
             {
                 if (engine.translateLtRt != 0)
                 {
+                    //Account for forward/back
                     if (engine.translateLtRt > 0)
-                        plumeFXTransform.Rotate(engine.engineMode == WBIThrustModes.Forward ? -10 : 10, 0, 0);
+                        plumeFXTransform.Rotate(0, engine.engineMode == WBIThrustModes.Forward ? -15 : 15, 0);
                     else
-                        plumeFXTransform.Rotate(engine.engineMode == WBIThrustModes.Forward ? 10 : -10, 0, 0);
+                        plumeFXTransform.Rotate(0, engine.engineMode == WBIThrustModes.Forward ? 15 : -15, 0);
                 }
                 if (engine.translateUpDn != 0)
                 {
                     if (engine.translateUpDn > 0)
-                        plumeFXTransform.Rotate(0, engine.engineMode == WBIThrustModes.Forward ? 10 : -10, 0);
+                        plumeFXTransform.Rotate(engine.engineMode == WBIThrustModes.Forward ? 15 : -15, 0, 0);
                     else
-                        plumeFXTransform.Rotate(0, engine.engineMode == WBIThrustModes.Forward ? -10 : 10, 0);
+                        plumeFXTransform.Rotate(engine.engineMode == WBIThrustModes.Forward ? -15 : 15, 0, 0);
                 }
             }
 
             targetRotation = plumeFXTransform.localRotation;
-            plumeFXTransform.localRotation = currentRotation;
+            plumeFXTransform.rotation = currentRotation;
         }
 
         protected void updateHoverFlyingPlumeDirection()
         {
-            Quaternion currentRotation = plumeFXTransform.localRotation;
-            plumeFXTransform.localRotation = originalRotation;
-            plumeFXTransform.LookAt(this.part.vessel.mainBody.bodyTransform);
+            Quaternion currentRotation = plumeFXTransform.rotation;
+            plumeFXTransform.LookAt(this.part.vessel.mainBody.transform);
 
             if (engine.currentThrottle > 0)
             {
                 if (engine.engineMode == WBIThrustModes.Forward)
                     plumeFXTransform.Rotate(0, -45 * engine.currentThrottle, 0);
-                else
+                else if (engine.engineMode == WBIThrustModes.Reverse)
                     plumeFXTransform.Rotate(0, 45 * engine.currentThrottle, 0);
             }
 
             targetRotation = plumeFXTransform.localRotation;
-            plumeFXTransform.localRotation = currentRotation;
+            plumeFXTransform.rotation = currentRotation;
         }
 
         protected void updateHoverRCSPlumeDirection()
         {
             //Update the plume based on translation input.
-            if (engine.translateFwBk != 0 || engine.translateLtRt != 0 || engine.translateUpDn != 0)
+            if (engine.translateFwBk != 0 || engine.translateLtRt != 0)
             {
-                Quaternion currentRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = originalRotation;
-                plumeFXTransform.LookAt(this.part.vessel.mainBody.bodyTransform);
+                Quaternion currentRotation = plumeFXTransform.rotation;
+                plumeFXTransform.LookAt(this.part.vessel.mainBody.transform);
 
                 if (engine.translateFwBk != 0)
                 {
@@ -215,17 +211,9 @@ namespace WildBlueIndustries
                     else
                         plumeFXTransform.Rotate(engine.translateFwBk == 0 ? 30 : 15, 0, 0);
                 }
-                if (engine.translateUpDn != 0)
-                {
-                    //Account for forward/back & left/right
-                    if (engine.translateUpDn > 0)
-                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? -30 : -15, engine.translateLtRt == 0 ? -30 : -15, 0);
-                    else
-                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? 30 : 15, engine.translateLtRt == 0 ? 30 : 15, 0);
-                }
 
                 targetRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = currentRotation;
+                plumeFXTransform.rotation = currentRotation;
             }
             else
             {
@@ -235,28 +223,26 @@ namespace WildBlueIndustries
 
         protected void updateHoverPlumeDirection()
         {
-            Quaternion currentRotation = plumeFXTransform.localRotation;
-            plumeFXTransform.localRotation = originalRotation;
+            Quaternion currentRotation = plumeFXTransform.rotation;
 
             plumeFXTransform.LookAt(this.part.vessel.mainBody.bodyTransform);
-
             targetRotation = plumeFXTransform.localRotation;
-            plumeFXTransform.localRotation = currentRotation;
+            plumeFXTransform.rotation = currentRotation;
         }
 
-        protected void updatePlumeDirection()
+        protected bool updatePlumeDirection()
         {
             if (engine.translateFwBk != 0 || engine.translateLtRt != 0 || engine.translateUpDn != 0)
             {
-                Quaternion currentRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = originalRotation;
+                Quaternion currentRotation = plumeFXTransform.rotation;
+                plumeFXTransform.rotation = this.part.vessel.transform.rotation;
 
                 if (engine.translateFwBk != 0)
                 {
                     if (engine.translateFwBk > 0)
-                        targetRotation = originalRotation;
+                        plumeFXTransform.Rotate(90, 0, 0);
                     else
-                        plumeFXTransform.Rotate(0, 180, 0);
+                        plumeFXTransform.Rotate(-90, 0, 0);
                 }
                 if (engine.translateLtRt != 0)
                 {
@@ -268,16 +254,55 @@ namespace WildBlueIndustries
                 }
                 if (engine.translateUpDn != 0)
                 {
-                    //Account for forward/back & left/right
+                    //Up
                     if (engine.translateUpDn > 0)
-                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? -90 : -45, engine.translateLtRt == 0 ? -90 : -45, 0);
+                    {
+                        //up-back
+                        if (engine.translateFwBk < 0)
+                            plumeFXTransform.Rotate(45, 0, 0);
+                        //up-forward
+                        else if (engine.translateFwBk > 0)
+                            plumeFXTransform.Rotate(-45, 0, 0);
+
+                        //up-left
+                        else if (engine.translateLtRt < 0)
+                            plumeFXTransform.Rotate(0, -45, 0);
+
+                        //up-right
+                        else if (engine.translateLtRt > 0)
+                            plumeFXTransform.Rotate(0, 45, 0);
+                    }
+                    //Down
                     else
-                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? 90 : 45, engine.translateLtRt == 0 ? 90 : 45, 0);
+                    {
+                        //down-back
+                        if (engine.translateFwBk < 0)
+                            plumeFXTransform.Rotate(-45, 0, 0);
+
+                        //down-fwd
+                        else if (engine.translateFwBk > 0)
+                            plumeFXTransform.Rotate(45, 0, 0);
+
+                        //down-left
+                        else if (engine.translateLtRt < 0)
+                            plumeFXTransform.Rotate(0, 45, 0);
+
+                        //down-right
+                        else if (engine.translateLtRt > 0)
+                            plumeFXTransform.Rotate(0, -45, 0);
+
+                        //none
+                        else
+                            plumeFXTransform.Rotate(180, 0, 0);
+                    }
                 }
 
                 targetRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = currentRotation;
+                plumeFXTransform.rotation = currentRotation;
+                return true;
             }
+
+            return false;
         }
 
         protected void updateCrazyPlumeDirection()
@@ -290,41 +315,8 @@ namespace WildBlueIndustries
             }
 
             //Update the plume based on translation input.
-            if (engine.translateFwBk != 0 || engine.translateLtRt != 0 || engine.translateUpDn != 0)
-            {
-                Quaternion currentRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = originalRotation;
-
-                if (engine.translateFwBk != 0)
-                {
-                    if (engine.translateFwBk > 0)
-                        targetRotation = originalRotation;
-                    else
-                        plumeFXTransform.Rotate(0, 180, 0);
-                }
-                if (engine.translateLtRt != 0)
-                {
-                    //Account for forward/back
-                    if (engine.translateLtRt > 0)
-                        plumeFXTransform.Rotate(0, engine.translateFwBk == 0 ? -90 : -45, 0);
-                    else
-                        plumeFXTransform.Rotate(0, engine.translateFwBk == 0 ? 90 : 45, 0);
-                }
-                if (engine.translateUpDn != 0)
-                {
-                    //Account for forward/back & left/right
-                    if (engine.translateUpDn > 0)
-                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? -90 : -45, engine.translateLtRt == 0 ? -90 : -45, 0);
-                    else
-                        plumeFXTransform.Rotate(engine.translateFwBk == 0 ? 90 : 45, engine.translateLtRt == 0 ? 90 : 45, 0);
-                }
-
-                targetRotation = plumeFXTransform.localRotation;
-                plumeFXTransform.localRotation = currentRotation;
-            }
-
             //If not in cruise control then just update to hover mode.
-            else if (!engine.crazyCruiseControlEnabled)
+            if (!updatePlumeDirection() && !engine.crazyCruiseControlEnabled)
             {
                 updateHoverPlumeDirection();
             }

@@ -132,6 +132,8 @@ namespace WildBlueIndustries
         public Animation animation = null;
         public float verticalSpeed = 0f;
         public Vector3 warpVector = Vector3.zero;
+        public bool prevCrazyModeEnabled;
+        public bool prevCruiseModeEnabled;
 
         protected float rotationPerFrame = 0;
         protected float rotationPerFrameMin = 0;
@@ -153,6 +155,7 @@ namespace WildBlueIndustries
         protected RaycastHit terrainHit;
         protected LayerMask layerMask = -1;
         protected bool translationKeysActive = false;
+        float totalMaxAcceleration = 0;
         #endregion
 
         #region IHoverController
@@ -530,6 +533,27 @@ namespace WildBlueIndustries
                 SetupEngineMode();
             }
             SetHoverMode(hoverIsActive);
+
+            List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+            WBIGraviticEngine engine;
+            int count = engines.Count;
+            for (int index = 0; index < count; index++)
+            {
+                engine = engines[index];
+                if (!engine.IsEngineActive())
+                    continue;
+            
+                if (engine != this)
+                {
+                    if (!hoverIsActive)
+                    {
+                        engine.crazyModeEnabled = false;
+                        engine.engineMode = WBIThrustModes.Forward;
+                        engine.SetupEngineMode();
+                    }
+                    engine.SetHoverMode(hoverIsActive);
+                }
+            }
         }
 
         [KSPEvent(guiActive = true, guiName = "Toggle Acceleration Mode")]
@@ -550,6 +574,16 @@ namespace WildBlueIndustries
                     engineMode = WBIThrustModes.Forward;
                     break;
             }
+
+            List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+            int count = engines.Count;
+            for (int index = 0; index < count; index++)
+            {
+                if (!engines[index].IsEngineActive())
+                    continue;
+
+                engines[index].engineMode = this.engineMode;
+            }
         }
         #endregion
 
@@ -559,6 +593,16 @@ namespace WildBlueIndustries
         {
             SetForwardThrust(WBIVTOLManager.Instance);
             ScreenMessages.PostScreenMessage("Gravitic Acceleration: Forward", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+
+            List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+            int count = engines.Count;
+            for (int index = 0; index < count; index++)
+            {
+                if (!engines[index].IsEngineActive())
+                    continue;
+
+                engines[index].SetForwardThrust(WBIVTOLManager.Instance);
+            }
         }
 
         [KSPAction("Set Reverse Acceleration")]
@@ -566,6 +610,16 @@ namespace WildBlueIndustries
         {
             SetReverseThrust(WBIVTOLManager.Instance);
             ScreenMessages.PostScreenMessage("Gravitic Acceleration: Reverse", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+
+            List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+            int count = engines.Count;
+            for (int index = 0; index < count; index++)
+            {
+                if (!engines[index].IsEngineActive())
+                    continue;
+
+                engines[index].SetReverseThrust(WBIVTOLManager.Instance);
+            }
         }
 
         [KSPAction("Set VTOL Acceleration")]
@@ -573,6 +627,16 @@ namespace WildBlueIndustries
         {
             SetVTOLThrust(WBIVTOLManager.Instance);
             ScreenMessages.PostScreenMessage("Gravitic Acceleration: VTOL", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+
+            List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+            int count = engines.Count;
+            for (int index = 0; index < count; index++)
+            {
+                if (!engines[index].IsEngineActive())
+                    continue;
+
+                engines[index].SetVTOLThrust(WBIVTOLManager.Instance);
+            }
         }
 
         [KSPAction("Toggle Hover Mode")]
@@ -605,6 +669,17 @@ namespace WildBlueIndustries
             {
                 warpDirection = WBIWarpDirections.Stop;
                 warpVector = Vector3.zero;
+            }
+
+            List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+            int count = engines.Count;
+            for (int index = 0; index < count; index++)
+            {
+                if (!engines[index].IsEngineActive())
+                    continue;
+
+                engines[index].warpDirection = WBIWarpDirections.Stop;
+                engines[index].warpVector = Vector3.zero;
             }
         }
         #endregion
@@ -735,8 +810,11 @@ namespace WildBlueIndustries
                 currentStartStopLerp = 1f;
 
             //GUI setup
-            Fields["realIsp"].guiActive = false;
-            Fields["finalThrust"].guiActive = false;
+            Fields["realIsp"].guiActive = debugEnabled;
+            Fields["finalThrust"].guiActive = debugEnabled;
+            Fields["translateFwBk"].guiActive = debugEnabled;
+            Fields["translateLtRt"].guiActive = debugEnabled;
+            Fields["translateUpDn"].guiActive = debugEnabled;
             updateHoverEventGUI();
 
             //Check to make sure crazy mode is unlocked for sandbox.
@@ -745,6 +823,9 @@ namespace WildBlueIndustries
                 if (!crazyModeUnlocked && HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
                     crazyModeUnlocked = true;
             }
+
+            prevCrazyModeEnabled = crazyModeEnabled;
+            prevCruiseModeEnabled = crazyCruiseControlEnabled;
         }
 
         public override void Flameout(string message, bool statusOnly = false, bool showFX = true)
@@ -1008,18 +1089,34 @@ namespace WildBlueIndustries
             }
 
             //Calculate lift acceleration
+            bool applyAcceleration = shouldApplyHoverAcceleration();
             float liftAcceleration = (float)this.part.vessel.graviticAcceleration.magnitude;
             if (verticalSpeed > 0 && vessel.verticalSpeed < verticalSpeed)
                 liftAcceleration += verticalSpeed;
             else if (verticalSpeed < 0 && vessel.verticalSpeed > verticalSpeed)
                 liftAcceleration += verticalSpeed;
+
+            //First account for max acceleration that this engine can provide
+            if (liftAcceleration > maxAcceleration)
+                liftAcceleration = maxAcceleration;
             currentThrottle = maxAcceleration - liftAcceleration;
 
-            //Get lift vector
-            Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
+            //Now account for max total acceleration
+            if (liftAcceleration > totalMaxAcceleration)
+                liftAcceleration = totalMaxAcceleration;
 
-            //Add acceleration. We do this manually instead of letting ModuleEnginesFX do it so that the craft can have any orientation desired.
-            ApplyAccelerationVector(accelerationVector);
+            //Only one engine should apply lift acceleration. Check and see if we're the chosen one.
+            if (applyAcceleration)
+            {
+                //Set throttle
+                FlightInputHandler.state.mainThrottle = (liftAcceleration / totalMaxAcceleration);
+
+                //Get lift vector
+                Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
+
+                //Add acceleration. We do this manually instead of letting ModuleEnginesFX do it so that the craft can have any orientation desired.
+                ApplyAccelerationVector(accelerationVector);
+            }
         }
 
         /// <summary>
@@ -1039,29 +1136,30 @@ namespace WildBlueIndustries
             }
 
             //Handle translation axis
+            Transform refTransform = this.part.vessel.transform;
             if (translateFwBk != 0 || translateLtRt != 0 || translateUpDn != 0)
             {
                 warpVector = Vector3.zero;
                 if (translateFwBk != 0)
                 {
                     if (translateFwBk > 0)
-                        warpVector += this.transform.up;
+                        warpVector += refTransform.up;
                     else
-                        warpVector += this.transform.up * -1;
+                        warpVector += refTransform.up * -1;
                 }
                 if (translateLtRt != 0)
                 {
                     if (translateLtRt > 0)
-                        warpVector += this.transform.right;
+                        warpVector += refTransform.right;
                     else
-                        warpVector += this.transform.right * -1;
+                        warpVector += refTransform.right * -1;
                 }
                 if (translateUpDn != 0)
                 {
                     if (translateUpDn > 0)
-                        warpVector += this.transform.forward * -1;
+                        warpVector += refTransform.forward * -1;
                     else
-                        warpVector += this.transform.forward;
+                        warpVector += refTransform.forward;
                 }
             }
 
@@ -1078,10 +1176,10 @@ namespace WildBlueIndustries
             throttleSetting *= (thrustPercentage / 100f);
 
             //Calculate offset position
-            Vector3d offsetPosition = this.part.vessel.transform.position + (warpVector * crazyModeVelocity * throttleSetting * TimeWarp.fixedDeltaTime);
+            Vector3d offsetPosition = refTransform.position + (warpVector * crazyModeVelocity * throttleSetting * TimeWarp.fixedDeltaTime);
 
             //Make sure we won't collide with the terrain
-            if (Physics.Raycast(vessel.transform.position, warpVector, out terrainHit, (float)offsetPosition.magnitude, layerMask))
+            if (Physics.Raycast(refTransform.position, warpVector, out terrainHit, (float)offsetPosition.magnitude, layerMask))
             {
                 Part prt = terrainHit.collider.gameObject.GetComponent<Part>();
 
@@ -1261,7 +1359,7 @@ namespace WildBlueIndustries
                     }
 
                     //Check for flameout in hover mode
-                    else if (propellant.actualTotalAvailable <= 0.0f && engineMode == WBIThrustModes.VTOL)
+                    else if (propellant.actualTotalAvailable <= 0.0f && (engineMode == WBIThrustModes.VTOL || hoverIsActive))
                     {
                         Debug.Log("Hover mode flameout");
                         SetHoverMode(false);
@@ -1276,18 +1374,55 @@ namespace WildBlueIndustries
             }
         }
 
+        protected bool shouldApplyHoverAcceleration()
+        {
+            //Only one active gravitic engine should apply the hover acceleration. It should be the first active engine in the list.
+            List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+            WBIGraviticEngine engine, prevEngine;
+            int count = engines.Count;
+            bool applyHoverAcceleration = false;
+
+            totalMaxAcceleration = 0;
+            for (int index = 0; index < count; index++)
+            {
+                engine = engines[index];
+                if (engine.IsEngineActive() && engine.hoverIsActive)
+                {
+                    totalMaxAcceleration += engine.maxAcceleration;
+
+                    //If the index is at the top of the list and we're the topmost engine then we should apply acceleartion.
+                    if (engine == this && index == 0)
+                    {
+                        applyHoverAcceleration = true;
+                    }
+
+                    //Check previous engine. If it is active and hovering then it will be applying acceleration, so we should not apply acceleration.
+                    else if (engine == this)
+                    {
+                        prevEngine = engines[index - 1];
+                        if (prevEngine.IsEngineActive() && prevEngine.hoverIsActive)
+                            applyHoverAcceleration = false;
+                        else
+                            applyHoverAcceleration = true;
+                    }
+                }
+            }
+
+            return applyHoverAcceleration;
+        }
+
         protected void updatePAWGUI()
         {
             //Hover mode disabled when engine isn't on.
             bool isEngineActive = IsEngineActive();
-            Events["ToggleHoverMode"].active = isEngineActive;
+            Events["ToggleHoverMode"].active = isEngineActive && engineState == WBIEngineStates.Running;
 
             //Thrust vector toggle is disabled when engine isn't on.
-            Events["ToggleThrustMode"].active = isEngineActive;
+            Events["ToggleThrustMode"].active = isEngineActive && engineState == WBIEngineStates.Running;
 
             //Crazy mode is only available when the vessel is airborne.
             bool isAirborne = VesselIsAirborne();
-            Fields["crazyModeEnabled"].guiActive = isAirborne;
+            Fields["crazyModeEnabled"].guiActive = isEngineActive && isAirborne;
 
             //If vessel isn't airborne then make sure crazy mode is disabled.
             if (!isAirborne && crazyModeEnabled)
@@ -1299,6 +1434,32 @@ namespace WildBlueIndustries
             //Make sure hover mode is on if crazy mode is on
             if (crazyModeEnabled && !hoverIsActive)
                 hoverIsActive = true;
+
+            //Update crazy mode for all active engines.
+            if (prevCrazyModeEnabled != crazyModeEnabled)
+            {
+                prevCrazyModeEnabled = crazyModeEnabled;
+
+                List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+                int count = engines.Count;
+                for (int index = 0; index < count; index++)
+                {
+                    engines[index].crazyModeEnabled = this.crazyModeEnabled;
+                    engines[index].prevCrazyModeEnabled = this.prevCrazyModeEnabled;
+                }
+            }
+            if (prevCruiseModeEnabled != crazyCruiseControlEnabled)
+            {
+                prevCruiseModeEnabled = crazyCruiseControlEnabled;
+
+                List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+                int count = engines.Count;
+                for (int index = 0; index < count; index++)
+                {
+                    engines[index].crazyCruiseControlEnabled = this.crazyCruiseControlEnabled;
+                    engines[index].prevCruiseModeEnabled = this.prevCruiseModeEnabled;
+                }
+            }
         }
 
         protected void updateHoverEventGUI()
