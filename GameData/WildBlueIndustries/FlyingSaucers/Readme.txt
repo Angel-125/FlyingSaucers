@@ -17,7 +17,7 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
-0.4.10
+0.4.11
 
 Changes
 
