@@ -17,6 +17,19 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.4.10
+
+Changes
+
+- Gravitic engines no longer set the throttle when hover mode is active, but resources are still consumed.
+- Lowered the unit cost of Graviolium.
+- Added stock inventory support to storage sections.
+- Graviolium is no longer produced in the Refinery (which was available at the Space Center).
+- Graviolium is no longer removed when you launch a vessel.
+- With Blueshift installed, parts with Graviolium storage will be able to add the resource in the editor when the resource tweak button is enabled.
+- Fixed issue where gravitic engines without a rotating gravity ring would disable Crazy Mode.
+- Fixed issue where Graviolium never appears in asteroids.
+
 0.4.9
 
 Gravitic Engines (A-51 & S-4)

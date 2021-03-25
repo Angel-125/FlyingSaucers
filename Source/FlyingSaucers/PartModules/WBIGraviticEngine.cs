@@ -766,11 +766,6 @@ namespace WildBlueIndustries
             SetupAnimations();
             loadAccelerationCurve();
 
-            //Get the gravity ring transform
-            gravRingTransform = this.part.FindModelTransform(gravRingTransformName);
-            if (gravRingTransform == null)
-                return;
-
             //Thrust transforms
             if (!string.IsNullOrEmpty(thrustVectorTransformName))
                 thrustTransform = this.part.FindModelTransform(thrustVectorTransformName);
@@ -781,25 +776,31 @@ namespace WildBlueIndustries
             if (!string.IsNullOrEmpty(vtolThrustTransformName))
                 vtolThrustTransform = this.part.FindModelTransform(vtolThrustTransformName);
 
-            //Get the rotation axis
-            if (string.IsNullOrEmpty(gravRingSpinAxis) == false)
-            {
-                string[] axisValues = gravRingSpinAxis.Split(',');
-                float value;
-                if (axisValues.Length == 3)
-                {
-                    if (float.TryParse(axisValues[0], out value))
-                        gravSpinAxis.x = value;
-                    if (float.TryParse(axisValues[1], out value))
-                        gravSpinAxis.y = value;
-                    if (float.TryParse(axisValues[2], out value))
-                        gravSpinAxis.z = value;
-                }
-            }
+            //Get the gravity ring transform
+            gravRingTransform = this.part.FindModelTransform(gravRingTransformName);
 
-            //Rotations per frame
-            rotationPerFrameMax = ((spinRateRPMMax * 60.0f) * TimeWarp.fixedDeltaTime);
-            rotationPerFrameMin = ((spinRateRPMMin * 60.0f) * TimeWarp.fixedDeltaTime);
+            //Get the rotation axis
+            if (gravRingTransform != null)
+            {
+                if (string.IsNullOrEmpty(gravRingSpinAxis) == false)
+                {
+                    string[] axisValues = gravRingSpinAxis.Split(',');
+                    float value;
+                    if (axisValues.Length == 3)
+                    {
+                        if (float.TryParse(axisValues[0], out value))
+                            gravSpinAxis.x = value;
+                        if (float.TryParse(axisValues[1], out value))
+                            gravSpinAxis.y = value;
+                        if (float.TryParse(axisValues[2], out value))
+                            gravSpinAxis.z = value;
+                    }
+                }
+
+                //Rotations per frame
+                rotationPerFrameMax = ((spinRateRPMMax * 60.0f) * TimeWarp.fixedDeltaTime);
+                rotationPerFrameMin = ((spinRateRPMMin * 60.0f) * TimeWarp.fixedDeltaTime);
+            }
 
             //Calculate max thrust and fuel flow
             UpdateThrust();
@@ -1105,12 +1106,27 @@ namespace WildBlueIndustries
             if (liftAcceleration > totalMaxAcceleration)
                 liftAcceleration = totalMaxAcceleration;
 
+            //Consume resources
+            float accelerationRatio = (liftAcceleration / totalMaxAcceleration) - FlightInputHandler.state.mainThrottle;
+            if (!CheatOptions.InfinitePropellant && VesselIsAirborne() && accelerationRatio > 0)
+            {
+                double fuelMass = RequiredPropellantMass(accelerationRatio);
+                double propellantReceived = RequestPropellant(fuelMass);
+
+                this.propellantReqMet = (float)(propellantReceived * 100);
+                this.fuelFlowGui = (float)(fuelMass * propellantReceived * this.mixtureDensityRecip * this.ratioSum) * (1 / TimeWarp.fixedDeltaTime);
+                UpdatePropellantStatus();
+
+                if (propellantReceived < 0.9999f)
+                {
+                    Flameout(Localizer.Format("#autoLOC_220370"), false, true);
+                    return;
+                }
+            }
+
             //Only one engine should apply lift acceleration. Check and see if we're the chosen one.
             if (applyAcceleration)
             {
-                //Set throttle
-                FlightInputHandler.state.mainThrottle = (liftAcceleration / totalMaxAcceleration);
-
                 //Get lift vector
                 Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
 
@@ -1142,7 +1158,7 @@ namespace WildBlueIndustries
                 warpVector = Vector3.zero;
                 if (translateFwBk != 0)
                 {
-                    if (translateFwBk > 0)
+                   if (translateFwBk > 0)
                         warpVector += refTransform.up;
                     else
                         warpVector += refTransform.up * -1;
