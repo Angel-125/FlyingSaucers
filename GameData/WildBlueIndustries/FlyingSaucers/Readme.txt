@@ -17,7 +17,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
-0.4.11
+0.4.12
+- Recompiled for KSP 1.12.2.
+
+0.4.10
 
 Changes
 

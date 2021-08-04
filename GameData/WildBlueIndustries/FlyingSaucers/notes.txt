@@ -1,0 +1,16 @@
+X
+WARNING! RETIRE EXISTING CRAFT BEFORE INSTALLING THIS UPDATE! THESE CHANGES ARE GAME BREAKING!
+
+New Parts
+
+- Mk2 Engine Plate: This part works similarly to the engine plates from the Making History DLC.
+- A-51 Landing Leg: This is a landing leg designed for the A-51.
+- A-51 Conference Room: This is an alternate version of the A-51 Crew Cabin but with an interior configured for meetings.
+- IXS Cockpit: This is a custom Size 2 cockpit that can be fitted with A-51 saucer sections. It is styled after the IXS Enterprise cockpit.
+
+Changes
+
+- Removed A-51 Mk1 Adapter, A-51 Mk2 Shroud, A-51 Size 1.875m Adapter, A-51 Size 1.5 Shroud, A-51 Size 2 Adapter, and A-51 Size 2 Shroud.
+- Increased height on all A-51 body parts.
+- Reworked the A-51 Engine Mount and A-51 Linear Aerospike to be compatible with the Mk2 form factor.
+- Reworked textures to be closer to Restock.

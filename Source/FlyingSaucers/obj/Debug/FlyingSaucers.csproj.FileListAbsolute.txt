@@ -80,3 +80,4 @@ C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.csproj.CopyComplete
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\obj\Debug\FlyingSaucers.pdb
+C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\UnityEngine.SubsystemsModule.dll
