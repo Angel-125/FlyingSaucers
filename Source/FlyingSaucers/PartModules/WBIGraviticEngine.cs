@@ -1280,7 +1280,7 @@ namespace WildBlueIndustries
             finalAcceleration = this.finalThrust / totalMass;
 
             //Apply acceleration. We don't let ModuleEnginesFX do this because we want to simulate "falling" towards the artificial singularity.
-            if (engineState != WBIEngineStates.Running)
+            if (engineState != WBIEngineStates.Running || vessel.ctrlState.mainThrottle <= 0)
                 return;
             if (engineMode == WBIThrustModes.Forward || engineMode == WBIThrustModes.Reverse)
             {

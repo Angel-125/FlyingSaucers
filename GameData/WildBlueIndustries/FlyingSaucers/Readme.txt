@@ -17,6 +17,34 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
+0.5
+
+This release is a major milestone: the A-51 Flapjack is feature complete! It's been a long road, and one with lots of bumps. The A-51 was originally just a proof of concept to ensure that the plugin worked correctly and that I could make a saucer-shaped aircraft that could fly. But, it morphed into the craft that it is today. It is a complete solution from its early days as a jet-powered VTOL prototype to a rocket-powered lenticular reentry vehicle- based on a real-world Air Force proposal- to a flying saucer powered by gravity waves. Now that it is complete, I can focus on the self-contained gravitic engines (coming next release) and the mothership (as time and sanity permits).
+
+New Parts
+
+- A-51 Conference Room: This is an alternate version of the A-51 Crew Cabin. It has an interior configured for meetings.
+- Mk2 Engine Plate: This is similar to the Making History engine mounts, but it is made for the Mk2 form factor.
+- IXS Cockpit: This is a custom Size 2 cockpit that can be fitted with 3 A-51 saucer sections. The design is inspired by the IXS Enterprise cockpit created by Mark Rademaker.
+- A-51 Landing Strut: This is a landing strut designed for the A-51. it is node-attached to the keel (with another node for saucer sections).
+
+Changes
+
+- Deprecated the existing A-51 Engine Mount and replaced it with a newer version, called the A-51-Mk2 Adapter, that adapts the A-51 saucer to the Mk2 part set.
+- Deprecated the existing A-51 Linear Aerospike and replaced it with a newer version that fits the Mk2 form factor.
+- Updated the Flapjack parts and textures to be closer to Restock.
+- Added missing stock cargo inventory to the A-51 Crew Cabin.
+- Added a stock/Near Future Props IVA to the A-51 Cockpit that will automatically be enabled when MOARdV's Avionics Systems isn't installed.
+- Removed the A-51 Mk1 Adapter, A-51 Size 1.875m Adapter, A-51 Size 1.5 Shroud, A-51 to Mk2 Shroud, A-51 Size 2 Adapter, and A-51 Size 2 Shroud. These are no longer needed as a result of adding the A-51-Mk2 Adapter.
+- Hid the Advanced Alien Engineering tech tree node when Community Tech Tree is installed; parts slated for AEE will be found in CTT's Unified Field Theory node instead.
+- Fixed issue where drills were not harvesting graviolium on planetary surfaces that had the resource.
+- Added new stock Easter Egg-inspired flying saucer Space Anomaly that appears if you have Blueshift installed.
+NOTE: If you don't have Blueshift installed, then the UFO becomes available in the VAB/SPH.
+
+Known Issues
+- The DepthMask for the Landing Strut's gear well isn't working properly and appears to be an issue with the landing strut's interaction with DepthMask.
+- The Landing Strut lacks a functioning suspension system due to the way the game works. It has high impact tolerance to compensate.
+
 0.4.12
 - Recompiled for KSP 1.12.2.
 
