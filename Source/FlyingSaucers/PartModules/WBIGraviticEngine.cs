@@ -156,6 +156,7 @@ namespace WildBlueIndustries
         protected LayerMask layerMask = -1;
         protected bool translationKeysActive = false;
         float totalMaxAcceleration = 0;
+        Light[] lights = null;
         #endregion
 
         #region IHoverController
@@ -802,6 +803,9 @@ namespace WildBlueIndustries
                 rotationPerFrameMin = ((spinRateRPMMin * 60.0f) * TimeWarp.fixedDeltaTime);
             }
 
+            // Lights
+            lights = gravRingTransform.gameObject.GetComponentsInChildren<Light>();
+
             //Calculate max thrust and fuel flow
             UpdateThrust();
 
@@ -862,12 +866,18 @@ namespace WildBlueIndustries
             }
         }
 
+        public override void OnActive()
+        {
+            base.OnActive();
+            if (!staged)
+                part.force_activate(true);
+        }
+
         public override void Activate()
         {
             UnFlameout();
 
             base.Activate();
-            this.part.force_activate();
 
             PlayAnimation(false);
 
@@ -935,6 +945,11 @@ namespace WildBlueIndustries
                     this.part.Effect(powerEffectName, 0f, -1);
                     this.part.Effect(thrustEffect, 0f, -1);
                     this.part.Effect(vtolThrustEffect, 0f, -1);
+                    if (lights != null && lights.Length > 0)
+                    {
+                        for (int index = 0; index < lights.Length; index++)
+                            lights[index].intensity = 0f;
+                    }
                     break;
 
                 case WBIEngineStates.Running:
@@ -985,7 +1000,16 @@ namespace WildBlueIndustries
                         gravRingTransform.Rotate(gravSpinAxis * rotationPerFrame * currentStartStopLerp);
 
                     if (currentStartStopLerp >= 0.99f)
+                    {
                         engineState = WBIEngineStates.Running;
+                        currentStartStopLerp = 1.0f;
+                    }
+
+                    if (lights != null && lights.Length > 0)
+                    {
+                        for (int index = 0; index < lights.Length; index++)
+                            lights[index].intensity = currentStartStopLerp;
+                    }
                     break;
 
                 case WBIEngineStates.ShuttingDown:
@@ -999,7 +1023,16 @@ namespace WildBlueIndustries
                         gravRingTransform.Rotate(gravSpinAxis * rotationPerFrame * currentStartStopLerp);
 
                     if (currentStartStopLerp <= 0.01f)
+                    {
                         engineState = WBIEngineStates.Shutdown;
+                        currentStartStopLerp = 0f;
+                    }
+
+                    if (lights != null && lights.Length > 0)
+                    {
+                        for (int index = 0; index < lights.Length; index++)
+                            lights[index].intensity = currentStartStopLerp;
+                    }
                     break;
             }
         }
@@ -1635,12 +1668,12 @@ namespace WildBlueIndustries
 
         public virtual void PlayAnimation(bool playInReverse = false)
         {
-            if (string.IsNullOrEmpty(animationName))
+            if (string.IsNullOrEmpty(animationName) || gravRingTransform == null)
                 return;
 
             float animationSpeed = playInReverse == false ? 1.0f : -1.0f;
             Animation anim = this.part.FindModelAnimators(animationName)[0];
-            Light[] lights = gravRingTransform.gameObject.GetComponentsInChildren<Light>();
+//            Light[] lights = gravRingTransform.gameObject.GetComponentsInChildren<Light>();
 
             if (playInReverse)
             {
@@ -1661,11 +1694,13 @@ namespace WildBlueIndustries
                 anim.Play(animationName);
             }
 
+            /*
             if (lights != null)
             {
                 foreach (Light light in lights)
                     light.intensity = playInReverse ? 0 : 1;
             }
+            */
         }
 
         public virtual void Log(object message)

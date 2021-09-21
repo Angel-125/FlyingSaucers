@@ -92,6 +92,7 @@
     <Compile Include="PartModules\WBIGraviticLift.cs" />
     <Compile Include="PartModules\WBINodeToggle.cs" />
     <Compile Include="PartModules\WBIPlumeController.cs" />
+    <Compile Include="WBIGraviticEngineGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BARIS\BARISBridge\BARISBridge.csproj">
