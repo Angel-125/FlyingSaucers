@@ -1292,7 +1292,9 @@ namespace WildBlueIndustries
         {
             if (!isOperational && !EngineIgnited)
                 return;
-            if (this.part.vessel == null)
+            if (part.vessel == null)
+                return;
+            if (part.vessel.state == Vessel.State.DEAD)
                 return;
 
             //Get total mass

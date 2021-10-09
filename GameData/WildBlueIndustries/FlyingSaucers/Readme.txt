@@ -17,30 +17,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 --RELEASE NOTES---
 
-0.6
-
-New Gravitic Engines
-
-- GND-00 "Beta" Gravitic Engine: This is a 1.25m (Size 1) self-contained gravitic engine that has a built-in fusion reactor and gravitic generator. With Blueshift installed, the generator can switch between Propellium and Fusion Pellets.
-- GND-01 "Quantum" Gravitic Engine: This is a 2.5m (Size 2) self-contained gravitic engine that has a built-in fusion reactor and gravitic generator. With Blueshift installed, the generator can switch between Propellium and Fusion Pellets.
-
-New Storage Tanks
-
-The following tanks can store a wide variety of different resources including Propellium and Graviolium.
-NOTE: These parts are only available if you don't have Blueshift installed.
-
-- Mk2 Omni Tank
-- Mk3-S3 Omni Tank
-- S-1 Omni Tank
-- S-2 Omni Tank
-- S-3 Omni Tank
-- S-1 Omni Endcap Tank
-- S-2 Omni Endcap Tank
-
 Changes
 
-- Added new WBIGraviticEngineGenerator part module. It combines a resource generator with the gravitic engine. It is capable of switching between two or more resource modes defined by a RESOURCE_MODE config node.
-- Added support for EVA Repairs, if installed. You can find the mini-mod here.
+- By request, the Flapjack now has a more Restock-alike texture option. You can switch between original textures and Restock textures in the VAB/SPH.
 
 0.5
 
