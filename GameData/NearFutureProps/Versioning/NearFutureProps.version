@@ -1,19 +1,19 @@
 {
     "NAME":"NearFutureProps",
-    "URL":"https://raw.githubusercontent.com/ChrisAdderley/NearFutureProps/master/GameData/NearFutureProps/Versioning/NearFutureProps.version",
-    "DOWNLOAD":"https://github.com/ChrisAdderley/NearFutureProps/releases",
+    "URL":"https://raw.githubusercontent.com/post-kerbin-mining-corporation/NearFutureProps/master/GameData/NearFutureProps/Versioning/NearFutureProps.version",
+    "DOWNLOAD":"https://github.com/post-kerbin-mining-corporation/NearFutureProps/releases",
     "VERSION":
     {
         "MAJOR":0,
-        "MINOR":6,
+        "MINOR":7,
         "PATCH":1,
         "BUILD":0
     },
     "KSP_VERSION":
     {
         "MAJOR":1,
-        "MINOR":8,
-        "PATCH":0
+        "MINOR":12,
+        "PATCH":2
     },
     "KSP_VERSION_MIN":{
         "MAJOR":1,
@@ -22,7 +22,7 @@
     },
     "KSP_VERSION_MAX":{
         "MAJOR":1,
-        "MINOR":8,
+        "MINOR":12,
         "PATCH":99
     }
 }

@@ -101,13 +101,16 @@ namespace WildBlueIndustries
     {
         #region Fields
         [KSPField(isPersistant = true)]
-        public int selectedModeIndex = 0;
+        public int selectedModeIndex = -1;
 
         [KSPField(guiActive = true, guiActiveEditor = true, guiName = "#LOC_KFS_currentResourceMode")]
         public string currentModeDisplay = string.Empty;
 
         [KSPField(guiActive = true, guiName = "#LOC_KFS_generatorStatus")]
         public string generatorStatus = string.Empty;
+
+        [KSPField]
+        public string defaultMode = string.Empty;
         #endregion
 
         #region Housekeeping
@@ -151,6 +154,14 @@ namespace WildBlueIndustries
             loadResourceModes();
             if (resourceModes.Count > 0)
             {
+                // Update default mode
+                if (selectedModeIndex < 0)
+                {
+                    if (!string.IsNullOrEmpty(defaultMode))
+                        selectedModeIndex = findDefaultResourceMode();
+                    if (selectedModeIndex < 0)
+                        selectedModeIndex = 0;
+                }
                 updateResourceMode();
             }
 
@@ -171,6 +182,21 @@ namespace WildBlueIndustries
         #endregion
 
         #region Helpers
+        private int findDefaultResourceMode()
+        {
+            int count = resourceModes.Count;
+
+            ResourceMode resourceMode;
+            for (int index = 0; index < count; index++)
+            {
+                resourceMode = resourceModes[index];
+                if (resourceMode.name == defaultMode)
+                    return index;
+            }
+
+            return -1;
+        }
+
         private void checkFullResources()
         {
             if (allowUnflameout)

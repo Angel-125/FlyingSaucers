@@ -19,7 +19,15 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
-- By request, the Flapjack now has a more Restock-alike texture option. You can switch between original textures and Restock textures in the VAB/SPH.
+0.6.7
+
+- WBIGraviticEngineGenerator now has a defaultMode field that's used when you have more than one RESOURCE_MODE.
+- The GND-00 "Beta" Gravitic Engine and GND-02 "Quantum" Gravitic Engine default to Fusion Pellets if Blueshift is installed.
+- The GND-00 "Beta" Gravitic Engine and GND-02 "Quantum" Gravitic Engine now support Liquid Deuterium if Far Future Technologies (FFT) is installed. It is the default resource mode when FFT is installed, even if Blueshift is installed.
+- The Gravitic Fusion Reactor can now be stored in stock inventories.
+- The Gravitic Fusion Reactor replaces its Propellium requirement with Fusion Pellets when Blueshift is installed.
+- The Gravitic Fusion Reactor replaces its Propellium requirement with Liquid Deuterium when Far Future Technologies is installed. This happens even if Blueshift is installed.
+- Added support for Community Category Kit.
 
 0.5
 
