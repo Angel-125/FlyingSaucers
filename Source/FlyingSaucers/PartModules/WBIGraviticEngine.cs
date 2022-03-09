@@ -870,7 +870,9 @@ namespace WildBlueIndustries
         {
             base.OnActive();
             if (!staged)
+            {
                 part.force_activate(true);
+            }
         }
 
         public override void Activate()
@@ -878,6 +880,8 @@ namespace WildBlueIndustries
             UnFlameout();
 
             base.Activate();
+            staged = true;
+            part.force_activate(true);
 
             PlayAnimation(false);
 

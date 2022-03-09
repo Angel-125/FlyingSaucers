@@ -19,6 +19,12 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+0.6.8
+
+- QoL improvement: WBIGraviticEngineGenerator will force activate the part if not staged when the engine is activated through the PAW.
+- QoL improvement: Added Plasma Contactor (Large), with increased discharge rates over its smaller cousin.
+- QoL improvement: Upgraded discharge rates for the Plasma Contactor Module.
+
 0.6.7
 
 - WBIGraviticEngineGenerator now has a defaultMode field that's used when you have more than one RESOURCE_MODE.
