@@ -19,6 +19,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+0.6.9
+
+- Fixed interaction issue between Blueshift and Kerbal Flying Saucers.
+
 0.6.8
 
 - QoL improvement: WBIGraviticEngineGenerator will force activate the part if not staged when the engine is activated through the PAW.
