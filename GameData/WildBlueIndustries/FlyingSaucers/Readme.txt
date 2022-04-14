@@ -19,6 +19,11 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.0
+
+- Sandcastle compatibility fix.
+- Moved Excalbur parts to the Extras folder. If you want to use them, then copy the Excalibur folder to the FlyingSaucers/Parts folder.
+
 0.6.9
 
 - Fixed interaction issue between Blueshift and Kerbal Flying Saucers.

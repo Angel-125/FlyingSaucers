@@ -117,6 +117,8 @@ namespace WildBlueIndustries
         List<ResourceMode> resourceModes = null;
         ResourceMode currentMode = null;
         bool allowUnflameout = true;
+        bool drainedResourceProduced = false;
+        string resourcesDrainedHash = string.Empty;
         #endregion
 
         #region Events
@@ -129,6 +131,11 @@ namespace WildBlueIndustries
         #endregion
 
         #region Overrides
+        public void OnDestroy()
+        {
+            GameEvents.OnResourceConverterOutput.Remove(onResourceConverterOutput);
+        }
+
         public override void OnFixedUpdate()
         {
             if (HighLogic.LoadedSceneIsFlight)
@@ -141,6 +148,7 @@ namespace WildBlueIndustries
                 {
                     drainResources();
                     checkFullResources();
+                    drainedResourceProduced = false;
                 }
             }
 
@@ -150,6 +158,7 @@ namespace WildBlueIndustries
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
+            GameEvents.OnResourceConverterOutput.Add(onResourceConverterOutput);
 
             loadResourceModes();
             if (resourceModes.Count > 0)
@@ -172,6 +181,12 @@ namespace WildBlueIndustries
                 Fields["currentModeDisplay"].guiActiveEditor = false;
                 Events["NextMode"].active = false;
             }
+
+            int count = currentMode.drainedResources.Count;
+            for (int index = 0; index < count; index++)
+            {
+                resourcesDrainedHash += currentMode.drainedResources[index].name;
+            }
         }
 
         public override void UnFlameout(bool showFX = true)
@@ -182,6 +197,12 @@ namespace WildBlueIndustries
         #endregion
 
         #region Helpers
+        private void onResourceConverterOutput(PartModule converter, string resourceName, double amount)
+        {
+            if (resourcesDrainedHash.Contains(resourceName))
+                drainedResourceProduced = true;
+        }
+
         private int findDefaultResourceMode()
         {
             int count = resourceModes.Count;
@@ -264,7 +285,7 @@ namespace WildBlueIndustries
 
         private void drainResources()
         {
-            if (currentMode == null || currentMode.drainedResources.Count == 0)
+            if (currentMode == null || currentMode.drainedResources.Count == 0 || drainedResourceProduced)
                 return;
 
             int count = currentMode.drainedResources.Count;

@@ -22,6 +22,26 @@ namespace WildBlueIndustries
 {
     public class WBIGraviticGenerator : WBIModuleResourceConverterFX
     {
+        bool drainedResourceProduced = false;
+        string resourcesDrainedHash = string.Empty;
+
+        public void OnDestroy()
+        {
+            GameEvents.OnResourceConverterOutput.Remove(onResourceConverterOutput);
+        }
+
+        public override void OnStart(StartState state)
+        {
+            base.OnStart(state);
+            GameEvents.OnResourceConverterOutput.Add(onResourceConverterOutput);
+
+            int count = outputList.Count;
+            for (int index = 0; index < count; index++)
+            {
+                resourcesDrainedHash += outputList[index].ResourceName;
+            }
+        }
+
         public override void FixedUpdate()
         {
             base.FixedUpdate();
@@ -42,21 +62,15 @@ namespace WildBlueIndustries
                             this.part.RequestResource(resourceName, ratio * TimeWarp.fixedDeltaTime, ResourceFlowMode.NO_FLOW);
                     }
                 }
+
+                drainedResourceProduced = false;
             }
         }
 
-        /*
-        protected override void PostProcess(ConverterResults result, double deltaTime)
+        private void onResourceConverterOutput(PartModule converter, string resourceName, double amount)
         {
-            base.PostProcess(result, deltaTime);
-
-            //If we're missing resources then stop the converter.
-            if (!string.IsNullOrEmpty(result.Status))
-            {
-                if (result.Status.Contains(Localizer.Format("#autoLOC_261263")))
-                    StopResourceConverter();
-            }
+            if (resourcesDrainedHash.Contains(resourceName))
+                drainedResourceProduced = true;
         }
-        */
     }
 }
