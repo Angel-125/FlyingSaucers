@@ -55,6 +55,8 @@ namespace WildBlueIndustries
                 for (int index = 0; index < outputCount; index++)
                 {
                     resourceName = outputList[index].ResourceName;
+                    if (resourceName == "ElectricCharge")
+                        continue;
                     ratio = outputList[index].Ratio;
                     if (this.part.Resources.Contains(resourceName))
                     {

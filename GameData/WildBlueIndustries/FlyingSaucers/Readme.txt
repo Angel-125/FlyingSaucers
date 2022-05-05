@@ -19,6 +19,11 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+0.6.11
+
+- Updated Blueshift compatibility patch.
+- Fixed issue where WBIGraviticGenerator would drain ElectricCharge if it is an output resource and the generator is turned off.
+
 0.6.10
 
 - Sandcastle compatibility fix.
