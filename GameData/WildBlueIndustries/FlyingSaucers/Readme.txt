@@ -19,6 +19,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+0.6.12
+- Updated SpaceDust configs- thanks for the assist, Grimmas! :)
+- Graviolium now has an exceptionally small amount of mass to support SpaceDust.
+
 0.6.11
 
 - Updated Blueshift compatibility patch.
