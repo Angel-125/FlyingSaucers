@@ -19,6 +19,16 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+0.6.14
+
+- SpaceDust fine tuning
+- Fixed missing texture options on the AVR0 "Coanda" Hover Jet.
+- Fixed missing sample craft
+
+0.6.13
+
+- SpaceDust fix- Thanks Rakete!
+
 0.6.12
 - Updated SpaceDust configs- thanks for the assist, Grimmas! :)
 - Graviolium now has an exceptionally small amount of mass to support SpaceDust.

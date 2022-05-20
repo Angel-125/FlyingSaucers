@@ -61,6 +61,7 @@ namespace WildBlueIndustries
         [KSPField(isPersistant = true)]
         public double lastUpdateTime = 0f;
 
+        public float dischargeMultiplier = 1.0f;
         public string[] resourcesToDump;
         public ResourceRatio[] landedResourceInputs;
         public ResourceRatio[] splashedResourceInputs;
