@@ -19,6 +19,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+0.6.15
+
+- SpaceDust fine tuning- Thanks Horizons Aerospace! :)
+
 0.6.14
 
 - SpaceDust fine tuning
