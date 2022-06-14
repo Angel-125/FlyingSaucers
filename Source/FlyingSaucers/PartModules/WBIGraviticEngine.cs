@@ -184,8 +184,7 @@ namespace WildBlueIndustries
         {
             if (this.part.vessel.situation == Vessel.Situations.ESCAPING ||
                 this.part.vessel.situation == Vessel.Situations.DOCKED ||
-                this.part.vessel.situation == Vessel.Situations.ORBITING ||
-                this.part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
+                this.part.vessel.situation == Vessel.Situations.ORBITING)
             {
                 hoverIsActive = false;
                 return;
@@ -251,6 +250,9 @@ namespace WildBlueIndustries
                 vessel.ctrlState.mainThrottle = 0f;
                 FlightInputHandler.state.mainThrottle = 0f;
             }
+
+            if (crazyModeEnabled)
+                crazyModeEnabled = false;
 
             //Switch to normal transform
             engineMode = WBIThrustModes.Forward;

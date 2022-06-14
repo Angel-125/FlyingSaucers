@@ -19,6 +19,11 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+0.6.16
+
+- Fixed a few synchronization issues between Kerbal Actuators and KFS.
+- Fixed crazy mode reverse icon always showing the enabled state even when it wasn't enabled.
+
 0.6.15
 
 - SpaceDust fine tuning- Thanks Horizons Aerospace! :)
