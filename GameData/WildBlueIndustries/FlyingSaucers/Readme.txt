@@ -19,6 +19,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+0.6.18
+- Version sync
+
 0.6.17
 - Removed BARIS dependency dll
 
