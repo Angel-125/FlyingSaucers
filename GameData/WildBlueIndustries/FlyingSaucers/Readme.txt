@@ -19,7 +19,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
-0.6.18
+1.0.0
+- Added gravitic engine 3D model needed for Buffalo 2 support.
+
+0.7.1
 - Version sync
 
 0.6.17

@@ -1135,6 +1135,11 @@ namespace WildBlueIndustries
                 liftAcceleration += verticalSpeed;
             else if (verticalSpeed < 0 && vessel.verticalSpeed > verticalSpeed)
                 liftAcceleration += verticalSpeed;
+            else if (verticalSpeed == 0 && engineMode == WBIThrustModes.VTOL)
+            {
+                this.part.vessel.verticalSpeed = 0.0f;
+                this.part.vessel.SetWorldVelocity(Vector3d.zero);
+            }
 
             //First account for max acceleration that this engine can provide
             if (liftAcceleration > maxAcceleration)
