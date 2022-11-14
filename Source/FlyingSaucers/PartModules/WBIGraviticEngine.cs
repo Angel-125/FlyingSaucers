@@ -1130,28 +1130,27 @@ namespace WildBlueIndustries
 
             //Calculate lift acceleration
             bool applyAcceleration = shouldApplyHoverAcceleration();
-            float liftAcceleration = (float)this.part.vessel.graviticAcceleration.magnitude;
+            double liftAcceleration = this.part.vessel.graviticAcceleration.magnitude;
             if (verticalSpeed > 0 && vessel.verticalSpeed < verticalSpeed)
                 liftAcceleration += verticalSpeed;
             else if (verticalSpeed < 0 && vessel.verticalSpeed > verticalSpeed)
                 liftAcceleration += verticalSpeed;
-            else if (verticalSpeed == 0 && engineMode == WBIThrustModes.VTOL)
+            else if (verticalSpeed == 0 && part.vessel.verticalSpeed < 0)
             {
-                this.part.vessel.verticalSpeed = 0.0f;
-                this.part.vessel.SetWorldVelocity(Vector3d.zero);
+                liftAcceleration += Math.Abs(part.vessel.verticalSpeed) * 2f;
             }
 
             //First account for max acceleration that this engine can provide
             if (liftAcceleration > maxAcceleration)
                 liftAcceleration = maxAcceleration;
-            currentThrottle = maxAcceleration - liftAcceleration;
+            currentThrottle = (float)(maxAcceleration - liftAcceleration);
 
             //Now account for max total acceleration
             if (liftAcceleration > totalMaxAcceleration)
                 liftAcceleration = totalMaxAcceleration;
 
             //Consume resources
-            float accelerationRatio = (liftAcceleration / totalMaxAcceleration) - FlightInputHandler.state.mainThrottle;
+            float accelerationRatio = (float)(liftAcceleration / totalMaxAcceleration) - FlightInputHandler.state.mainThrottle;
             if (!CheatOptions.InfinitePropellant && VesselIsAirborne() && accelerationRatio > 0)
             {
                 double fuelMass = RequiredPropellantMass(accelerationRatio);
@@ -1172,7 +1171,11 @@ namespace WildBlueIndustries
             if (applyAcceleration)
             {
                 //Get lift vector
-                Vector3d accelerationVector = (this.part.vessel.CoM - this.vessel.mainBody.position).normalized * liftAcceleration;
+                Vector3d accelerationVector = (this.part.vessel.GetWorldPos3D() - this.vessel.mainBody.position).normalized * liftAcceleration;
+                if (accelerationVector.magnitude < part.vessel.graviticAcceleration.magnitude && verticalSpeed == 0)
+                {
+                    accelerationVector = part.vessel.graviticAcceleration * -1f;
+                }
 
                 //Add acceleration. We do this manually instead of letting ModuleEnginesFX do it so that the craft can have any orientation desired.
                 ApplyAccelerationVector(accelerationVector);

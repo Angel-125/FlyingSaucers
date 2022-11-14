@@ -19,6 +19,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.0.1
+- Fixed issue preventing vehicles from maneuvering when at zero velocity.
+
 1.0.0
 - Added gravitic engine 3D model needed for Buffalo 2 support.
 
