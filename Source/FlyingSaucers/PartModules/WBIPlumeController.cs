@@ -70,7 +70,7 @@ namespace WildBlueIndustries
             }
 
             //Get RCS state
-            isRCSEnabled = FlightGlobals.ActiveVessel.ActionGroups[KSPActionGroup.RCS];
+            isRCSEnabled = FlightGlobals.ActiveVessel.ActionGroups[KSPActionGroup.RCS] && (FlightGlobals.ActiveVessel == part.vessel);
             FlightCtrlState state = FlightInputHandler.state;
 
             //Update thrust plume direction

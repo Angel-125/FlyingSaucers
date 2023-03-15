@@ -84,6 +84,13 @@ namespace WildBlueIndustries
 
         protected override void UpdatePowerFX(bool running, int idx, float power)
         {
+            // Don't play the effects if we aren't the active vessel.
+            if (FlightGlobals.ActiveVessel != part.vessel)
+            {
+                this.part.Effect(rcsSoundEffectName, 0f, -1);
+                return;
+            }
+
             //Play RCS sound. Why it only works in one direction, I don't know.
             if (!string.IsNullOrEmpty(rcsSoundEffectName) && running)
                 this.part.Effect(rcsSoundEffectName, power, -1);
