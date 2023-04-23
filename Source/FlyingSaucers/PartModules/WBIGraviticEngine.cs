@@ -39,6 +39,8 @@ namespace WildBlueIndustries
         public const string ICON_PATH = "WildBlueIndustries/FlyingSaucers/Icons/";
         protected const int kDefaultAnimationLayer = 2;
         protected float kMessageDuration = 3f;
+        // Max velocity allowed is 99.99% of light speed
+        float kMaxVelocity = 299762478.7542f;
         #endregion
 
         #region Fields
@@ -120,6 +122,12 @@ namespace WildBlueIndustries
         [KSPField]
         public FloatCurve accelerationCurve;
 
+        [KSPField(isPersistant = true, guiName = "Boost Mode")]
+        [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
+        public bool enableBoostMode = false;
+
+        [KSPField]
+        public float boostModeModifier = 10f;
         #endregion
 
         #region Housekeeping
@@ -156,6 +164,7 @@ namespace WildBlueIndustries
         protected LayerMask layerMask = -1;
         protected bool translationKeysActive = false;
         float totalMaxAcceleration = 0;
+        bool boostModeWasEnabled;
         Light[] lights = null;
         #endregion
 
@@ -833,6 +842,7 @@ namespace WildBlueIndustries
 
             prevCrazyModeEnabled = crazyModeEnabled;
             prevCruiseModeEnabled = crazyCruiseControlEnabled;
+            boostModeWasEnabled = enableBoostMode;
         }
 
         public override void Flameout(string message, bool statusOnly = false, bool showFX = true)
@@ -1336,6 +1346,15 @@ namespace WildBlueIndustries
                 //Get the acceleration speed.
                 float accelerationMagnitude = maxAcceleration * accelerationCurve.Evaluate(vessel.ctrlState.mainThrottle);
 
+                // Boost Mode
+                if (enableBoostMode && part.vessel.situation == Vessel.Situations.ESCAPING || part.vessel.situation == Vessel.Situations.ORBITING || part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
+                {
+                    maxThrust *= boostModeModifier;
+                    maxFuelFlow *= boostModeModifier;
+                    finalAcceleration *= boostModeModifier;
+                    accelerationMagnitude *= boostModeModifier;
+                }
+
                 //Calcualte the acceleration vector
                 Vector3d accelerationVector = (this.part.vessel.GetReferenceTransformPart().transform.up).normalized * accelerationMagnitude;
                 if (engineMode == WBIThrustModes.Reverse)
@@ -1394,6 +1413,11 @@ namespace WildBlueIndustries
 
         public void ApplyAccelerationVector(Vector3d accelerationVector)
         {
+            // Do not apply accelearation if we're near light speed.
+            if (accelerationVector.magnitude > kMaxVelocity)
+                return;
+
+            // Apply acceleration from each part in the vessel.
             int partCount = vessel.parts.Count;
             Part vesselPart;
             for (int index = 0; index < partCount; index++)
@@ -1401,6 +1425,7 @@ namespace WildBlueIndustries
                 vesselPart = vessel.parts[index];
                 if (vesselPart.rb != null)
                 {
+                    part.vessel.IgnoreGForces(1);
                     vesselPart.rb.AddForce(accelerationVector, ForceMode.Acceleration);
                 }
             }
@@ -1496,6 +1521,16 @@ namespace WildBlueIndustries
             //Crazy cruise is only enabled when crazy mode is.
             Fields["crazyCruiseControlEnabled"].guiActive = crazyModeEnabled;
 
+            // Enable/disable boost mode UI
+            if (part.vessel.situation == Vessel.Situations.ESCAPING || part.vessel.situation == Vessel.Situations.ORBITING || part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
+            {
+                Fields["enableBoostMode"].guiActive = true;
+            }
+            else
+            {
+                Fields["enableBoostMode"].guiActive = false;
+            }
+
             //Make sure hover mode is on if crazy mode is on
             if (crazyModeEnabled && !hoverIsActive)
                 hoverIsActive = true;
@@ -1523,6 +1558,21 @@ namespace WildBlueIndustries
                 {
                     engines[index].crazyCruiseControlEnabled = this.crazyCruiseControlEnabled;
                     engines[index].prevCruiseModeEnabled = this.prevCruiseModeEnabled;
+                }
+            }
+
+            // Boost mode sync
+            if (boostModeWasEnabled != enableBoostMode)
+            {
+                boostModeWasEnabled = enableBoostMode;
+                List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
+                WBIGraviticEngine engine;
+                int count = engines.Count;
+
+                for (int index = 0; index < count; index++)
+                {
+                    engine = engines[index];
+                    engine.enableBoostMode = enableBoostMode;
                 }
             }
         }

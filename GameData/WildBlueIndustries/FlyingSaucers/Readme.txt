@@ -19,11 +19,12 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.1.0
+- Gravitic engines will no longer accelerate a vessel past 99.99% of light speed.
+- Added "Boost Mode" to WBIGraviticEngine. Boost Mode is only available when a vessel is orbiting, sub-orbital, or on an escape trajectory. When enabled, Boost Mode increases acceleration- and fuel consumption- by a factor specified by the boostModeModifier. The default is 10, meaning that when enabled, Boost Mode will consume 10x the propellants and also multiply max acceleration 10x.
+
 1.0.2
 - Bug fixes
-
-1.0.1
-- Fixed issue preventing vehicles from maneuvering when at zero velocity.
 
 1.0.0
 - Added gravitic engine 3D model needed for Buffalo 2 support.
