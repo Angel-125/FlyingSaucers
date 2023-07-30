@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/size2PixiePlume.unity
+  isLoaded: 1
+  isActive: 1
