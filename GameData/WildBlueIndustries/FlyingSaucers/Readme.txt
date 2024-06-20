@@ -19,6 +19,14 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.2.1
+- Refactored tech tree to disperse parts and unify with Blueshift.
+
+1.2.0
+
+- Updated Excalibur textures to be more Restock compatible.
+- Updated graviolium patch to defer to Blueshift.
+
 1.1.1
 - Updated the FX for the standalone gravitic engines.
 - Bug fixes in Wild Blue Tools.
