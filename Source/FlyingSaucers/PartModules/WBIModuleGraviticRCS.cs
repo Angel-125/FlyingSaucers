@@ -85,7 +85,7 @@ namespace WildBlueIndustries
         protected override void UpdatePowerFX(bool running, int idx, float power)
         {
             // Don't play the effects if we aren't the active vessel.
-            if (FlightGlobals.ActiveVessel != part.vessel)
+            if (FlightGlobals.ActiveVessel != part.vessel || !rcsEnabled)
             {
                 this.part.Effect(rcsSoundEffectName, 0f, -1);
                 return;

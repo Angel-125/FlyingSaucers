@@ -158,7 +158,6 @@ namespace WildBlueIndustries
         protected LineRenderer comRenderer;
         protected GameObject thrustLine;
         protected GameObject comLine;
-        protected bool isLiftingOff = false;
         protected string thrustEffect = string.Empty;
         protected RaycastHit terrainHit;
         protected LayerMask layerMask = -1;
@@ -166,6 +165,7 @@ namespace WildBlueIndustries
         float totalMaxAcceleration = 0;
         bool boostModeWasEnabled;
         Light[] lights = null;
+        bool wasAirborne;
         #endregion
 
         #region IHoverController
@@ -196,6 +196,7 @@ namespace WildBlueIndustries
                 this.part.vessel.situation == Vessel.Situations.ORBITING)
             {
                 hoverIsActive = false;
+                KAEvents.onControllerUpdatedHoverActive.Fire(part, hoverIsActive);
                 return;
             }
             hoverIsActive = isActive;
@@ -226,8 +227,6 @@ namespace WildBlueIndustries
         public void SetVerticalSpeed(float verticalSpeed)
         {
             this.verticalSpeed = verticalSpeed;
-            if (verticalSpeed > 0f)
-                isLiftingOff = true;
         }
 
         public float GetVerticalSpeed()
@@ -309,16 +308,23 @@ namespace WildBlueIndustries
         /// <summary>
         /// Flag to indicate if Crazy Mode is enabled.
         /// </summary>
-        [KSPField(guiName = "Crazy Mode", isPersistant = true, guiActiveEditor = false, guiActive = true)]
+        [KSPField(guiName = "Crazy Mode", isPersistant = true, guiActiveEditor = false, guiActive = true, groupName = "Crazy Mode", groupDisplayName = "Crazy Mode")]
         [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
         public bool crazyModeEnabled;
 
         /// <summary>
         /// Flag to indicate if Crazy Mode cruise control is enabled.
         /// </summary>
-        [KSPField(guiName = "Crazy Cruise Control", isPersistant = true, guiActiveEditor = false, guiActive = true)]
+        [KSPField(guiName = "Crazy Cruise Control", isPersistant = true, guiActiveEditor = false, guiActive = true, groupName = "Crazy Mode", groupDisplayName = "Crazy Mode")]
         [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
         public bool crazyCruiseControlEnabled;
+
+        /// <summary>
+        /// Flag to indicate if terrain warning is enabled.
+        /// </summary>
+        [KSPField(guiName = "Terrain Warning", isPersistant = true, guiActiveEditor = false, guiActive = true, groupName = "Crazy Mode", groupDisplayName = "Crazy Mode")]
+        [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
+        public bool terrainWarningEnabled = true;
 
         /// <summary>
         /// How fast to warp the craft in crazy mode. Measured in meters per second.
@@ -529,15 +535,17 @@ namespace WildBlueIndustries
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
+            terrainWarningEnabled = GUILayout.Toggle(terrainWarningEnabled, "Enable Terrain Warning");
             GUILayout.EndVertical();
         }
         #endregion
 
         #region Events
-        [KSPEvent(guiActive = true, guiName = "Toggle Hover Mode")]
+        [KSPEvent(guiActive = true, guiName = "Toggle Hover Mode", groupName = "Hover", groupDisplayName = "Hover")]
         public virtual void ToggleHoverMode()
         {
             hoverIsActive = !hoverIsActive;
+            KAEvents.onControllerUpdatedHoverActive.Fire(part, hoverIsActive);
             if (!hoverIsActive)
             {
                 crazyModeEnabled = false;
@@ -568,7 +576,7 @@ namespace WildBlueIndustries
             }
         }
 
-        [KSPEvent(guiActive = true, guiName = "Toggle Acceleration Mode")]
+        [KSPEvent(guiActive = true, guiName = "Toggle Acceleration Mode", groupName = "Hover", groupDisplayName = "Hover")]
         public virtual void ToggleThrustMode()
         {
             switch (engineMode)
@@ -836,13 +844,15 @@ namespace WildBlueIndustries
             //Check to make sure crazy mode is unlocked for sandbox.
             if (HighLogic.LoadedSceneIsFlight)
             {
-                if (!crazyModeUnlocked && HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
+                if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
                     crazyModeUnlocked = true;
             }
 
             prevCrazyModeEnabled = crazyModeEnabled;
             prevCruiseModeEnabled = crazyCruiseControlEnabled;
             boostModeWasEnabled = enableBoostMode;
+            if (HighLogic.LoadedSceneIsFlight)
+                wasAirborne = VesselIsAirborne();
         }
 
         public override void Flameout(string message, bool statusOnly = false, bool showFX = true)
@@ -1105,38 +1115,27 @@ namespace WildBlueIndustries
             if (!hoverIsActive)
                 return;
 
-            //Translation axis (only applies when crazy mode is deactivated)
-            if (translateUpDn != 0 && !crazyModeEnabled && !translationKeysActive)
+            bool isAirborne = VesselIsAirborne();
+            if (isAirborne != wasAirborne)
             {
-                translationKeysActive = true;
-                if (translateUpDn > 0)
+                // If we were airborne but we no longer are, then kill vertical speed and exit.
+                if (!isAirborne && wasAirborne)
                 {
-                    verticalSpeed += 1f;
-                    if (verticalSpeed > 0f)
-                        isLiftingOff = true;
+                    wasAirborne = isAirborne;
+                    verticalSpeed = 0f;
+                    KAEvents.onControllerUpdatedVerticalSpeed.Fire(part, verticalSpeed);
+                    return;
                 }
-                else
-                    verticalSpeed -= 1f;
-            }
-            else
-            {
-                translationKeysActive = false;
+
+                else if (isAirborne && !wasAirborne)
+                {
+                    wasAirborne = isAirborne;
+                }
             }
 
-            //If we just landed then kill vertical speed and exit
-            if ((this.part.vessel.situation == Vessel.Situations.LANDED ||
-                this.part.vessel.situation == Vessel.Situations.SPLASHED ||
-                this.part.vessel.situation == Vessel.Situations.PRELAUNCH) && !isLiftingOff)
-            {
-                verticalSpeed = 0f;
+            // If we're not airborne and our vertical speed <= 0 then exit.
+            if (!isAirborne && verticalSpeed <= 0)
                 return;
-            }
-
-            //Once we're flying again, remove the flag.
-            else if (VesselIsAirborne())
-            {
-                isLiftingOff = false;
-            }
 
             //Calculate lift acceleration
             bool applyAcceleration = shouldApplyHoverAcceleration();
@@ -1260,7 +1259,7 @@ namespace WildBlueIndustries
                 if (terrainHit.collider.gameObject.layer == 15 || terrainHit.collider.gameObject.layer == 28)
                 {
                     //If we would warp into the ground then stop Crazy Mode.
-                    if (terrainHit.distance <= Math.Abs(offsetPosition.magnitude))
+                    if (terrainWarningEnabled && terrainHit.distance <= Math.Abs(offsetPosition.magnitude))
                     {
                         ScreenMessages.PostScreenMessage(WBIKFSUtils.kTerrainWarning, 3.0f, ScreenMessageStyle.UPPER_CENTER);
                         StopWarp();
@@ -1354,6 +1353,11 @@ namespace WildBlueIndustries
                     finalAcceleration *= boostModeModifier;
                     accelerationMagnitude *= boostModeModifier;
                 }
+                else if (enableBoostMode)
+                {
+                    // Disable boost mode if we're not escaping, orbiting, or suborbital.
+                    enableBoostMode = false;
+                }
 
                 //Calcualte the acceleration vector
                 Vector3d accelerationVector = (this.part.vessel.GetReferenceTransformPart().transform.up).normalized * accelerationMagnitude;
@@ -1398,6 +1402,8 @@ namespace WildBlueIndustries
         public bool VesselIsAirborne()
         {
             if (this.part.vessel.situation == Vessel.Situations.FLYING || this.part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
+                return true;
+            else if (!part.vessel.LandedOrSplashed)
                 return true;
 
             return false;
@@ -1511,7 +1517,7 @@ namespace WildBlueIndustries
             Events["ToggleThrustMode"].active = isEngineActive && engineState == WBIEngineStates.Running;
 
             //Crazy mode is only available when the vessel is airborne.
-            bool isAirborne = VesselIsAirborne();
+            bool isAirborne = VesselIsAirborne();           
             Fields["crazyModeEnabled"].guiActive = isEngineActive && isAirborne;
 
             //If vessel isn't airborne then make sure crazy mode is disabled.
@@ -1520,6 +1526,7 @@ namespace WildBlueIndustries
 
             //Crazy cruise is only enabled when crazy mode is.
             Fields["crazyCruiseControlEnabled"].guiActive = crazyModeEnabled;
+            Fields["terrainWarningEnabled"].guiActive = crazyModeEnabled;
 
             // Enable/disable boost mode UI
             if (part.vessel.situation == Vessel.Situations.ESCAPING || part.vessel.situation == Vessel.Situations.ORBITING || part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
@@ -1529,6 +1536,7 @@ namespace WildBlueIndustries
             else
             {
                 Fields["enableBoostMode"].guiActive = false;
+                enableBoostMode = false;
             }
 
             //Make sure hover mode is on if crazy mode is on
@@ -1739,7 +1747,6 @@ namespace WildBlueIndustries
 
             float animationSpeed = playInReverse == false ? 1.0f : -1.0f;
             Animation anim = this.part.FindModelAnimators(animationName)[0];
-//            Light[] lights = gravRingTransform.gameObject.GetComponentsInChildren<Light>();
 
             if (playInReverse)
             {
@@ -1759,14 +1766,6 @@ namespace WildBlueIndustries
                     anim[animationName].speed = animationSpeed * 100;
                 anim.Play(animationName);
             }
-
-            /*
-            if (lights != null)
-            {
-                foreach (Light light in lights)
-                    light.intensity = playInReverse ? 0 : 1;
-            }
-            */
         }
 
         public virtual void Log(object message)

@@ -19,6 +19,22 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.3.0
+- Hover GUI no longer appears when disabling the UI for screenshots.
+- Updated hover control keyboard bindings:
+CTRL + H: Toggle Hover Mode
+Translate up: Increase vertical speed
+Translate down: Decrease vertical speed
+Brakes: kill vertical speed
+- Terrain collision avoidance can now be toggled in the Kerbal Actuators GUI dialog or the Part Action Window.
+- Hover GUI controls now organized under the "Hover" group.
+- Crazy Mode GUI controls now organized under the "Crazy Mode" group.
+- Fixed overly sensitive hover keyboard controls for vertical speed.
+- Fixed engine plume effects appearing when engine isn't running.
+- Fixed RCS plume effects appearing when the RCS isn't enabled.
+- Fixed boost mode not being disabled in some situations.
+- Fixed issue where the gravitic engine failed to detect when it was airborne.
+
 1.2.1
 - Refactored tech tree to disperse parts and unify with Blueshift.
 

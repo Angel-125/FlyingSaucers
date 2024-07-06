@@ -7,7 +7,6 @@ C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\FlyingSaucers.pdb
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\Assembly-CSharp-firstpass.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\Assembly-CSharp.dll
-C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\BARISBridge.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\KerbalActuators.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\KSPAssets.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\UnityEngine.AnimationModule.dll
@@ -72,7 +71,6 @@ C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\UnityEngine.WindModule.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\UnityEngine.ARModule.dll
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\UnityEngine.InputModule.dll
-C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\BARISBridge.pdb
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\KerbalActuators.pdb
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\WildBlueTools.pdb
 C:\Projects\KSP\WildBlueIndustries\FlyingSaucers\Source\FlyingSaucers\bin\Debug\KSPAssets.XmlSerializers.dll

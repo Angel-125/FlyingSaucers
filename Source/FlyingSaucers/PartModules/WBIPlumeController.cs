@@ -38,6 +38,7 @@ namespace WildBlueIndustries
         protected Transform plumeFXTransform;
         protected bool isRCSEnabled;
         protected WBIGraviticEngine engine = null;
+        protected ModuleRCS rcsModule;
         Quaternion targetRotation;
         #endregion
 
@@ -51,6 +52,9 @@ namespace WildBlueIndustries
             {
                 plumeFXTransform = this.part.FindModelTransform(plumeFXTransformName);
             }
+
+            rcsModule = part.FindModuleImplementing<ModuleRCS>();
+            engine = this.part.FindModuleImplementing<WBIGraviticEngine>();
         }
 
         public override void OnUpdate()
@@ -63,11 +67,7 @@ namespace WildBlueIndustries
 
             //Get engine
             if (engine == null)
-            {
-                engine = this.part.FindModuleImplementing<WBIGraviticEngine>();
-                if (engine == null)
-                    return;
-            }
+                return;
 
             //Get RCS state
             isRCSEnabled = FlightGlobals.ActiveVessel.ActionGroups[KSPActionGroup.RCS] && (FlightGlobals.ActiveVessel == part.vessel);
@@ -92,6 +92,8 @@ namespace WildBlueIndustries
             //Disable if we're throttled down hover mode isn't active
             isRCSEnabled = state.X != 0 || state.Y != 0 || state.Z != 0;
             if (engine.currentThrottle <= 0 && !engine.hoverIsActive && engine.warpVector == Vector3.zero && !isRCSEnabled)
+                fxPower = 0;
+            else if (!engine.isOperational || !engine.EngineIgnited)
                 fxPower = 0;
             this.part.Effect(plumeFXName, fxPower, -1);
 
