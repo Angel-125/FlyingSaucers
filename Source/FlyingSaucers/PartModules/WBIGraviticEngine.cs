@@ -820,10 +820,10 @@ namespace WildBlueIndustries
                 //Rotations per frame
                 rotationPerFrameMax = ((spinRateRPMMax * 60.0f) * TimeWarp.fixedDeltaTime);
                 rotationPerFrameMin = ((spinRateRPMMin * 60.0f) * TimeWarp.fixedDeltaTime);
-            }
 
-            // Lights
-            lights = gravRingTransform.gameObject.GetComponentsInChildren<Light>();
+                // Lights
+                lights = gravRingTransform.gameObject.GetComponentsInChildren<Light>();
+            }
 
             //Calculate max thrust and fuel flow
             UpdateThrust();
