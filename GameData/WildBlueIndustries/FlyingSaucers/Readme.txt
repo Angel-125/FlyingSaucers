@@ -19,6 +19,14 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.3.3
+- Bug Fixes
+- Fix for Size 3 gravitic engine- Thanks JadeOfMaar! :)
+- Fix for Blueshift patch- Thanks OoglakKerman! :)
+
+1.3.2
+- Bug fixes
+
 1.3.0
 - Hover GUI no longer appears when disabling the UI for screenshots.
 - Updated hover control keyboard bindings:
