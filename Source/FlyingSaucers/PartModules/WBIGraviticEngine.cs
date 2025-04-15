@@ -1774,9 +1774,6 @@ namespace WildBlueIndustries
                 HighLogic.LoadedScene == GameScenes.PSYSTEM || HighLogic.LoadedScene == GameScenes.SETTINGS)
                 return;
 
-            if (!WBIMainSettings.EnableDebugLogging)
-                return;
-
             Debug.Log(this.ClassName + " [" + this.GetInstanceID().ToString("X")
                 + "][" + Time.time.ToString("0.0000") + "]: " + message);
         }

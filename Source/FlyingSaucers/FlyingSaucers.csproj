@@ -99,9 +99,9 @@
       <Project>{691F7D23-82FA-4194-8357-0EF40092C050}</Project>
       <Name>KerbalActuators</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\WildBlueTools\WildBlueTools.csproj">
-      <Project>{CC0BDF1A-9641-4628-9F0F-3500DDC99534}</Project>
-      <Name>WildBlueTools</Name>
+    <ProjectReference Include="..\..\..\WBIResources\Source\WBIResources.csproj">
+      <Project>{9e6c131f-3161-486a-84f3-9f16768b4d4b}</Project>
+      <Name>WBIResources</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

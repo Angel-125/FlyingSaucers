@@ -6,6 +6,7 @@ using UnityEngine;
 using KSP.IO;
 using KerbalActuators;
 using KSP.Localization;
+using WBIResources;
 
 /*
 Source code copyright 2018-2020, by Michael Billard (Angel-125)

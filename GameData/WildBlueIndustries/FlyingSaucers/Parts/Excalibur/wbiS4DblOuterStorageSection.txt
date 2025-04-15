@@ -96,9 +96,9 @@
 		requiredAmount = 0
 	}
 
-	MODULE:NEEDS[Pathfinder]
+	MODULE:NEEDS[WildBlueCore]
 	{
-		name = WBIResourceDistributor
+		name = ModuleFuelPump
 	}
 
 	RESOURCE

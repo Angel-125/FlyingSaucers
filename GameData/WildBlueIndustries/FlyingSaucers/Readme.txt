@@ -19,6 +19,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.4.0
+- Retired Wild Blue Tools
+
 1.3.3
 - Bug Fixes
 - Fix for Size 3 gravitic engine- Thanks JadeOfMaar! :)

@@ -1827,7 +1827,7 @@ PART
 	}
 	RESOURCE
 	{
-		name = ElectroPlasma
+		name = wbiElectroPlasma
 		amount = 0
 		maxAmount = 300
 		flowState = True
