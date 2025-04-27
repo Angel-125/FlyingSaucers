@@ -19,6 +19,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.4.1
+- Added support for Community Resource Pack to the gravitic engines.
+- Bug fixes
+
 1.4.0
 - Retired Wild Blue Tools
 
