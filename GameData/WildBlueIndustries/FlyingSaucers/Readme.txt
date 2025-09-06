@@ -19,6 +19,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.4.3
+- Converted gravitic engines and fusion reactor to use Fusion Pellets instead of Propellium.
+
 1.4.2
 - Bug fixes
 
