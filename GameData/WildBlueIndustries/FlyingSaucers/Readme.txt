@@ -19,6 +19,10 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
+1.4.4
+- Lifted restriction on adding Graviolium to fuel tanks in the editor.
+- Updated thruster performance on the Plasma RCS Ports.
+
 1.4.3
 - Converted gravitic engines and fusion reactor to use Fusion Pellets instead of Propellium.
 

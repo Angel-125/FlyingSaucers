@@ -294,6 +294,8 @@ namespace WildBlueIndustries
             for (int index = 0; index < count; index++)
             {
                 resource = currentMode.drainedResources[index];
+                if (part.Resources[resource.name].amount <= 0)
+                    return;
 
                 this.part.RequestResource(resource.name, resource.rate, resource.flowMode);
             }
@@ -303,6 +305,20 @@ namespace WildBlueIndustries
 
         private void updateResourceMode()
         {
+            if (selectedModeIndex < 0)
+                selectedModeIndex = 0;
+            else if (selectedModeIndex >= resourceModes.Count)
+                selectedModeIndex = resourceModes.Count - 1;
+
+            Debug.Log("[WBIGraviticEngineGenerator] -selectedModeIndex: " + selectedModeIndex);
+            Debug.Log("[WBIGraviticEngineGenerator] - resourceModes.Count: " + resourceModes.Count);
+
+            if (resourceModes.Count <= 0)
+            {
+                Debug.Log("[WBIGraviticEngineGenerator] - resourceModes.Count <= 0!");
+                return;
+            }
+
             currentMode = resourceModes[selectedModeIndex];
             currentModeDisplay = currentMode.displayName;
 
@@ -318,7 +334,10 @@ namespace WildBlueIndustries
             resourceModes = new List<ResourceMode>();
             ConfigNode node = getPartConfigNode();
             if (node == null || !node.HasNode("RESOURCE_MODE"))
+            {
+                Debug.Log("[WBIGraviticEngineGenerator] - No RESOURCE_MODE detected.");
                 return;
+            }
 
             ConfigNode[] nodes = node.GetNodes("RESOURCE_MODE");
             ResourceMode resourceMode;
