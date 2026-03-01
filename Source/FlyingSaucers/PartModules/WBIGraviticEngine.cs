@@ -21,19 +21,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 namespace WildBlueIndustries
 {
     /// <summary>
-    /// Derived from IWarpController, this interface is used to control Crazy Mode.
+    /// Derived from IWarpController, this interface is used to control Warp Mode.
     /// </summary>
-    public interface ICrazyModeController : IWarpController
+    public interface IwarpModeController : IWarpController
     {
         /// <summary>
-        /// Determines whether or not Crazy Mode has been unlocked.
+        /// Determines whether or not Warp Mode has been unlocked.
         /// </summary>
         /// <returns></returns>
-        bool IsCrazyModeUnlocked();
+        bool IswarpModeUnlocked();
     }
 
-    [KSPModule("Gravitic Engine")]
-    public class WBIGraviticEngine : ModuleEnginesFX, IHoverController, IThrustVectorController, ICustomController, ICrazyModeController
+    [KSPModule("#LOC_KFS_gravEngineTitle")]
+    public class WBIGraviticEngine : ModuleEnginesFX, IHoverController, IThrustVectorController, ICustomController, IwarpModeController
     {
         #region constants
         public const string ICON_PATH = "WildBlueIndustries/FlyingSaucers/Icons/";
@@ -49,16 +49,16 @@ namespace WildBlueIndustries
 
         //Control axis groups
         //KSPAxisGroup.TranslateX: L/R KSPAxisGroup.TranslateY: U/D KSPAxisGroup.TranslateZ: F/B
-        [KSPAxisField(axisGroup = KSPAxisGroup.TranslateZ, axisMode = KSPAxisMode.Absolute, guiActive = false, guiActiveEditor = false, guiName = "Crazy Mode: F/B", ignoreIncrementByZero = true, incrementalSpeed = 10f, isPersistant = true, maxValue = 1f, minValue = -1f)]
-        [UI_FloatRange(affectSymCounterparts = UI_Scene.All, maxValue = 1f, minValue = -1f, stepIncrement = 10f)]
+        [KSPAxisField(axisGroup = KSPAxisGroup.TranslateZ, axisMode = KSPAxisMode.Absolute, guiActive = false, guiActiveEditor = false, guiName = "#LOC_KFS_warpModeFwdBk", ignoreIncrementByZero = true, incrementalSpeed = 1f, isPersistant = true, maxValue = 1f, minValue = -1f)]
+        [UI_FloatRange(affectSymCounterparts = UI_Scene.All, maxValue = 1f, minValue = -1f, stepIncrement = 1f)]
         public float translateFwBk;
 
-        [KSPAxisField(axisGroup = KSPAxisGroup.TranslateX, axisMode = KSPAxisMode.Absolute, guiActive = false, guiActiveEditor = false, guiName = "Crazy Mode: L/R", ignoreIncrementByZero = true, incrementalSpeed = 10f, isPersistant = true, maxValue = 1f, minValue = -1f)]
-        [UI_FloatRange(affectSymCounterparts = UI_Scene.All, maxValue = 1f, minValue = -1f, stepIncrement = 10f)]
+        [KSPAxisField(axisGroup = KSPAxisGroup.TranslateX, axisMode = KSPAxisMode.Absolute, guiActive = false, guiActiveEditor = false, guiName = "#LOC_KFS_warpModeLftRt", ignoreIncrementByZero = true, incrementalSpeed = 1f, isPersistant = true, maxValue = 1f, minValue = -1f)]
+        [UI_FloatRange(affectSymCounterparts = UI_Scene.All, maxValue = 1f, minValue = -1f, stepIncrement = 1f)]
         public float translateLtRt;
 
-        [KSPAxisField(axisGroup = KSPAxisGroup.TranslateY, axisMode = KSPAxisMode.Absolute, guiActive = false, guiActiveEditor = false, guiName = "Crazy Mode: U/D", ignoreIncrementByZero = true, incrementalSpeed = 10f, isPersistant = true, maxValue = 1f, minValue = -1f)]
-        [UI_FloatRange(affectSymCounterparts = UI_Scene.All, maxValue = 1f, minValue = -1f, stepIncrement = 10f)]
+        [KSPAxisField(axisGroup = KSPAxisGroup.TranslateY, axisMode = KSPAxisMode.Absolute, guiActive = false, guiActiveEditor = false, guiName = "#LOC_KFS_warpModeUpDn", ignoreIncrementByZero = true, incrementalSpeed = 1f, isPersistant = true, maxValue = 1f, minValue = -1f)]
+        [UI_FloatRange(affectSymCounterparts = UI_Scene.All, maxValue = 1f, minValue = -1f, stepIncrement = 1f)]
         public float translateUpDn;
         #endregion
 
@@ -95,7 +95,7 @@ namespace WildBlueIndustries
         [KSPField]
         public float maxAcceleration = 20.0f;
 
-        [KSPField(guiActive = true, guiName = "Acceleration", guiUnits = "m/sec", guiFormat = "f2")]
+        [KSPField(guiActive = true, guiName = "#LOC_KFS_acceleration", guiUnits = "m/sec", guiFormat = "f2")]
         public float finalAcceleration;
 
         [KSPField(isPersistant = true)]
@@ -122,8 +122,8 @@ namespace WildBlueIndustries
         [KSPField]
         public FloatCurve accelerationCurve;
 
-        [KSPField(isPersistant = true, guiName = "Boost Mode")]
-        [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
+        [KSPField(isPersistant = true, guiName = "#LOC_KFS_boostMode")]
+        [UI_Toggle(enabledText = "#LOC_KFS_enabled", disabledText = "#LOC_KFS_disabled")]
         public bool enableBoostMode = false;
 
         [KSPField]
@@ -131,16 +131,16 @@ namespace WildBlueIndustries
         #endregion
 
         #region Housekeeping
-        [KSPField(guiName = "Singularity Projector", guiActive = true, isPersistant = true)]
+        [KSPField(guiName = "#LOC_KFS_singularity", guiActive = true, isPersistant = true)]
         public WBIEngineStates engineState;
 
-        [KSPField(guiName = "Acceleration Mode", guiActive = true, isPersistant = true)]
+        [KSPField(guiName = "#LOC_KFS_accelerationMode", guiActive = true, isPersistant = true)]
         public WBIThrustModes engineMode;
 
         public Animation animation = null;
         public float verticalSpeed = 0f;
         public Vector3 warpVector = Vector3.zero;
-        public bool prevCrazyModeEnabled;
+        public bool prevwarpModeEnabled;
         public bool prevCruiseModeEnabled;
 
         protected float rotationPerFrame = 0;
@@ -166,6 +166,17 @@ namespace WildBlueIndustries
         bool boostModeWasEnabled;
         Light[] lights = null;
         bool wasAirborne;
+
+        public static string kMaxAcceleration;
+        public static string kFlameout;
+        public static string kPropellants;
+        public static string kFuelFlowVaries;
+        public static string kRCSProducedFrom;
+        public static string kWarpModeResource;
+        public static string kTerrainWarning;
+        public static string kWarpMode;
+        public static string kWarpModeVelocity;
+
         #endregion
 
         #region IHoverController
@@ -259,8 +270,8 @@ namespace WildBlueIndustries
                 FlightInputHandler.state.mainThrottle = 0f;
             }
 
-            if (crazyModeEnabled)
-                crazyModeEnabled = false;
+            if (warpModeEnabled)
+                warpModeEnabled = false;
 
             //Switch to normal transform
             engineMode = WBIThrustModes.Forward;
@@ -298,60 +309,60 @@ namespace WildBlueIndustries
 
         #endregion
 
-        #region Crazy Mode and ICustomController
+        #region Warp Mode and ICustomController
         /// <summary>
-        /// Flag to indicate that Crazy Mode is available for use
+        /// Flag to indicate that Warp Mode is available for use
         /// </summary>
         [KSPField]
-        public bool crazyModeUnlocked;
+        public bool warpModeUnlocked;
 
         /// <summary>
-        /// Flag to indicate if Crazy Mode is enabled.
+        /// Flag to indicate if Warp Mode is enabled.
         /// </summary>
-        [KSPField(guiName = "Crazy Mode", isPersistant = true, guiActiveEditor = false, guiActive = true, groupName = "Crazy Mode", groupDisplayName = "Crazy Mode")]
-        [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
-        public bool crazyModeEnabled;
+        [KSPField(guiName = "#LOC_KFS_warpMode", isPersistant = true, guiActiveEditor = false, guiActive = true, groupName = "#LOC_KFS_warpMode", groupDisplayName = "#LOC_KFS_warpMode")]
+        [UI_Toggle(enabledText = "#LOC_KFS_enabled", disabledText = "#LOC_KFS_disabled")]
+        public bool warpModeEnabled;
 
         /// <summary>
-        /// Flag to indicate if Crazy Mode cruise control is enabled.
+        /// Flag to indicate if Warp Mode cruise control is enabled.
         /// </summary>
-        [KSPField(guiName = "Crazy Cruise Control", isPersistant = true, guiActiveEditor = false, guiActive = true, groupName = "Crazy Mode", groupDisplayName = "Crazy Mode")]
-        [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
-        public bool crazyCruiseControlEnabled;
+        [KSPField(guiName = "#LOC_KFS_warpCruiseMode", isPersistant = true, guiActiveEditor = false, guiActive = true, groupName = "#LOC_KFS_warpMode", groupDisplayName = "#LOC_KFS_warpMode")]
+        [UI_Toggle(enabledText = "#LOC_KFS_enabled", disabledText = "#LOC_KFS_disabled")]
+        public bool warpCruiseControlEnabled;
 
         /// <summary>
         /// Flag to indicate if terrain warning is enabled.
         /// </summary>
-        [KSPField(guiName = "Terrain Warning", isPersistant = true, guiActiveEditor = false, guiActive = true, groupName = "Crazy Mode", groupDisplayName = "Crazy Mode")]
-        [UI_Toggle(enabledText = "Enabled", disabledText = "Disabled")]
+        [KSPField(guiName = "#LOC_KFS_terrainWarning", isPersistant = true, guiActiveEditor = false, guiActive = true, groupName = "#LOC_KFS_warpMode", groupDisplayName = "#LOC_KFS_warpMode")]
+        [UI_Toggle(enabledText = "#LOC_KFS_enabled", disabledText = "#LOC_KFS_disabled")]
         public bool terrainWarningEnabled = true;
 
         /// <summary>
-        /// How fast to warp the craft in crazy mode. Measured in meters per second.
+        /// How fast to warp the craft in Warp Mode. Measured in meters per second.
         /// </summary>
         [KSPField]
-        public float crazyModeVelocity = 10000.0f;
+        public float warpModeVelocity = 10000.0f;
 
         /// <summary>
-        /// Resource to consume during Crazy Mode
+        /// Resource to consume during Warp Mode
         /// </summary>
         [KSPField]
-        public string crazyModeResource = string.Empty;
+        public string warpModeResource = string.Empty;
 
         /// <summary>
         /// How many units per second to consume the required resource.
         /// </summary>
         [KSPField]
-        public double crazyModeResourcePerSec = 50.0f;
+        public double warpModeResourcePerSec = 50.0f;
 
         /// <summary>
-        /// Stop crazy mode when the resource drops below the ratio (5% default)
+        /// Stop Warp Mode when the resource drops below the ratio (5% default)
         /// </summary>
         [KSPField]
-        public double crazyModeResourceReserve = 0.05f;
+        public double warpModeResourceReserve = 0.05f;
 
         /// <summary>
-        /// Current direction for crazy mode travel
+        /// Current direction for Warp Mode travel
         /// </summary>
         protected WBIWarpDirections warpDirection;
 
@@ -371,12 +382,12 @@ namespace WildBlueIndustries
         public static Texture rightIconSel = null;
 
         /// <summary>
-        /// Determines whether or not Crazy Mode has been unlocked.
+        /// Determines whether or not Warp Mode has been unlocked.
         /// </summary>
         /// <returns></returns>
-        public bool IsCrazyModeUnlocked()
+        public bool IswarpModeUnlocked()
         {
-            return crazyModeUnlocked;
+            return warpModeUnlocked;
         }
 
         /// <summary>
@@ -389,12 +400,12 @@ namespace WildBlueIndustries
         }
 
         /// <summary>
-        /// Sets the desired warp direction, but only if crazyModeUnlocked = true.
+        /// Sets the desired warp direction, but only if warpModeUnlocked = true.
         /// </summary>
         /// <param name="direction">A WBIWarpDirections enumerator specifying the desired direction.</param>
         public void SetWarpDirection(WBIWarpDirections direction)
         {
-            if (crazyModeUnlocked)
+            if (warpModeUnlocked)
             {
                 warpDirection = direction;
 
@@ -427,8 +438,8 @@ namespace WildBlueIndustries
         /// <returns>True if the controller is active, false if not.</returns>
         public bool IsActive()
         {
-            //Check to make sure crazy mode is unlocked.
-            if (!crazyModeUnlocked)
+            //Check to make sure Warp Mode is unlocked.
+            if (!warpModeUnlocked)
                 return false;
 
             if (EngineIgnited && isOperational)
@@ -438,7 +449,7 @@ namespace WildBlueIndustries
         }
 
         /// <summary>
-        /// Draws the Crazy Mode controls
+        /// Draws the Warp Mode controls
         /// </summary>
         public void DrawCustomController()
         {
@@ -451,7 +462,7 @@ namespace WildBlueIndustries
             //Label
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            GUILayout.Label(WBIKFSUtils.kCrazyMode);
+            GUILayout.Label(kWarpMode);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -535,7 +546,7 @@ namespace WildBlueIndustries
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            terrainWarningEnabled = GUILayout.Toggle(terrainWarningEnabled, "Enable Terrain Warning");
+            terrainWarningEnabled = GUILayout.Toggle(terrainWarningEnabled, Localizer.Format("#LOC_KFS_terrainWarning"));
             GUILayout.EndVertical();
         }
         #endregion
@@ -548,7 +559,7 @@ namespace WildBlueIndustries
             KAEvents.onControllerUpdatedHoverActive.Fire(part, hoverIsActive);
             if (!hoverIsActive)
             {
-                crazyModeEnabled = false;
+                warpModeEnabled = false;
                 engineMode = WBIThrustModes.Forward;
                 SetupEngineMode();
             }
@@ -567,7 +578,7 @@ namespace WildBlueIndustries
                 {
                     if (!hoverIsActive)
                     {
-                        engine.crazyModeEnabled = false;
+                        engine.warpModeEnabled = false;
                         engine.engineMode = WBIThrustModes.Forward;
                         engine.SetupEngineMode();
                     }
@@ -608,11 +619,11 @@ namespace WildBlueIndustries
         #endregion
 
         #region Actions
-        [KSPAction("Set Forward Acceleration")]
+        [KSPAction("#LOC_KFS_setFwdAcceleration")]
         public void SetFwdThrustAction(KSPActionParam param)
         {
             SetForwardThrust(WBIVTOLManager.Instance);
-            ScreenMessages.PostScreenMessage("Gravitic Acceleration: Forward", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+            ScreenMessages.PostScreenMessage("#LOC_KFS_fwdAcceleration", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
 
             List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
             int count = engines.Count;
@@ -625,11 +636,11 @@ namespace WildBlueIndustries
             }
         }
 
-        [KSPAction("Set Reverse Acceleration")]
+        [KSPAction("#LOC_KFS_setRevAcceleration")]
         public void SetReverseThrustAction(KSPActionParam param)
         {
             SetReverseThrust(WBIVTOLManager.Instance);
-            ScreenMessages.PostScreenMessage("Gravitic Acceleration: Reverse", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+            ScreenMessages.PostScreenMessage("#LOC_KFS_revAcceleration", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
 
             List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
             int count = engines.Count;
@@ -642,11 +653,11 @@ namespace WildBlueIndustries
             }
         }
 
-        [KSPAction("Set VTOL Acceleration")]
+        [KSPAction("#LOC_KFS_setVtolAcceleration")]
         public void SetVTOLThrustAction(KSPActionParam param)
         {
             SetVTOLThrust(WBIVTOLManager.Instance);
-            ScreenMessages.PostScreenMessage("Gravitic Acceleration: VTOL", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+            ScreenMessages.PostScreenMessage("#LOC_KFS_vtolAcceleration", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
 
             List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
             int count = engines.Count;
@@ -659,25 +670,36 @@ namespace WildBlueIndustries
             }
         }
 
-        [KSPAction("Toggle Hover Mode")]
-        public virtual void ToggleHoverModeAction()
+        [KSPAction("#LOC_KFS_toggleHover")]
+        public virtual void ToggleHoverModeAction(KSPActionParam param)
         {
             ToggleHoverMode();
             switch (engineMode)
             {
                 default:
                 case WBIThrustModes.Forward:
-                    ScreenMessages.PostScreenMessage("Hover Mode deactivated", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+                    ScreenMessages.PostScreenMessage("#LOC_KFS_hoverOn", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
                     break;
 
                 case WBIThrustModes.VTOL:
-                    ScreenMessages.PostScreenMessage("Hover Mode activated", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+                    ScreenMessages.PostScreenMessage("#LOC_KFS_hoverOff", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
                     break;
             }
         }
 
-        [KSPAction("Halt Crazy Moves", actionGroup = KSPActionGroup.Brakes)]
-        public void StopCrazyModeAction(KSPActionParam param)
+        [KSPAction("#LOC_KFS_toggleWarpMode")]
+        public virtual void ToggleWarpMode(KSPActionParam param)
+        {
+            warpModeEnabled = !warpModeEnabled;
+
+            if (warpModeEnabled)
+                ScreenMessages.PostScreenMessage("#LOC_KFS_warpModeOn", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+            else
+                ScreenMessages.PostScreenMessage("#LOC_KFS_warpModeOff", kMessageDuration, ScreenMessageStyle.UPPER_LEFT);
+        }
+
+        [KSPAction("#LOC_KFS_warpModeStop", actionGroup = KSPActionGroup.Brakes)]
+        public void StopwarpModeAction(KSPActionParam param)
         {
             if (!EngineIgnited || !isOperational)
                 return;
@@ -685,7 +707,7 @@ namespace WildBlueIndustries
             if (hoverIsActive)
                 KillVerticalSpeed();
 
-            if (crazyModeUnlocked && crazyModeEnabled)
+            if (warpModeUnlocked && warpModeEnabled)
             {
                 warpDirection = WBIWarpDirections.Stop;
                 warpVector = Vector3.zero;
@@ -729,35 +751,36 @@ namespace WildBlueIndustries
             //Adjust thrust & mass flow rate based on current gravity
             UpdateThrust();
 
-            UpdateCrazyMode();
+            UpdatewarpMode();
         }
 
         public override string GetInfo()
         {
+            cacheStrings();
             StringBuilder info = new StringBuilder();
 
             //Max acceleration
-            info.AppendLine(string.Format(WBIKFSUtils.kMaxAcceleration, maxAcceleration));
+            info.AppendLine(string.Format(kMaxAcceleration, maxAcceleration));
 
             //Propellants
-            info.AppendLine(WBIKFSUtils.kPropellants);
+            info.AppendLine(kPropellants);
             for (int index = 0; index < this.propellants.Count; index++)
             {
                 info.AppendLine("-" + this.propellants[index].displayName);
                 info.Append(propellants[index].GetFlowModeDescription());
             }
-            info.AppendLine(WBIKFSUtils.kFuelFlowVaries);
+            info.AppendLine(kFuelFlowVaries);
 
             //Flameout
-            info.AppendLine(string.Format(WBIKFSUtils.kFlameout, (this.ignitionThreshold * 100.0f).ToString("0.#")));
+            info.AppendLine(string.Format(kFlameout, (this.ignitionThreshold * 100.0f).ToString("0.#")));
 
-            //Crazy Mode
-            if (crazyModeUnlocked)
+            //Warp Mode
+            if (warpModeUnlocked)
             {
-                info.AppendLine("\n" + WBIKFSUtils.kCrazyMode);
-                info.AppendLine(string.Format(WBIKFSUtils.kCrazyModeVelocity, crazyModeVelocity));
-                if (!string.IsNullOrEmpty(crazyModeResource))
-                    info.AppendLine(string.Format(WBIKFSUtils.kCrazyModeResource, crazyModeResourcePerSec, crazyModeResource));
+                info.AppendLine("\n" + kWarpMode);
+                info.AppendLine(string.Format(kWarpModeVelocity, warpModeVelocity));
+                if (!string.IsNullOrEmpty(warpModeResource))
+                    info.AppendLine(string.Format(kWarpModeResource, warpModeResourcePerSec, warpModeResource));
             }
 
             return info.ToString();
@@ -781,6 +804,7 @@ namespace WildBlueIndustries
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
+            cacheStrings();
             layerMask = 1 << LayerMask.NameToLayer("TerrainColliders") | 1 << LayerMask.NameToLayer("Local Scenery");
             setupIcons();
             SetupAnimations();
@@ -841,15 +865,15 @@ namespace WildBlueIndustries
             Fields["translateUpDn"].guiActive = debugEnabled;
             updateHoverEventGUI();
 
-            //Check to make sure crazy mode is unlocked for sandbox.
+            //Check to make sure Warp Mode is unlocked for sandbox.
             if (HighLogic.LoadedSceneIsFlight)
             {
                 if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
-                    crazyModeUnlocked = true;
+                    warpModeUnlocked = true;
             }
 
-            prevCrazyModeEnabled = crazyModeEnabled;
-            prevCruiseModeEnabled = crazyCruiseControlEnabled;
+            prevwarpModeEnabled = warpModeEnabled;
+            prevCruiseModeEnabled = warpCruiseControlEnabled;
             boostModeWasEnabled = enableBoostMode;
             if (HighLogic.LoadedSceneIsFlight)
                 wasAirborne = VesselIsAirborne();
@@ -1133,6 +1157,15 @@ namespace WildBlueIndustries
                 }
             }
 
+            // When warp mode is off, handle Up/Down translation keys
+            if (warpModeEnabled == false && translateUpDn != 0)
+            {
+                if (translateUpDn > 0)
+                    verticalSpeed += 1;
+                else
+                    verticalSpeed -= 1;
+            }
+
             // If we're not airborne and our vertical speed <= 0 then exit.
             if (!isAirborne && verticalSpeed <= 0)
                 return;
@@ -1192,15 +1225,15 @@ namespace WildBlueIndustries
         }
 
         /// <summary>
-        /// Updates Crazy Mode propulsion, consuming resources and repositioning the craft as needed.
+        /// Updates Warp Mode propulsion, consuming resources and repositioning the craft as needed.
         /// </summary>
-        public virtual void UpdateCrazyMode()
+        public virtual void UpdatewarpMode()
         {
-            //If crazy mode isn't enabled then we're done.
-            if (!crazyModeUnlocked || !crazyModeEnabled)
+            //If Warp Mode isn't enabled then we're done.
+            if (!warpModeUnlocked || !warpModeEnabled)
                 return;
 
-            //Make sure we're flying. If not, then turn off crazy mode.
+            //Make sure we're flying. If not, then turn off Warp Mode.
             if (!VesselIsAirborne())
             {
                 StopWarp();
@@ -1248,7 +1281,7 @@ namespace WildBlueIndustries
             throttleSetting *= (thrustPercentage / 100f);
 
             //Calculate offset position
-            Vector3d offsetPosition = refTransform.position + (warpVector * crazyModeVelocity * throttleSetting * TimeWarp.fixedDeltaTime);
+            Vector3d offsetPosition = refTransform.position + (warpVector * warpModeVelocity * throttleSetting * TimeWarp.fixedDeltaTime);
 
             //Make sure we won't collide with the terrain
             if (Physics.Raycast(refTransform.position, warpVector, out terrainHit, (float)offsetPosition.magnitude, layerMask))
@@ -1258,10 +1291,10 @@ namespace WildBlueIndustries
                 //See if we found the ground. 15 = Local Scenery, 28 = TerrainColliders
                 if (terrainHit.collider.gameObject.layer == 15 || terrainHit.collider.gameObject.layer == 28)
                 {
-                    //If we would warp into the ground then stop Crazy Mode.
+                    //If we would warp into the ground then stop Warp Mode.
                     if (terrainWarningEnabled && terrainHit.distance <= Math.Abs(offsetPosition.magnitude))
                     {
-                        ScreenMessages.PostScreenMessage(WBIKFSUtils.kTerrainWarning, 3.0f, ScreenMessageStyle.UPPER_CENTER);
+                        ScreenMessages.PostScreenMessage(kTerrainWarning, 3.0f, ScreenMessageStyle.UPPER_CENTER);
                         StopWarp();
                         return;
                     }
@@ -1269,22 +1302,22 @@ namespace WildBlueIndustries
             }
 
             //Consume the resource
-            if (!string.IsNullOrEmpty(crazyModeResource) && !CheatOptions.InfinitePropellant)
+            if (!string.IsNullOrEmpty(warpModeResource) && !CheatOptions.InfinitePropellant)
             {
                 //Don't drop below reserve amount of the resource. This is to avoide flameouts.
-                PartResourceDefinition def = PartResourceLibrary.Instance.resourceDefinitions[crazyModeResource];
+                PartResourceDefinition def = PartResourceLibrary.Instance.resourceDefinitions[warpModeResource];
                 double amount;
                 double maxAmount;
                 this.part.GetConnectedResourceTotals(def.id, out amount, out maxAmount, true);
-                if (amount / maxAmount < crazyModeResourceReserve)
+                if (amount / maxAmount < warpModeResourceReserve)
                 {
                     FlightInputHandler.state.mainThrottle = 0.0f;
                     StopWarp();
                     return;
                 }
 
-                double amountRequested = crazyModeResourcePerSec * throttleSetting * TimeWarp.fixedDeltaTime;
-                double amountObtained = this.part.RequestResource(crazyModeResource, amountRequested, ResourceFlowMode.ALL_VESSEL);
+                double amountRequested = warpModeResourcePerSec * throttleSetting * TimeWarp.fixedDeltaTime;
+                double amountObtained = this.part.RequestResource(warpModeResource, amountRequested, ResourceFlowMode.ALL_VESSEL);
 
                 //Make sure we got enough of the requested resource.
                 if ((amountObtained / amountRequested) < 0.25f)
@@ -1301,7 +1334,7 @@ namespace WildBlueIndustries
                 FloatingOrigin.SetOutOfFrameOffset(offsetPosition); //Use this for warp drive?
 
             //Clear the warp vector if cruise control is disabled.
-            if (!crazyCruiseControlEnabled)
+            if (!warpCruiseControlEnabled)
             {
                 warpDirection = WBIWarpDirections.Stop;
                 warpVector = Vector3.zero;
@@ -1392,8 +1425,6 @@ namespace WildBlueIndustries
             int transformCount = thrustTransforms.Count;
             for (int index = 0; index < transformCount; index++)
                 thrustTransforms[index].transform.position = vessel.CoM;
-            if (debugEnabled)
-                DrawThrustTransform();
         }
         #endregion
 
@@ -1516,17 +1547,17 @@ namespace WildBlueIndustries
             //Thrust vector toggle is disabled when engine isn't on.
             Events["ToggleThrustMode"].active = isEngineActive && engineState == WBIEngineStates.Running;
 
-            //Crazy mode is only available when the vessel is airborne.
+            //Warp Mode is only available when the vessel is airborne.
             bool isAirborne = VesselIsAirborne();           
-            Fields["crazyModeEnabled"].guiActive = isEngineActive && isAirborne;
+            Fields["warpModeEnabled"].guiActive = isEngineActive && isAirborne;
 
-            //If vessel isn't airborne then make sure crazy mode is disabled.
-            if (!isAirborne && crazyModeEnabled)
-                crazyModeEnabled = false;
+            //If vessel isn't airborne then make sure Warp Mode is disabled.
+            if (!isAirborne && warpModeEnabled)
+                warpModeEnabled = false;
 
-            //Crazy cruise is only enabled when crazy mode is.
-            Fields["crazyCruiseControlEnabled"].guiActive = crazyModeEnabled;
-            Fields["terrainWarningEnabled"].guiActive = crazyModeEnabled;
+            //Crazy cruise is only enabled when Warp Mode is.
+            Fields["warpCruiseControlEnabled"].guiActive = warpModeEnabled;
+            Fields["terrainWarningEnabled"].guiActive = warpModeEnabled;
 
             // Enable/disable boost mode UI
             if (part.vessel.situation == Vessel.Situations.ESCAPING || part.vessel.situation == Vessel.Situations.ORBITING || part.vessel.situation == Vessel.Situations.SUB_ORBITAL)
@@ -1539,32 +1570,32 @@ namespace WildBlueIndustries
                 enableBoostMode = false;
             }
 
-            //Make sure hover mode is on if crazy mode is on
-            if (crazyModeEnabled && !hoverIsActive)
+            //Make sure hover mode is on if Warp Mode is on
+            if (warpModeEnabled && !hoverIsActive)
                 hoverIsActive = true;
 
-            //Update crazy mode for all active engines.
-            if (prevCrazyModeEnabled != crazyModeEnabled)
+            //Update Warp Mode for all active engines.
+            if (prevwarpModeEnabled != warpModeEnabled)
             {
-                prevCrazyModeEnabled = crazyModeEnabled;
+                prevwarpModeEnabled = warpModeEnabled;
 
                 List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
                 int count = engines.Count;
                 for (int index = 0; index < count; index++)
                 {
-                    engines[index].crazyModeEnabled = this.crazyModeEnabled;
-                    engines[index].prevCrazyModeEnabled = this.prevCrazyModeEnabled;
+                    engines[index].warpModeEnabled = this.warpModeEnabled;
+                    engines[index].prevwarpModeEnabled = this.prevwarpModeEnabled;
                 }
             }
-            if (prevCruiseModeEnabled != crazyCruiseControlEnabled)
+            if (prevCruiseModeEnabled != warpCruiseControlEnabled)
             {
-                prevCruiseModeEnabled = crazyCruiseControlEnabled;
+                prevCruiseModeEnabled = warpCruiseControlEnabled;
 
                 List<WBIGraviticEngine> engines = this.part.vessel.FindPartModulesImplementing<WBIGraviticEngine>();
                 int count = engines.Count;
                 for (int index = 0; index < count; index++)
                 {
-                    engines[index].crazyCruiseControlEnabled = this.crazyCruiseControlEnabled;
+                    engines[index].warpCruiseControlEnabled = this.warpCruiseControlEnabled;
                     engines[index].prevCruiseModeEnabled = this.prevCruiseModeEnabled;
                 }
             }
@@ -1592,8 +1623,8 @@ namespace WildBlueIndustries
 
         protected void setCrazyCruiseMode(bool enabled)
         {
-            crazyModeEnabled = enabled;
-            crazyCruiseControlEnabled = enabled;
+            warpModeEnabled = enabled;
+            warpCruiseControlEnabled = enabled;
         }
 
         protected void updateWarpVector()
@@ -1648,59 +1679,6 @@ namespace WildBlueIndustries
                 lineRenderer.SetPosition(1, Vector3.zero);
                 GameObject.DestroyImmediate(lineRenderer);
             }
-        }
-
-        public virtual void DrawThrustTransform()
-        {
-            /*
-            if (lineRenderer == null)
-            {
-                Material mat = new Material(Shader.Find("Particles/Additive"));
-                Color lineColor = XKCDColors.Purple_Blue;
-
-                thrustLine = new GameObject();
-                thrustLine.name = "thrustLine";
-                lineRenderer = thrustLine.AddComponent<LineRenderer>();
-                lineRenderer.useWorldSpace = false;
-                lineRenderer.material = mat;
-                lineRenderer.startColor = lineColor;
-                lineRenderer.endColor = lineColor;
-                lineRenderer.startWidth = 0.25f;
-                lineRenderer.endWidth = 0.25f;
-                lineRenderer.positionCount = 2;
-                lineRenderer.SetPosition(0, Vector3.zero);
-                lineRenderer.SetPosition(1, Vector3.zero);
-            }
-
-            if (comRenderer == null)
-            {
-                Material mat = new Material(Shader.Find("Particles/Additive"));
-                comLine = new GameObject();
-                comLine.name = "CoMLine";
-                comRenderer = comLine.AddComponent<LineRenderer>();
-                comRenderer.useWorldSpace = false;
-                comRenderer.material = mat;
-                comRenderer.startColor = XKCDColors.Yellow;
-                comRenderer.endColor = XKCDColors.Yellow;
-                comRenderer.startWidth = 0.25f;
-                comRenderer.endWidth = 0.25f;
-                comRenderer.positionCount = 2;
-                comRenderer.SetPosition(0, Vector3.zero);
-                comRenderer.SetPosition(1, Vector3.zero);
-            }
-            Vector3 startPoint = vessel.CoM;
-            if (thrustTransforms.Count > 0)
-                startPoint = thrustTransforms[0].transform.position;
-            Vector3 endPoint = startPoint * 10.0f;
-            lineRenderer.SetPosition(0, startPoint);
-            lineRenderer.SetPosition(1, endPoint);
-
-//            startPoint = (this.part.transform.position - this.vessel.mainBody.position).normalized;
-            startPoint = (vessel.CoM - vessel.mainBody.position).normalized;
-            endPoint = startPoint * 10.0f;
-            comRenderer.SetPosition(0, startPoint);
-            comRenderer.SetPosition(1, endPoint);
-             */
         }
 
         public virtual void SetupAnimations()
@@ -1843,6 +1821,19 @@ namespace WildBlueIndustries
             warpVector = Vector3.zero;
         }
 
+
+        private void cacheStrings()
+        {
+            kMaxAcceleration = Localizer.Format("#LOC_KFS_maxAcceleration");
+            kFlameout = Localizer.Format("#LOC_KFS_flameout");
+            kPropellants = Localizer.Format("#LOC_KFS_propellants");
+            kFuelFlowVaries = Localizer.Format("#LOC_KFS_fuelFlowVaries");
+            kRCSProducedFrom = Localizer.Format("#LOC_KFS_rcsProducedFrom");
+            kWarpModeResource = Localizer.Format("#LOC_KFS_warpModeResource");
+            kTerrainWarning = Localizer.Format("#LOC_KFS_terrainWarningMessage");
+            kWarpMode = Localizer.Format("#LOC_KFS_warpModeTitle");
+            kWarpModeVelocity = Localizer.Format("#LOC_KFS_warpModeVelocity");
+        }
         #endregion
 
     }

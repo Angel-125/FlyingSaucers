@@ -88,8 +88,6 @@
     <Compile Include="PartModules\WBIGraviticEngine.cs" />
     <Compile Include="PartModules\WBIModuleGraviticRCS.cs" />
     <Compile Include="PartModules\WBIModuleEngineCOMThrust.cs" />
-    <Compile Include="PartModules\WBIGraviticGenerator.cs" />
-    <Compile Include="PartModules\WBIGraviticLift.cs" />
     <Compile Include="PartModules\WBINodeToggle.cs" />
     <Compile Include="PartModules\WBIPlumeController.cs" />
     <Compile Include="PartModules\WBIGraviticEngineGenerator.cs" />

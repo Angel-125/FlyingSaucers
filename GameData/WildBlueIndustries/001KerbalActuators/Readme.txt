@@ -24,6 +24,9 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 ---REVISION HISORY---
 
+1.9.1
+- Removes deprecated VTOL Settings button
+
 1.9.0
 - Hover GUI no longer appears when disabling the UI for screenshots.
 - Updated hover control keyboard bindings:

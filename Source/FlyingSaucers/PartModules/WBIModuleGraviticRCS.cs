@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP.IO;
+using KSP.Localization;
 
 /*
 Source code copyright 2018-2020, by Michael Billard (Angel-125)
@@ -45,6 +46,11 @@ namespace WildBlueIndustries
 
         #region Housekeeping
         Transform clusterTransform;
+        public static string kMaxAcceleration;
+        public static string kFlameout;
+        public static string kPropellants;
+        public static string kFuelFlowVaries;
+        public static string kRCSProducedFrom;
         #endregion
 
         #region overrides
@@ -113,15 +119,16 @@ namespace WildBlueIndustries
 
         public override string GetInfo()
         {
+            cacheStrings();
             PartResourceDefinitionList definitions = PartResourceLibrary.Instance.resourceDefinitions;
             PartResourceDefinition definition;
             StringBuilder info = new StringBuilder();
 
             //Max acceleration
-            info.AppendLine(string.Format(WBIKFSUtils.kMaxAcceleration, maxAcceleration));
+            info.AppendLine(string.Format(kMaxAcceleration, maxAcceleration));
 
             //Propellants
-            info.AppendLine(WBIKFSUtils.kPropellants);
+            info.AppendLine(kPropellants);
             for (int index = 0; index < this.propellants.Count; index++)
             {
                 info.AppendLine("-" + this.propellants[index].displayName);
@@ -131,14 +138,22 @@ namespace WildBlueIndustries
             if (!string.IsNullOrEmpty(convertResource))
             {
                 definition = definitions[convertResource];
-                info.AppendLine(WBIKFSUtils.kRCSProducedFrom + definition.displayName);
+                info.AppendLine(kRCSProducedFrom + definition.displayName);
             }
-            info.AppendLine(WBIKFSUtils.kFuelFlowVaries);
+            info.AppendLine(kFuelFlowVaries);
             return info.ToString();
         }
         #endregion
 
         #region Helpers
+        private void cacheStrings()
+        {
+            kMaxAcceleration = Localizer.Format("#LOC_KFS_maxAcceleration");
+            kPropellants = Localizer.Format("#LOC_KFS_propellants");
+            kFuelFlowVaries = Localizer.Format("#LOC_KFS_fuelFlowVaries");
+            kRCSProducedFrom = Localizer.Format("#LOC_KFS_rcsProducedFrom");
+        }
+
         /// <summary>
         /// Generates propellant for use in the RCS thruster.
         /// </summary>

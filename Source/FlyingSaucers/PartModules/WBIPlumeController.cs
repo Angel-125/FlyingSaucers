@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using KSP.IO;
 using KerbalActuators;
+using KSP.Localization;
 
 /*
 Source code copyright 2018-2020, by Michael Billard (Angel-125)
@@ -110,7 +111,7 @@ namespace WildBlueIndustries
             if (engine.hoverIsActive)
             {
                 //While hovering, if crazy mode is activated, then check translation and create long plumes
-                if (engine.crazyModeEnabled)
+                if (engine.warpModeEnabled)
                     updateCrazyPlumeDirection();
 
                 //If we're flying and thrust mode is forward or reverse, then the hover plume is diagonally forward or back.
@@ -318,7 +319,7 @@ namespace WildBlueIndustries
 
             //Update the plume based on translation input.
             //If not in cruise control then just update to hover mode.
-            if (!updatePlumeDirection() && !engine.crazyCruiseControlEnabled)
+            if (!updatePlumeDirection() && !engine.warpCruiseControlEnabled)
             {
                 updateHoverPlumeDirection();
             }

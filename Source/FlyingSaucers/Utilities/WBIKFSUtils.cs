@@ -62,19 +62,6 @@ namespace WildBlueIndustries
 
     public class WBIKFSUtils
     {
-        #region Cached Strings
-        public static string kMaxAcceleration = "<color=white><b>Max Acceleration: </b>{0:n2}m/sec^2</color>";
-        public static string kFlameout = "<color=white><b>Flameout under: </b>{0:n2}%</color>";
-        public static string kPropellants = "\n<b><color=#99ff00ff>Propellants:</color></b>";
-        public static string kFuelFlowVaries = "<b><color=orange>Fuel flow varies with vessel mass</color></b>";
-        public static string kRCSProducedFrom = "<b>Propellants generated from: </b>";
-        public static string kCrazyMode = "<color=orange><b>--- Crazy Mode ---</b></color>";
-        public static string kCrazyModeVelocity = "<color=white><b>Velocity: </b>{0:n2}m/sec</color>";
-        public static string kCrazyModeResource = "<color=white>Consumes {0:n2} units of {1} per second.</color>";
-        public static string kTerrainWarning = "TERRAIN TERRAIN PULL UP!";
-        public static string kRestrictedResource = " cannot be added in the VAB/SPH, it will be added at launch.";
-        #endregion
-
         public static void Log(string message)
         {
             Debug.Log(message);
