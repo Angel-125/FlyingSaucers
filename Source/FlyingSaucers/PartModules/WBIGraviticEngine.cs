@@ -1158,7 +1158,7 @@ namespace WildBlueIndustries
             }
 
             // When warp mode is off, handle Up/Down translation keys
-            if (warpModeEnabled == false && translateUpDn != 0)
+            if (FlightGlobals.ActiveVessel == part.vessel && warpModeEnabled == false && translateUpDn != 0)
             {
                 if (translateUpDn > 0)
                     verticalSpeed += 1;
