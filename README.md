@@ -19,14 +19,14 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 Icons made by Freepik from www.flaticon.com
 
 ---LICENSE---
-Art Assets, including .mu, .mbm, and .dds files are copyright 2018 by Michael Billard, All Rights Reserved.
+Art Assets, including .mu, .mbm, and .dds files are copyright 2018-2026 by Michael Billard, All Rights Reserved.
 
 Wild Blue Industries is trademarked by Michael Billard. All rights reserved.
 Note that Wild Blue Industries is a ficticious entity 
 created for entertainment purposes. It is in no way meant to represent a real entity.
 Any similarity to a real entity is purely coincidental.
 
-Source code copyright 2017 by Michael Billard (Angel-125)
+Source code copyright 2017-2026 by Michael Billard (Angel-125)
 
     This source code is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
