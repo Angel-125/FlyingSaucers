@@ -1,8 +1,8 @@
 ship = A-51E Flapjack
-version = 1.12.2
+version = 1.12.5
 description = This TOP SECRET flying saucer was created to test reverse-engineered alien technologies. It has an exotic propulsion system that utilizes artificial singularities to generate thrust. Landing struts replace wheeled gear- who needs wheels when you can hover?
 type = SPH
-size = 6.99078655,2.39652252,6.72411537
+size = 6.9907856,2.39652252,6.72413063
 steamPublishedFileId = 0
 persistentId = 1137386766
 rot = 0,0,0,1
@@ -35,8 +35,8 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = 0
-	modMass = 0
+	modCost = 300
+	modMass = 0.00300000003
 	modSize = 0,0,0
 	link = a51LandingLeg_4293600234
 	attN = bottom,a51LandingLeg_4293600234_0|0|0_0|-1|0_0|0|0_0|-1|0
@@ -60,9 +60,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -329,11 +375,32 @@ PART
 		isEnabled = True
 		useVariantMass = True
 		stagingEnabled = True
+		selectedVariant = matteMetal
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = KCPartModule
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+			ActionActivate
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -1110,15 +1177,45 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVAFlagSwitch
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAVariants
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -1127,6 +1224,276 @@ PART
 		}
 		ACTIONS
 		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		ITEM
+		{
+			partName = AviatorSunglassesDark
+			slot = 0
+			contentCost = 0
+			contentMass = 0
+			dryCost = 100
+			dryMass = 0.00100000004749745
+			equipped = False
+			quantity = 1
+			resourceCost = 0
+			resourceMass = 0
+			PART
+			{
+				name = AviatorSunglassesDark
+				cid = 4294552002
+				uid = 0
+				mid = 0
+				persistentId = 0
+				launchID = 0
+				mirror = 1,1,1
+				symMethod = Radial
+				resPri = 0
+				sepI = 0
+				sameVesselCollision = False
+				mass = 0.00100000005
+				shielded = False
+				temp = -1
+				tempExt = 0
+				tempExtUnexp = 0
+				staticPressureAtm = 0
+				expt = 0.100000001
+				state = 0
+				PreFailState = 0
+				autostrutMode = Off
+				rigidAttachment = False
+				rTrf = AviatorSunglassesDark
+				modCost = 0
+				modMass = 0
+				moduleVariantName = 
+				moduleCargoStackableQuantity = 1
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleKISItem
+					isEnabled = True
+					staticAttached = False
+					stagingEnabled = True
+					UPGRADESAPPLIED
+					{
+					}
+				}
+				MODULE
+				{
+					name = WBIPartScrapper
+					isEnabled = True
+					stagingEnabled = True
+					UPGRADESAPPLIED
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleMassFixer
+					isEnabled = True
+					stagingEnabled = True
+					UPGRADESAPPLIED
+					{
+					}
+				}
+			}
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		ITEM
+		{
+			partName = AviatorSunglassesDark
+			slot = 0
+			contentCost = 0
+			contentMass = 0
+			dryCost = 100
+			dryMass = 0.00100000004749745
+			equipped = False
+			quantity = 1
+			resourceCost = 0
+			resourceMass = 0
+			PART
+			{
+				name = AviatorSunglassesDark
+				cid = 4294552002
+				uid = 0
+				mid = 0
+				persistentId = 0
+				launchID = 0
+				mirror = 1,1,1
+				symMethod = Radial
+				resPri = 0
+				sepI = 0
+				sameVesselCollision = False
+				mass = 0.00100000005
+				shielded = False
+				temp = -1
+				tempExt = 0
+				tempExtUnexp = 0
+				staticPressureAtm = 0
+				expt = 0.100000001
+				state = 0
+				PreFailState = 0
+				autostrutMode = Off
+				rigidAttachment = False
+				rTrf = AviatorSunglassesDark
+				modCost = 0
+				modMass = 0
+				moduleVariantName = 
+				moduleCargoStackableQuantity = 1
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleKISItem
+					isEnabled = True
+					staticAttached = False
+					stagingEnabled = True
+					UPGRADESAPPLIED
+					{
+					}
+				}
+				MODULE
+				{
+					name = WBIPartScrapper
+					isEnabled = True
+					stagingEnabled = True
+					UPGRADESAPPLIED
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleMassFixer
+					isEnabled = True
+					stagingEnabled = True
+					UPGRADESAPPLIED
+					{
+					}
+				}
+			}
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		ITEM
+		{
+			partName = AviatorSunglassesDark
+			slot = 0
+			contentCost = 0
+			contentMass = 0
+			dryCost = 100
+			dryMass = 0.00100000004749745
+			equipped = False
+			quantity = 1
+			resourceCost = 0
+			resourceMass = 0
+			PART
+			{
+				name = AviatorSunglassesDark
+				cid = 4294552002
+				uid = 0
+				mid = 0
+				persistentId = 0
+				launchID = 0
+				mirror = 1,1,1
+				symMethod = Radial
+				resPri = 0
+				sepI = 0
+				sameVesselCollision = False
+				mass = 0.00100000005
+				shielded = False
+				temp = -1
+				tempExt = 0
+				tempExtUnexp = 0
+				staticPressureAtm = 0
+				expt = 0.100000001
+				state = 0
+				PreFailState = 0
+				autostrutMode = Off
+				rigidAttachment = False
+				rTrf = AviatorSunglassesDark
+				modCost = 0
+				modMass = 0
+				moduleVariantName = 
+				moduleCargoStackableQuantity = 1
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleKISItem
+					isEnabled = True
+					staticAttached = False
+					stagingEnabled = True
+					UPGRADESAPPLIED
+					{
+					}
+				}
+				MODULE
+				{
+					name = WBIPartScrapper
+					isEnabled = True
+					stagingEnabled = True
+					UPGRADESAPPLIED
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleMassFixer
+					isEnabled = True
+					stagingEnabled = True
+					UPGRADESAPPLIED
+					{
+					}
+				}
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -1178,24 +1545,13 @@ PART
 	}
 	RESOURCE
 	{
-		name = FreshAir
-		amount = 6
-		maxAmount = 6
+		name = BRPELWorkHours
+		amount = 0
+		maxAmount = 0
 		flowState = True
-		isTweakable = True
+		isTweakable = False
 		hideFlow = False
-		isVisible = True
-		flowMode = Both
-	}
-	RESOURCE
-	{
-		name = HydrazineVodka
-		amount = 17
-		maxAmount = 17
-		flowState = True
-		isTweakable = True
-		hideFlow = False
-		isVisible = True
+		isVisible = False
 		flowMode = Both
 	}
 	RESOURCE
@@ -1257,6 +1613,38 @@ PART
 		RemoveSameVesselInteraction
 		{
 			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
 			wasActiveBeforePartWasAdjusted = False
 		}
 	}
@@ -1404,15 +1792,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -1428,7 +1816,7 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVABotRepairs
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -1447,7 +1835,7 @@ PART
 	part = wbiA51GraviticEngine_4293983872
 	partName = Part
 	persistentId = 1192054174
-	pos = 0.004899411,9.77486515,-0.456717432
+	pos = 0.004899411,9.77486515,-0.456719816
 	attPos = 0,0,0
 	attPos0 = 0,-0.541999757,-5.96046306E-08
 	rot = -0.707106829,0,0,-0.707106829
@@ -1502,6 +1890,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -1514,10 +1934,12 @@ PART
 		translateLtRt = 0
 		translateUpDn = 0
 		hoverIsActive = False
+		enableBoostMode = False
 		engineState = Shutdown
 		engineMode = Forward
-		crazyModeEnabled = False
-		crazyCruiseControlEnabled = False
+		warpModeEnabled = False
+		warpCruiseControlEnabled = False
+		terrainWarningEnabled = True
 		independentThrottle = False
 		independentThrottlePercentage = 0
 		staged = False
@@ -1536,20 +1958,30 @@ PART
 		{
 			SetFwdThrustAction
 			{
-				actionGroup = None
+				actionGroup = Custom07
 				wasActiveBeforePartWasAdjusted = False
 			}
 			SetReverseThrustAction
 			{
-				actionGroup = None
+				actionGroup = Custom08
 				wasActiveBeforePartWasAdjusted = False
 			}
 			SetVTOLThrustAction
 			{
-				actionGroup = None
+				actionGroup = Custom09
 				wasActiveBeforePartWasAdjusted = False
 			}
-			StopCrazyModeAction
+			ToggleHoverModeAction
+			{
+				actionGroup = Custom04
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ToggleWarpMode
+			{
+				actionGroup = Custom05
+				wasActiveBeforePartWasAdjusted = False
+			}
+			StopwarpModeAction
 			{
 				actionGroup = Brakes
 				wasActiveBeforePartWasAdjusted = False
@@ -1692,6 +2124,7 @@ PART
 		isEnabled = True
 		useVariantMass = True
 		stagingEnabled = True
+		selectedVariant = matteMetal
 		EVENTS
 		{
 		}
@@ -1719,15 +2152,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
 		mtbf = 300
-		currentMTBF = 2160000
+		currentMTBF = 1080000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -1744,6 +2177,21 @@ PART
 	MODULE
 	{
 		name = WBIPartScrapper
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -1773,7 +2221,7 @@ PART
 	part = wbiA51DockingPort_4293409844
 	partName = Part
 	persistentId = 2596260331
-	pos = 0.004899411,10.3998652,-0.456718981
+	pos = 0.004899411,10.3998652,-0.456723511
 	attPos = 0,0,0
 	attPos0 = 0,-5.96046199E-08,-0.624999821
 	rot = 0,-1.00000012,0,0
@@ -1814,6 +2262,38 @@ PART
 		RemoveSameVesselInteraction
 		{
 			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
 			wasActiveBeforePartWasAdjusted = False
 		}
 	}
@@ -1922,7 +2402,7 @@ PART
 		{
 			ToggleAction
 			{
-				actionGroup = Custom01, Custom04
+				actionGroup = Custom01
 				wasActiveBeforePartWasAdjusted = False
 			}
 		}
@@ -1939,23 +2419,6 @@ PART
 				overrideIncremental2 = Pitch, Yaw, Roll, TranslateX, TranslateY, TranslateZ, WheelSteer, WheelThrottle, Custom01, Custom02, Custom03, Custom04
 				overrideIncremental3 = Pitch, Yaw, Roll, TranslateX, TranslateY, TranslateZ, WheelSteer, WheelThrottle, Custom01, Custom02, Custom03, Custom04
 			}
-		}
-		UPGRADESAPPLIED
-		{
-		}
-	}
-	MODULE
-	{
-		name = WBIDockingNodeHelper
-		isEnabled = True
-		watchForDocking = False
-		angleSnapOn = False
-		stagingEnabled = True
-		EVENTS
-		{
-		}
-		ACTIONS
-		{
 		}
 		UPGRADESAPPLIED
 		{
@@ -1999,6 +2462,7 @@ PART
 		isEnabled = True
 		useVariantMass = True
 		stagingEnabled = True
+		selectedVariant = matteMetal
 		EVENTS
 		{
 		}
@@ -2014,7 +2478,7 @@ PART
 		name = ModuleDockRotate
 		isEnabled = True
 		isDocked = False
-		Revision = 55
+		Revision = 56
 		rotationEnabled = False
 		rotationStep = 15
 		rotationSpeed = 5
@@ -2076,7 +2540,39 @@ PART
 	}
 	MODULE
 	{
+		name = ModuleKCTransfer
+		isEnabled = True
+		transferMode = ALL_VESSEL_BALANCE
+		lastUpdateTime = 0
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
 		name = WBIPartScrapper
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -2095,7 +2591,7 @@ PART
 	part = a51LandingLeg_4293597818
 	partName = Part
 	persistentId = 458287860
-	pos = -0.46448642,9.77486515,-0.185717121
+	pos = -0.46448642,9.77486515,-0.185719386
 	attPos = 0,0,0
 	attPos0 = -0.469385803,0.271000057,2.98023188E-08
 	rot = -0.612372577,0.353553414,-0.353553474,-0.612372458
@@ -2140,6 +2636,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -2285,15 +2813,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -2309,7 +2837,7 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVABotRepairs
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -2328,7 +2856,7 @@ PART
 	part = a51LandingLeg_4293597298
 	partName = Part
 	persistentId = 3716901165
-	pos = 0.474285245,9.77486515,-0.185717121
+	pos = 0.474285245,9.77486515,-0.185719386
 	attPos = 0,0,0
 	attPos0 = 0.469385803,0.271000057,2.98023188E-08
 	rot = -0.612372458,-0.353553414,0.353553474,-0.612372577
@@ -2373,6 +2901,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -2518,15 +3078,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -2542,7 +3102,7 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVABotRepairs
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -2561,7 +3121,7 @@ PART
 	part = wbiA51WingTank_4293773432
 	partName = Part
 	persistentId = 3961716362
-	pos = -0.46448642,9.77486515,-0.185717657
+	pos = -0.46448642,9.77486515,-0.185720459
 	attPos = 0,0,0
 	attPos0 = 5.16191356E-08,2.98023188E-08,-4.37712365E-15
 	rot = -0.612372577,0.353553414,-0.353553474,-0.612372458
@@ -2579,7 +3139,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = -314.299988
+	modCost = 104328.703
 	modMass = 0
 	modSize = 0,0,0
 	link = telescopicLadder_4293773380
@@ -2605,9 +3165,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -2649,10 +3255,10 @@ PART
 		storageVolume = 3500
 		accountForSwitcherCapacity = False
 		isEmpty = False
-		omniResources = Propellium,700,1
+		omniResources = FusionPellets,700,1
 		defaultResourceNames = 
 		ID = 4bf30a0b-da6c-4d7c-b1dd-7f052d75b7eb
-		packedVolumeLimit = 3500
+		packedVolumeLimit = 0
 		stagingEnabled = True
 		EVENTS
 		{
@@ -2671,26 +3277,42 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceDistributor
+		name = WBIModuleFuelPump
 		isEnabled = True
-		isParticipating = False
-		sharesWithVessel = False
+		isActivated = False
+		pumpMode = distributeLocally
+		pumpRate = 10
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-		}
-		DISTRIBUTION
-		{
-			resourceName = Lead
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = StaticCharge
-			mode = 0
+			ActionFuelPumpOn
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpOff
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpLocal
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpRemoteSend
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpModeReceive
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -2717,6 +3339,7 @@ PART
 		isEnabled = True
 		useVariantMass = True
 		stagingEnabled = True
+		selectedVariant = matteMetal
 		EVENTS
 		{
 		}
@@ -2757,6 +3380,21 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 	RESOURCE
 	{
 		name = Lead
@@ -2781,7 +3419,7 @@ PART
 	}
 	RESOURCE
 	{
-		name = Propellium
+		name = FusionPellets
 		amount = 700
 		maxAmount = 700
 		flowState = True
@@ -2796,7 +3434,7 @@ PART
 	part = telescopicLadder_4293773380
 	partName = Part
 	persistentId = 2125039501
-	pos = -2.27127695,9.77486515,1.6467253
+	pos = -2.27127981,9.77486515,1.64673269
 	attPos = 0.00863873959,-0.0306875706,4.68617145E-10
 	attPos0 = -0.692136824,2.51161027,6.46328942E-07
 	rot = -1.84774399E-06,0.388511717,6.85453415E-07,0.92144388
@@ -2839,6 +3477,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -2878,6 +3552,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 50
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -2943,7 +3618,7 @@ PART
 	part = wbiA51WingTank_4293596856
 	partName = Part
 	persistentId = 2151321477
-	pos = 0.474285245,9.77486515,-0.185717657
+	pos = 0.474285245,9.77486515,-0.185720459
 	attPos = 0,0,0
 	attPos0 = -5.16191356E-08,2.98023224E-08,7.92983775E-15
 	rot = -0.612372458,-0.353553414,0.353553474,-0.612372577
@@ -2961,7 +3636,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = -314.299988
+	modCost = 104328.703
 	modMass = 0
 	modSize = 0,0,0
 	link = telescopicLadder_4293596788
@@ -2987,9 +3662,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -3031,7 +3752,7 @@ PART
 		storageVolume = 3500
 		accountForSwitcherCapacity = False
 		isEmpty = False
-		omniResources = Propellium,700,1
+		omniResources = FusionPellets,700,1
 		defaultResourceNames = 
 		ID = 4bf30a0b-da6c-4d7c-b1dd-7f052d75b7eb
 		packedVolumeLimit = 3500
@@ -3053,31 +3774,42 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceDistributor
+		name = WBIModuleFuelPump
 		isEnabled = True
-		isParticipating = False
-		sharesWithVessel = False
+		isActivated = False
+		pumpMode = distributeLocally
+		pumpRate = 10
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-		}
-		DISTRIBUTION
-		{
-			resourceName = Lead
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = StaticCharge
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = Propellium
-			mode = 0
+			ActionFuelPumpOn
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpOff
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpLocal
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpRemoteSend
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpModeReceive
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -3104,6 +3836,7 @@ PART
 		isEnabled = True
 		useVariantMass = True
 		stagingEnabled = True
+		selectedVariant = matteMetal
 		EVENTS
 		{
 		}
@@ -3144,6 +3877,21 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 	RESOURCE
 	{
 		name = Lead
@@ -3168,7 +3916,7 @@ PART
 	}
 	RESOURCE
 	{
-		name = Propellium
+		name = FusionPellets
 		amount = 700
 		maxAmount = 700
 		flowState = True
@@ -3183,7 +3931,7 @@ PART
 	part = telescopicLadder_4293596788
 	partName = Part
 	persistentId = 1369945734
-	pos = 2.28107595,9.77486515,1.6467253
+	pos = 2.28107882,9.77486515,1.64673269
 	attPos = 0.00863873959,-0.0306875706,4.68617145E-10
 	attPos0 = -0.692136824,2.51161027,6.46328942E-07
 	rot = -6.70552254E-07,-0.92144382,1.93715096E-06,-0.388511896
@@ -3226,6 +3974,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -3265,6 +4049,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 50
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -3330,7 +4115,7 @@ PART
 	part = a51LandingLeg_4293596058
 	partName = Part
 	persistentId = 1221173821
-	pos = -0.464486301,9.77486515,-0.727720261
+	pos = -0.464486301,9.77486515,-0.727726102
 	attPos = 0,0,0
 	attPos0 = -0.469385713,-0.270999998,0
 	rot = 0.353553295,-0.612372518,0.612372518,0.353553355
@@ -3375,6 +4160,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -3520,15 +4337,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -3544,7 +4361,7 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVABotRepairs
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -3563,7 +4380,7 @@ PART
 	part = a51LandingLeg_4293595512
 	partName = Part
 	persistentId = 1972843349
-	pos = 0.474285126,9.77486515,-0.727720261
+	pos = 0.474285126,9.77486515,-0.727726102
 	attPos = 0,0,0
 	attPos0 = 0.469385713,-0.270999998,0
 	rot = -0.353553325,-0.612372518,0.612372518,-0.353553385
@@ -3608,6 +4425,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -3753,15 +4602,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -3777,7 +4626,7 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVABotRepairs
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -3796,7 +4645,7 @@ PART
 	part = wbiA51WingTank_4293775386
 	partName = Part
 	persistentId = 53254107
-	pos = -0.464486301,9.77486515,-0.727722526
+	pos = -0.464486301,9.77486515,-0.727730513
 	attPos = 0,0,0
 	attPos0 = 1.03238278E-07,-5.96046945E-08,-8.24412085E-16
 	rot = -0.353553265,0.612372518,-0.612372518,-0.353553325
@@ -3814,7 +4663,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = -314.299988
+	modCost = 104328.703
 	modMass = 0
 	modSize = 0,0,0
 	link = wbiHydroScoop_4293773880
@@ -3840,9 +4689,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -3884,10 +4779,10 @@ PART
 		storageVolume = 3500
 		accountForSwitcherCapacity = False
 		isEmpty = False
-		omniResources = Propellium,700,1
+		omniResources = FusionPellets,700,1
 		defaultResourceNames = 
 		ID = eaea2b90-f84b-43eb-81a2-d1f07e468fa5
-		packedVolumeLimit = 3500
+		packedVolumeLimit = 0
 		stagingEnabled = True
 		EVENTS
 		{
@@ -3906,26 +4801,42 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceDistributor
+		name = WBIModuleFuelPump
 		isEnabled = True
-		isParticipating = False
-		sharesWithVessel = False
+		isActivated = False
+		pumpMode = distributeLocally
+		pumpRate = 10
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-		}
-		DISTRIBUTION
-		{
-			resourceName = Lead
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = StaticCharge
-			mode = 0
+			ActionFuelPumpOn
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpOff
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpLocal
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpRemoteSend
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpModeReceive
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -3952,6 +4863,7 @@ PART
 		isEnabled = True
 		useVariantMass = True
 		stagingEnabled = True
+		selectedVariant = matteMetal
 		EVENTS
 		{
 		}
@@ -3992,6 +4904,21 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 	RESOURCE
 	{
 		name = Lead
@@ -4016,7 +4943,7 @@ PART
 	}
 	RESOURCE
 	{
-		name = Propellium
+		name = FusionPellets
 		amount = 700
 		maxAmount = 700
 		flowState = True
@@ -4031,7 +4958,7 @@ PART
 	part = wbiHydroScoop_4293773880
 	partName = Part
 	persistentId = 3805508125
-	pos = -0.782684863,9.18262577,-1.39709198
+	pos = -0.782684565,9.18262577,-1.39709938
 	attPos = -0.42057848,0.242821544,-0.0274320245
 	attPos0 = 2.98023167E-07,0.367416769,0.619671762
 	rot = -0.0066904882,-0.999970198,-0.00386297703,-2.8219074E-07
@@ -4074,6 +5001,36 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -4082,8 +5039,7 @@ PART
 	{
 		name = WBIModuleResourceHarvester
 		isEnabled = True
-		drillResources = Propellium,0.02;
-		isBroken = False
+		drillResources = Propellium,0.02;LqdHydrogen,0.02;
 		EfficiencyBonus = 1
 		IsActivated = False
 		stagingEnabled = True
@@ -4093,11 +5049,6 @@ PART
 		}
 		ACTIONS
 		{
-			StartConverterAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
 			StopResourceConverterAction
 			{
 				actionGroup = None
@@ -4136,15 +5087,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -4175,7 +5126,7 @@ PART
 	part = wbiA51WingTank_4293595060
 	partName = Part
 	persistentId = 775804250
-	pos = 0.474285126,9.77486515,-0.727722526
+	pos = 0.474285126,9.77486515,-0.727730513
 	attPos = 0,0,0
 	attPos0 = -1.03238264E-07,-5.96046519E-08,9.70619374E-15
 	rot = 0.353553295,0.612372518,-0.612372518,0.353553355
@@ -4193,7 +5144,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = -314.299988
+	modCost = 104328.703
 	modMass = 0
 	modSize = 0,0,0
 	link = wbiHydroScoop_4293594992
@@ -4219,9 +5170,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -4263,7 +5260,7 @@ PART
 		storageVolume = 3500
 		accountForSwitcherCapacity = False
 		isEmpty = False
-		omniResources = Propellium,700,1
+		omniResources = FusionPellets,700,1
 		defaultResourceNames = 
 		ID = eaea2b90-f84b-43eb-81a2-d1f07e468fa5
 		packedVolumeLimit = 3500
@@ -4285,31 +5282,42 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceDistributor
+		name = WBIModuleFuelPump
 		isEnabled = True
-		isParticipating = False
-		sharesWithVessel = False
+		isActivated = False
+		pumpMode = distributeLocally
+		pumpRate = 10
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-		}
-		DISTRIBUTION
-		{
-			resourceName = Lead
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = StaticCharge
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = Propellium
-			mode = 0
+			ActionFuelPumpOn
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpOff
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpLocal
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpRemoteSend
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpModeReceive
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -4336,6 +5344,7 @@ PART
 		isEnabled = True
 		useVariantMass = True
 		stagingEnabled = True
+		selectedVariant = matteMetal
 		EVENTS
 		{
 		}
@@ -4376,6 +5385,21 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 	RESOURCE
 	{
 		name = Lead
@@ -4400,7 +5424,7 @@ PART
 	}
 	RESOURCE
 	{
-		name = Propellium
+		name = FusionPellets
 		amount = 700
 		maxAmount = 700
 		flowState = True
@@ -4415,7 +5439,7 @@ PART
 	part = wbiHydroScoop_4293594992
 	partName = Part
 	persistentId = 2612170395
-	pos = 0.792483807,9.18262577,-1.3970927
+	pos = 0.792483449,9.18262577,-1.39710009
 	attPos = -0.42057848,0.242821544,-0.0274320245
 	attPos0 = 2.98023167E-07,0.367416769,0.619671762
 	rot = 0.00669034105,-0.999970198,-0.00386294723,3.03378329E-07
@@ -4458,6 +5482,36 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -4466,8 +5520,7 @@ PART
 	{
 		name = WBIModuleResourceHarvester
 		isEnabled = True
-		drillResources = Propellium,0.02;
-		isBroken = False
+		drillResources = Propellium,0.02;LqdHydrogen,0.02;
 		EfficiencyBonus = 1
 		IsActivated = False
 		stagingEnabled = True
@@ -4477,11 +5530,6 @@ PART
 		}
 		ACTIONS
 		{
-			StartConverterAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
 			StopResourceConverterAction
 			{
 				actionGroup = None
@@ -4520,15 +5568,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -4559,7 +5607,7 @@ PART
 	part = a51LandingLeg_4293503852
 	partName = Part
 	persistentId = 312150949
-	pos = 0.00489958748,9.77486515,-0.998720109
+	pos = 0.00489958748,9.77486515,-0.998725951
 	attPos = 0,0,0
 	attPos0 = 1.76485628E-07,-0.542000234,5.96046448E-08
 	rot = 0,-0.707106829,0.707106829,0
@@ -4603,6 +5651,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -4748,15 +5828,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -4772,7 +5852,7 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVABotRepairs
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -4791,7 +5871,7 @@ PART
 	part = wbiA51GravimetricGenerator_4293775576
 	partName = Part
 	persistentId = 1711167820
-	pos = 0.00489958748,9.77486515,-0.998721778
+	pos = 0.00489958748,9.77486515,-0.998729765
 	attPos = 0,0,0
 	attPos0 = 0,0,0
 	rot = -0.707106829,0,0,-0.707106829
@@ -4809,7 +5889,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = 12500
+	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
 	link = wbiSmallFusionReactor_4293775448
@@ -4841,6 +5921,36 @@ PART
 			wasActiveBeforePartWasAdjusted = False
 		}
 		RemoveSameVesselInteraction
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
 		{
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
@@ -4921,7 +6031,7 @@ PART
 	MODULE
 	{
 		name = WBIModuleGeneratorFX
-		isEnabled = False
+		isEnabled = True
 		animationThrottle = 1
 		EfficiencyBonus = 1
 		IsActivated = False
@@ -5007,25 +6117,11 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceAdder
-		isEnabled = True
-		stagingEnabled = True
-		EVENTS
-		{
-		}
-		ACTIONS
-		{
-		}
-		UPGRADESAPPLIED
-		{
-		}
-	}
-	MODULE
-	{
 		name = ModulePartVariants
 		isEnabled = True
 		useVariantMass = True
 		stagingEnabled = True
+		selectedVariant = matteMetal
 		EVENTS
 		{
 		}
@@ -5083,15 +6179,30 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVAFlagSwitch
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -5152,7 +6263,7 @@ PART
 	RESOURCE
 	{
 		name = Graviolium
-		amount = 0
+		amount = 50
 		maxAmount = 50
 		flowState = True
 		isTweakable = True
@@ -5166,7 +6277,7 @@ PART
 	part = wbiSmallFusionReactor_4293775448
 	partName = Part
 	persistentId = 3056435780
-	pos = 0.00489958748,9.6508646,-1.38353574
+	pos = 0.00489958748,9.6508646,-1.38354588
 	attPos = 0,0,0
 	attPos0 = 0,-0.384810328,0.12400052
 	rot = 0,0,0,-1.00000012
@@ -5209,6 +6320,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -5249,8 +6392,25 @@ PART
 	}
 	MODULE
 	{
+		name = ModuleKISItem
+		isEnabled = True
+		staticAttached = False
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 500
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -5312,15 +6472,15 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleEVARepairs
+		name = WBIModuleEVARepairs
 		isEnabled = True
 		needsMaintenance = False
-		mtbf = 1800
-		currentMTBF = 6480000
+		mtbf = 600
+		currentMTBF = 2160000
 		mtbfCurrentMultiplier = 1
 		partWornOut = False
 		lastUpdated = 0
-		reliability = 30
+		reliability = 50
 		wheelStuckPosition = -1
 		actionGroupId = None
 		stagingEnabled = True
@@ -5342,7 +6502,7 @@ PART
 		flowState = True
 		isTweakable = False
 		hideFlow = False
-		isVisible = True
+		isVisible = False
 		flowMode = Both
 	}
 }
@@ -5351,7 +6511,7 @@ PART
 	part = wbiBodyFlap_4293775282
 	partName = Part
 	persistentId = 2861241772
-	pos = -0.262490422,9.77486229,-3.56256747
+	pos = -0.262490422,9.77486229,-3.56258345
 	attPos = 0.00625032187,-9.53674316E-07,0
 	attPos0 = -0.273640364,-2.56377363,3.57627755E-07
 	rot = -0.706266165,-0.0344704054,0.0344665088,-0.706266284
@@ -5392,6 +6552,38 @@ PART
 		RemoveSameVesselInteraction
 		{
 			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
 			wasActiveBeforePartWasAdjusted = False
 		}
 	}
@@ -5556,7 +6748,7 @@ PART
 	part = wbiBodyFlap_4293775232
 	partName = Part
 	persistentId = 3122913357
-	pos = 0.272289634,9.77486229,-3.56256795
+	pos = 0.272289634,9.77486229,-3.56258392
 	attPos = -0.00625032187,-1.90734863E-06,0
 	attPos0 = 0.273640364,-2.56377292,3.57627755E-07
 	rot = 0.0344665274,-0.706266284,-0.706266165,-0.0344703719
@@ -5597,6 +6789,38 @@ PART
 		RemoveSameVesselInteraction
 		{
 			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
 			wasActiveBeforePartWasAdjusted = False
 		}
 	}
@@ -5761,7 +6985,7 @@ PART
 	part = wbiBodyFlap_4293775182
 	partName = Part
 	persistentId = 4096001960
-	pos = -0.787505448,9.7751255,-3.46665239
+	pos = -0.787505448,9.7751255,-3.46666837
 	attPos = 0.0154998302,0.0100190639,-0.000262260146
 	attPos0 = -0.80790478,-2.47788572,3.57627755E-07
 	rot = -0.700460434,-0.0967224985,0.0967223793,-0.700460434
@@ -5802,6 +7026,38 @@ PART
 		RemoveSameVesselInteraction
 		{
 			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
 			wasActiveBeforePartWasAdjusted = False
 		}
 	}
@@ -5966,7 +7222,7 @@ PART
 	part = wbiBodyFlap_4293775132
 	partName = Part
 	persistentId = 2088012400
-	pos = 0.797304571,9.7751255,-3.46665382
+	pos = 0.797304571,9.7751255,-3.4666698
 	attPos = -0.0154998302,0.0100178719,-0.000262260146
 	attPos0 = 0.80790478,-2.47788572,3.57627755E-07
 	rot = -0.0967224091,0.700460374,0.700460494,0.0967224687
@@ -6007,6 +7263,38 @@ PART
 		RemoveSameVesselInteraction
 		{
 			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
 			wasActiveBeforePartWasAdjusted = False
 		}
 	}
@@ -6171,7 +7459,7 @@ PART
 	part = wbiTailFin_4293774054
 	partName = Part
 	persistentId = 1932509337
-	pos = -1.07850492,10.1260281,-2.70647764
+	pos = -1.07850492,10.1260281,-2.70648837
 	attPos = 0,0,0
 	attPos0 = -1.08340418,-1.70773602,-0.351164609
 	rot = 0.39133665,0.588944614,0.450509846,0.54501462
@@ -6212,6 +7500,38 @@ PART
 		RemoveSameVesselInteraction
 		{
 			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
 			wasActiveBeforePartWasAdjusted = False
 		}
 	}
@@ -6359,7 +7679,7 @@ PART
 	part = wbiTailFin_4293773994
 	partName = Part
 	persistentId = 638426641
-	pos = 1.08830333,10.1260281,-2.70647764
+	pos = 1.08830333,10.1260281,-2.70648837
 	attPos = 0,0,0
 	attPos0 = 1.08340442,-1.70773625,-0.351164609
 	rot = 0.450509787,0.545014679,0.39133659,0.588944554
@@ -6400,6 +7720,38 @@ PART
 		RemoveSameVesselInteraction
 		{
 			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
 			wasActiveBeforePartWasAdjusted = False
 		}
 	}
@@ -6547,7 +7899,7 @@ PART
 	part = wbiPlasmaContactor_4293773826
 	partName = Part
 	persistentId = 2734538563
-	pos = -1.10287857,9.7748642,-3.33413887
+	pos = -1.10287857,9.7748642,-3.33415484
 	attPos = 0,0.0584790707,7.15255567E-07
 	attPos0 = -1.10777783,-2.3938458,-3.57627812E-07
 	rot = -0.48523885,0.485239685,-0.514337897,0.514336884
@@ -6591,6 +7943,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -6615,6 +8003,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 12
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -6665,7 +8054,7 @@ PART
 	part = wbiPlasmaContactor_4293773796
 	partName = Part
 	persistentId = 490735572
-	pos = 1.1126771,9.7748642,-3.33413982
+	pos = 1.1126771,9.7748642,-3.3341558
 	attPos = 0,0.0584778786,7.15255567E-07
 	attPos0 = 1.10777807,-2.39384556,-3.57627812E-07
 	rot = 0.485238999,0.485239744,-0.514337838,-0.514336824
@@ -6709,6 +8098,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -6733,6 +8158,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 12
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -6783,7 +8209,7 @@ PART
 	part = wbiPlasmaContactor_4293773766
 	partName = Part
 	persistentId = 2409582380
-	pos = -1.1871016,9.7748642,-3.30967712
+	pos = -1.1871016,9.7748642,-3.3096931
 	attPos = 0,0.0503139496,0
 	attPos0 = -1.19200087,-2.36121869,-3.57627812E-07
 	rot = 0.487337649,-0.48733905,0.512349725,-0.512348175
@@ -6827,6 +8253,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -6851,6 +8313,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 12
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -6901,7 +8364,7 @@ PART
 	part = wbiPlasmaContactor_4293773736
 	partName = Part
 	persistentId = 400216403
-	pos = 1.19690013,9.7748642,-3.30967617
+	pos = 1.19690013,9.7748642,-3.30969214
 	attPos = 0,0.0503144264,0
 	attPos0 = 1.1920011,-2.36121845,-3.57627812E-07
 	rot = 0.487337559,0.487339199,-0.512349725,-0.512348115
@@ -6945,6 +8408,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -6969,6 +8468,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 12
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False

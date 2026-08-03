@@ -1,8 +1,8 @@
 ship = A-51D Flapjack
-version = 1.12.2
+version = 1.12.5
 description = This TOP SECRET flying saucer was created to test reverse-engineered alien technologies. It has an exotic propulsion system that utilizes artificial singularities to generate thrust.
 type = SPH
-size = 6.99078608,2.63412094,6.72411633
+size = 6.99078608,2.63412094,6.72412109
 steamPublishedFileId = 0
 persistentId = 4186353702
 rot = 0,0,0,1
@@ -62,9 +62,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -312,61 +358,6 @@ PART
 	}
 	MODULE
 	{
-		name = SWDiveComputer
-		isEnabled = True
-		autoTrimEnabled = False
-		divingControlEnabled = False
-		maintainDepth = False
-		rollAngleTrigger = 0.75
-		pitchAngleTrigger = 0.75
-		verticalSpeedTrigger = 0.00999999978
-		rollFluidRate = 100
-		pitchFluidRate = 100
-		ballastFluidRate = 100
-		ventState = Closed
-		stagingEnabled = True
-		EVENTS
-		{
-		}
-		ACTIONS
-		{
-			FloodBallastAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			VentBallastAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			CloseVentsAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			EmergencySurfaceAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			ToggleMaintainDepthAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			ToggleAutoTrimAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-		}
-		UPGRADESAPPLIED
-		{
-		}
-	}
-	MODULE
-	{
 		name = FlightEngineerModule
 		isEnabled = True
 		stagingEnabled = True
@@ -375,6 +366,42 @@ PART
 		}
 		ACTIONS
 		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModulePartVariants
+		isEnabled = True
+		useVariantMass = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = KCPartModule
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+			ActionActivate
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -590,8 +617,99 @@ PART
 			}
 			MechJebModuleAirplaneAutopilot
 			{
+				HeadingHoldEnabled = False
+				AltitudeHoldEnabled = False
+				VertSpeedHoldEnabled = False
+				RollHoldEnabled = False
+				SpeedHoldEnabled = False
+				AltitudeTarget = 0
+				HeadingTarget = 90
+				RollTarget = 0
+				SpeedTarget = 0
+				VertSpeedTarget = 0
+				BankAngle = 30
 				unlockParts = 
 				unlockTechs = 
+				AccKp
+				{
+					_val = 0.5
+					_text = 0.5
+				}
+				AccKi
+				{
+					_val = 0.5
+					_text = 0.5
+				}
+				AccKd
+				{
+					_val = 0.0050000000000000001
+					_text = 0.005
+				}
+				PitKp
+				{
+					_val = 2
+					_text = 2
+				}
+				PitKi
+				{
+					_val = 1
+					_text = 1
+				}
+				PitKd
+				{
+					_val = 0.0050000000000000001
+					_text = 0.005
+				}
+				RolKp
+				{
+					_val = 0.5
+					_text = 0.5
+				}
+				RolKi
+				{
+					_val = 0.02
+					_text = 0.02
+				}
+				RolKd
+				{
+					_val = 0.5
+					_text = 0.5
+				}
+				YawKp
+				{
+					_val = 1
+					_text = 1
+				}
+				YawKi
+				{
+					_val = 0.25
+					_text = 0.25
+				}
+				YawKd
+				{
+					_val = 0.02
+					_text = 0.02
+				}
+				YawLimit
+				{
+					_val = 10
+					_text = 10
+				}
+				RollLimit
+				{
+					_val = 45
+					_text = 45
+				}
+				PitchDownLimit
+				{
+					_val = 15
+					_text = 15
+				}
+				PitchUpLimit
+				{
+					_val = 25
+					_text = 25
+				}
 			}
 			MechJebModuleDockingGuidance
 			{
@@ -809,6 +927,7 @@ PART
 			}
 			MechJebModuleAirplaneGuidance
 			{
+				showpid = False
 				unlockParts = 
 				unlockTechs = 
 			}
@@ -826,6 +945,21 @@ PART
 			{
 				unlockParts = 
 				unlockTechs = 
+			}
+			MechJebModuleCustomInfoWindow
+			{
+			}
+			MechJebModuleCustomInfoWindow
+			{
+			}
+			MechJebModuleCustomInfoWindow
+			{
+			}
+			MechJebModuleCustomInfoWindow
+			{
+			}
+			MechJebModuleCustomInfoWindow
+			{
 			}
 			MechJebModuleCustomInfoWindow
 			{
@@ -927,6 +1061,9 @@ PART
 				HybridController
 				{
 				}
+				BetterController
+				{
+				}
 			}
 			MechJebModuleStagingController
 			{
@@ -961,7 +1098,38 @@ PART
 	}
 	MODULE
 	{
+		name = ParkingBrakeModule
+		isEnabled = True
+		brakeActive = False
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
 		name = WBIPartScrapper
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ELWorkshop
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -1003,6 +1171,108 @@ PART
 		Log
 		{
 			flight = 0
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAVariants
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 600
+		currentMTBF = 2160000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
 		}
 		UPGRADESAPPLIED
 		{
@@ -1054,24 +1324,13 @@ PART
 	}
 	RESOURCE
 	{
-		name = FreshAir
-		amount = 6
-		maxAmount = 6
+		name = BRPELWorkHours
+		amount = 0
+		maxAmount = 0
 		flowState = True
-		isTweakable = True
+		isTweakable = False
 		hideFlow = False
-		isVisible = True
-		flowMode = Both
-	}
-	RESOURCE
-	{
-		name = HydrazineVodka
-		amount = 17
-		maxAmount = 17
-		flowState = True
-		isTweakable = True
-		hideFlow = False
-		isVisible = True
+		isVisible = False
 		flowMode = Both
 	}
 	RESOURCE
@@ -1091,7 +1350,7 @@ PART
 	part = wbiA51GraviticEngine_4293983872
 	partName = Part
 	persistentId = 800408830
-	pos = 1.89931598E-05,9.99998665,-0.542028308
+	pos = 1.89931598E-05,9.99998665,-0.542029381
 	attPos = 0,0,0
 	attPos0 = -6.63758443E-17,-0.541999996,5.96046448E-08
 	rot = 0.707106829,0,0,0.707106829
@@ -1120,12 +1379,12 @@ PART
 	link = wbiA51DockingPort_4293409844
 	attN = front,Null_0_0|0|0.762000024_0|0|1_0|0|0.762000024_0|0|1
 	attN = back,wbiA51DockingPort_4293409844_0|0|-0.625_0|0|-1_0|0|-0.625_0|0|-1
-	attN = Mount1,wbiA51Cockpit_4293996532_6.63758377E-17|0.541999996|2.36915696E-08_-2.84217094E-14|0.99999994|-1.1920929E-07_6.63758377E-17|0.541999996|2.36915696E-08_-2.84217094E-14|0.99999994|-1.1920929E-07
-	attN = Mount2,wbiA51WingTank_4293773432_-0.469385803|0.270999998|8.27210727E-08_-0.866025388|0.499999851|8.94069672E-08_-0.469385803|0.270999998|8.27210727E-08_-0.866025388|0.499999851|8.94069672E-08
-	attN = Mount3,wbiA51WingTank_4293775386_-0.469385713|-0.271000087|5.90294711E-08_-0.866025329|-0.500000298|-1.78813934E-07_-0.469385713|-0.271000087|5.90294711E-08_-0.866025329|-0.500000298|-1.78813934E-07
-	attN = Mount4,wbiA51GravimetricGenerator_4293775576_1.76605994E-07|-0.541999996|-2.36915998E-08_3.25841313E-07|-0.99999994|-1.19209346E-07_1.76605994E-07|-0.541999996|-2.36915998E-08_3.25841313E-07|-0.99999994|-1.19209346E-07
-	attN = Mount5,wbiA51WingTank_4293825114_0.469385713|-0.271000087|-8.27210584E-08_0.866025329|-0.500000298|-4.32133675E-07_0.469385713|-0.271000087|-8.27210584E-08_0.866025329|-0.500000298|-4.32133675E-07
-	attN = Mount6,wbiA51WingTank_4293773706_0.469385803|0.270999998|-5.90294995E-08_0.866025448|0.499999851|-2.08616257E-07_0.469385803|0.270999998|-5.90294995E-08_0.866025448|0.499999851|-2.08616257E-07
+	attN = Mount1,wbiA51Cockpit_4293996532_6.63758443E-17|0.541999996|2.36915731E-08_-2.84217094E-14|0.99999994|-1.1920929E-07_6.63758443E-17|0.541999996|2.36915731E-08_-2.84217094E-14|0.99999994|-1.1920929E-07
+	attN = Mount2,wbiA51WingTank_4293773432_-0.469385833|0.270999968|8.27210727E-08_-0.866025388|0.499999851|8.94069672E-08_-0.469385833|0.270999968|8.27210727E-08_-0.866025388|0.499999851|8.94069672E-08
+	attN = Mount3,wbiA51WingTank_4293775386_-0.469385713|-0.271000117|5.90294746E-08_-0.866025329|-0.500000298|-1.78813934E-07_-0.469385713|-0.271000117|5.90294746E-08_-0.866025329|-0.500000298|-1.78813934E-07
+	attN = Mount4,wbiA51GravimetricGenerator_4293775576_1.76606022E-07|-0.541999996|-2.36915998E-08_3.25841313E-07|-0.99999994|-1.19209346E-07_1.76606022E-07|-0.541999996|-2.36915998E-08_3.25841313E-07|-0.99999994|-1.19209346E-07
+	attN = Mount5,wbiA51WingTank_4293825114_0.469385713|-0.271000117|-8.27210584E-08_0.866025329|-0.500000298|-4.32133675E-07_0.469385713|-0.271000117|-8.27210584E-08_0.866025329|-0.500000298|-4.32133675E-07
+	attN = Mount6,wbiA51WingTank_4293773706_0.469385833|0.270999968|-5.90294995E-08_0.866025448|0.499999851|-2.08616257E-07_0.469385833|0.270999968|-5.90294995E-08_0.866025448|0.499999851|-2.08616257E-07
 	EVENTS
 	{
 	}
@@ -1146,6 +1405,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -1158,10 +1449,12 @@ PART
 		translateLtRt = 0
 		translateUpDn = 0
 		hoverIsActive = False
+		enableBoostMode = False
 		engineState = Shutdown
 		engineMode = Forward
-		crazyModeEnabled = False
-		crazyCruiseControlEnabled = False
+		warpModeEnabled = False
+		warpCruiseControlEnabled = False
+		terrainWarningEnabled = True
 		independentThrottle = False
 		independentThrottlePercentage = 0
 		staged = False
@@ -1180,22 +1473,32 @@ PART
 		{
 			SetFwdThrustAction
 			{
-				actionGroup = None
+				actionGroup = Custom07
 				wasActiveBeforePartWasAdjusted = False
 			}
 			SetReverseThrustAction
 			{
-				actionGroup = None
+				actionGroup = Custom08
 				wasActiveBeforePartWasAdjusted = False
 			}
 			SetVTOLThrustAction
 			{
+				actionGroup = Custom09
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ToggleHoverModeAction
+			{
+				actionGroup = Custom04
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ToggleWarpMode
+			{
 				actionGroup = None
 				wasActiveBeforePartWasAdjusted = False
 			}
-			StopCrazyModeAction
+			StopwarpModeAction
 			{
-				actionGroup = Brakes
+				actionGroup = Brakes, Custom05
 				wasActiveBeforePartWasAdjusted = False
 			}
 			OnAction
@@ -1332,6 +1635,22 @@ PART
 	}
 	MODULE
 	{
+		name = ModulePartVariants
+		isEnabled = True
+		useVariantMass = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
 		name = ModuleTestSubject
 		isEnabled = True
 		stagingEnabled = True
@@ -1347,7 +1666,46 @@ PART
 	}
 	MODULE
 	{
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 300
+		currentMTBF = 1080000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
 		name = WBIPartScrapper
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -1377,7 +1735,7 @@ PART
 	part = wbiA51GravimetricGenerator_4293775576
 	partName = Part
 	persistentId = 3279657629
-	pos = 1.91697654E-05,9.99998665,-1.08403766
+	pos = 1.91697654E-05,9.99998665,-1.08404052
 	attPos = 0,0,0
 	attPos0 = 1.76606022E-07,-0.542000234,5.96046306E-08
 	rot = 0.707106829,0,0,0.707106829
@@ -1395,7 +1753,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = 12500
+	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
 	link = wbiSmallFusionReactor_4293775448
@@ -1410,7 +1768,7 @@ PART
 	link = wbiPlasmaContactor_4293773766
 	link = wbiPlasmaContactor_4293773736
 	attN = bottom,wbiA51GraviticEngine_4293983872_0|0|0_0|1|0_0|0|0_0|1|0
-	attN = Mount1,wbiSmallFusionReactor_4293775448_0|-0.38481009|0.124000102_2.98432679E-14|-1.78813934E-07|-1_0|-0.38481009|0.124000102_2.98432679E-14|-1.78813934E-07|-1
+	attN = Mount1,wbiSmallFusionReactor_4293775448_0|-0.384810001|0.124000072_2.98432679E-14|-1.78813934E-07|-1_0|-0.384810001|0.124000072_2.98432679E-14|-1.78813934E-07|-1
 	EVENTS
 	{
 	}
@@ -1427,6 +1785,36 @@ PART
 			wasActiveBeforePartWasAdjusted = False
 		}
 		RemoveSameVesselInteraction
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
 		{
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
@@ -1506,10 +1894,9 @@ PART
 	}
 	MODULE
 	{
-		name = WBIGraviticGenerator
+		name = WBIModuleGeneratorFX
 		isEnabled = True
-		showParticleEffects = True
-		isBroken = False
+		animationThrottle = 1
 		EfficiencyBonus = 1
 		IsActivated = False
 		stagingEnabled = True
@@ -1526,12 +1913,12 @@ PART
 			}
 			StartResourceConverterAction
 			{
-				actionGroup = Stage
+				actionGroup = None
 				wasActiveBeforePartWasAdjusted = False
 			}
 			ToggleResourceConverterAction
 			{
-				actionGroup = Custom06
+				actionGroup = None
 				wasActiveBeforePartWasAdjusted = False
 			}
 		}
@@ -1594,8 +1981,9 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceAdder
+		name = ModulePartVariants
 		isEnabled = True
+		useVariantMass = True
 		stagingEnabled = True
 		EVENTS
 		{
@@ -1641,6 +2029,45 @@ PART
 	{
 		name = WBIResourceTweaker
 		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 600
+		currentMTBF = 2160000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
 		stagingEnabled = True
 		EVENTS
 		{
@@ -1713,7 +2140,7 @@ PART
 	part = wbiSmallFusionReactor_4293775448
 	partName = Part
 	persistentId = 2359790503
-	pos = 1.91697654E-05,9.8759861,-1.46884978
+	pos = 1.91697654E-05,9.8759861,-1.46885324
 	attPos = 0,0,0
 	attPos0 = 0,-0.384810328,0.12400052
 	rot = 0,0,0,1.00000012
@@ -1726,8 +2153,8 @@ PART
 	istg = 0
 	resPri = 0
 	dstg = 0
-	sidx = -1
-	sqor = -1
+	sidx = 1
+	sqor = 0
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
@@ -1756,6 +2183,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -1765,7 +2224,6 @@ PART
 		name = WBIModuleResourceConverterFX
 		isEnabled = True
 		showParticleEffects = True
-		isBroken = False
 		EfficiencyBonus = 1
 		IsActivated = False
 		stagingEnabled = True
@@ -1790,6 +2248,41 @@ PART
 				actionGroup = Custom06
 				wasActiveBeforePartWasAdjusted = False
 			}
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleKISItem
+		isEnabled = True
+		staticAttached = False
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleCargoPart
+		isEnabled = True
+		packedVolume = 500
+		beingAttached = False
+		beingSettled = False
+		reinitResourcesOnStoreInVessel = False
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
 		}
 		UPGRADESAPPLIED
 		{
@@ -1825,6 +2318,45 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIPrinterRequirements
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 600
+		currentMTBF = 2160000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 	RESOURCE
 	{
 		name = wbiElectroPlasma
@@ -1833,7 +2365,7 @@ PART
 		flowState = True
 		isTweakable = False
 		hideFlow = False
-		isVisible = True
+		isVisible = False
 		flowMode = Both
 	}
 }
@@ -1842,7 +2374,7 @@ PART
 	part = wbiA51WingTank_4293775386
 	partName = Part
 	persistentId = 1174420628
-	pos = -0.469366729,9.99998665,-0.813037097
+	pos = -0.469366729,9.99998665,-0.813039958
 	attPos = 0,0,0
 	attPos0 = -0.469385713,-0.271000385,5.96046306E-08
 	rot = 0.353553236,-0.612372637,0.612372518,0.353553355
@@ -1860,7 +2392,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = -314.299988
+	modCost = -321.299988
 	modMass = 0
 	modSize = 0,0,0
 	link = SmallGearBay_4293774286
@@ -1887,9 +2419,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -1953,26 +2531,42 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceDistributor
+		name = WBIModuleFuelPump
 		isEnabled = True
-		isParticipating = False
-		sharesWithVessel = False
+		isActivated = False
+		pumpMode = distributeLocally
+		pumpRate = 10
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-		}
-		DISTRIBUTION
-		{
-			resourceName = Lead
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = StaticCharge
-			mode = 0
+			ActionFuelPumpOn
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpOff
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpLocal
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpRemoteSend
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpModeReceive
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -1982,6 +2576,22 @@ PART
 	{
 		name = ModuleConductionMultiplier
 		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModulePartVariants
+		isEnabled = True
+		useVariantMass = True
 		stagingEnabled = True
 		EVENTS
 		{
@@ -2011,6 +2621,21 @@ PART
 	MODULE
 	{
 		name = WBIResourceTweaker
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -2062,7 +2687,7 @@ PART
 	part = wbiA51WingTank_4293825114
 	partName = Part
 	persistentId = 1080635269
-	pos = 0.469404697,9.99998665,-0.813037097
+	pos = 0.469404697,9.99998665,-0.813039958
 	attPos = 0,0,0
 	attPos0 = 0.469385713,-0.271000385,5.96046306E-08
 	rot = 0.353553206,0.612372637,-0.612372518,0.353553265
@@ -2080,7 +2705,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = -314.299988
+	modCost = -321.299988
 	modMass = 0
 	modSize = 0,0,0
 	link = SmallGearBay_4293824196
@@ -2107,9 +2732,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -2173,26 +2844,42 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceDistributor
+		name = WBIModuleFuelPump
 		isEnabled = True
-		isParticipating = False
-		sharesWithVessel = False
+		isActivated = False
+		pumpMode = distributeLocally
+		pumpRate = 10
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-		}
-		DISTRIBUTION
-		{
-			resourceName = Lead
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = StaticCharge
-			mode = 0
+			ActionFuelPumpOn
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpOff
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpLocal
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpRemoteSend
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpModeReceive
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -2202,6 +2889,22 @@ PART
 	{
 		name = ModuleConductionMultiplier
 		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModulePartVariants
+		isEnabled = True
+		useVariantMass = True
 		stagingEnabled = True
 		EVENTS
 		{
@@ -2231,6 +2934,21 @@ PART
 	MODULE
 	{
 		name = WBIResourceTweaker
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -2282,7 +3000,7 @@ PART
 	part = wbiBodyFlap_4293775282
 	partName = Part
 	persistentId = 827823994
-	pos = -0.26737088,9.99998474,-3.64787364
+	pos = -0.26737088,9.99998474,-3.64787865
 	attPos = 0.00625032187,-9.53674316E-07,0
 	attPos0 = -0.273640364,-2.56377363,3.57627755E-07
 	rot = 0.706266165,0.0344704054,-0.0344665088,0.706266284
@@ -2325,13 +3043,45 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
 	}
 	MODULE
 	{
-		name = ModuleControlSurface
+		name = SyncModuleControlSurface
 		isEnabled = True
 		mirrorDeploy = False
 		usesMirrorDeploy = True
@@ -2487,7 +3237,7 @@ PART
 	part = wbiBodyFlap_4293775232
 	partName = Part
 	persistentId = 3385672250
-	pos = 0.267409205,9.99998474,-3.64787412
+	pos = 0.267409205,9.99998474,-3.64787912
 	attPos = -0.00625032187,-1.90734863E-06,0
 	attPos0 = 0.273640364,-2.56377292,3.57627755E-07
 	rot = -0.0344665274,0.706266284,0.706266165,0.0344703719
@@ -2530,13 +3280,45 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
 	}
 	MODULE
 	{
-		name = ModuleControlSurface
+		name = SyncModuleControlSurface
 		isEnabled = True
 		mirrorDeploy = True
 		usesMirrorDeploy = True
@@ -2692,7 +3474,7 @@ PART
 	part = wbiBodyFlap_4293775182
 	partName = Part
 	persistentId = 2893330935
-	pos = -0.792385757,10.000248,-3.5519588
+	pos = -0.792385757,10.000248,-3.55196381
 	attPos = 0.0154998302,0.0100190639,-0.000262260146
 	attPos0 = -0.80790478,-2.47788572,3.57627755E-07
 	rot = 0.700460434,0.0967224985,-0.0967223793,0.700460434
@@ -2735,13 +3517,45 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
 	}
 	MODULE
 	{
-		name = ModuleControlSurface
+		name = SyncModuleControlSurface
 		isEnabled = True
 		mirrorDeploy = False
 		usesMirrorDeploy = True
@@ -2897,7 +3711,7 @@ PART
 	part = wbiBodyFlap_4293775132
 	partName = Part
 	persistentId = 1381282248
-	pos = 0.792424142,10.000248,-3.55196023
+	pos = 0.792424142,10.000248,-3.55196524
 	attPos = -0.0154998302,0.0100178719,-0.000262260146
 	attPos0 = 0.80790478,-2.47788572,3.57627755E-07
 	rot = 0.0967224091,-0.700460374,-0.700460494,-0.0967224687
@@ -2940,13 +3754,45 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
 	}
 	MODULE
 	{
-		name = ModuleControlSurface
+		name = SyncModuleControlSurface
 		isEnabled = True
 		mirrorDeploy = True
 		usesMirrorDeploy = True
@@ -3102,7 +3948,7 @@ PART
 	part = SmallGearBay_4293359892
 	partName = Part
 	persistentId = 1823779273
-	pos = -0.782401264,9.56066418,1.5048517
+	pos = -0.782401264,9.56066418,1.50485313
 	attPos = 0,0,0
 	attPos0 = -0.782420516,1.50484276,0.439322591
 	rot = 0.105055273,0.022426961,0.0154432375,-0.994093597
@@ -3110,7 +3956,7 @@ PART
 	attRot0 = 0.777215719,0.0267782733,-0.0049382383,-0.628644824
 	mir = 1,1,1
 	symMethod = Mirror
-	autostrutMode = ForceHeaviest
+	autostrutMode = Heaviest
 	rigidAttachment = False
 	istg = -1
 	resPri = 0
@@ -3145,6 +3991,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -3511,6 +4389,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 140
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -3542,39 +4421,14 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleWheelMotor
+		name = WBIPrinterRequirements
 		isEnabled = True
-		autoTorque = True
-		motorEnabled = True
-		motorInverted = False
-		driveLimiter = 100
-		tractionControlScale = 1
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-			MotorToggle
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			MotorEnable
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			MotorDisable
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			ActAutoTorqueToggle
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -3582,7 +4436,31 @@ PART
 	}
 	MODULE
 	{
-		name = WBIPrinterRequirements
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 600
+		currentMTBF = 2160000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -3601,7 +4479,7 @@ PART
 	part = SmallGearBay_4293358036
 	partName = Part
 	persistentId = 188877517
-	pos = 0.782439053,9.56066418,1.50485146
+	pos = 0.782439053,9.56066418,1.50485289
 	attPos = 0,0,0
 	attPos0 = 0.782420516,1.50484276,0.439322591
 	rot = 0.105055273,-0.0224269554,-0.0154432282,-0.994093597
@@ -3609,7 +4487,7 @@ PART
 	attRot0 = 0.776430428,-0.0197120719,-0.0243159272,-0.629425108
 	mir = 1,1,1
 	symMethod = Mirror
-	autostrutMode = ForceHeaviest
+	autostrutMode = Heaviest
 	rigidAttachment = False
 	istg = -1
 	resPri = 0
@@ -3644,6 +4522,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -4010,6 +4920,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 140
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -4041,39 +4952,14 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleWheelMotor
+		name = WBIPrinterRequirements
 		isEnabled = True
-		autoTorque = True
-		motorEnabled = True
-		motorInverted = False
-		driveLimiter = 100
-		tractionControlScale = 1
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-			MotorToggle
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			MotorEnable
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			MotorDisable
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			ActAutoTorqueToggle
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -4081,7 +4967,31 @@ PART
 	}
 	MODULE
 	{
-		name = WBIPrinterRequirements
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 600
+		currentMTBF = 2160000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -4100,7 +5010,7 @@ PART
 	part = SmallGearBay_4293824196
 	partName = Part
 	persistentId = 4027969998
-	pos = 1.55148697,9.48347282,-1.7519567
+	pos = 1.55148745,9.48347282,-1.75196028
 	attPos = -0.481321931,-0.313205123,0.135259598
 	attPos0 = 0.753388226,1.71974909,0.381253153
 	rot = -0.115705848,0.0249185078,0.010189835,-0.99291873
@@ -4108,7 +5018,7 @@ PART
 	attRot0 = -0.28864193,-0.549593866,0.684098303,0.382938623
 	mir = 1,1,1
 	symMethod = Mirror
-	autostrutMode = ForceHeaviest
+	autostrutMode = Heaviest
 	rigidAttachment = False
 	istg = 0
 	resPri = 0
@@ -4143,6 +5053,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -4509,6 +5451,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 140
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -4540,39 +5483,14 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleWheelMotor
+		name = WBIPrinterRequirements
 		isEnabled = True
-		autoTorque = True
-		motorEnabled = True
-		motorInverted = False
-		driveLimiter = 100
-		tractionControlScale = 1
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-			MotorToggle
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			MotorEnable
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			MotorDisable
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			ActAutoTorqueToggle
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -4580,7 +5498,31 @@ PART
 	}
 	MODULE
 	{
-		name = WBIPrinterRequirements
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 600
+		currentMTBF = 2160000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -4599,7 +5541,7 @@ PART
 	part = SmallGearBay_4293774286
 	partName = Part
 	persistentId = 275163286
-	pos = -1.5514642,9.48347378,-1.75197434
+	pos = -1.55146563,9.48347378,-1.75197935
 	attPos = 0.481322736,-0.313206196,0.135259748
 	attPos0 = -0.753388226,1.71974945,0.381253302
 	rot = -0.115704715,-0.0249194317,-0.0101882778,-0.992918909
@@ -4607,7 +5549,7 @@ PART
 	attRot0 = 0.537392735,-0.398958147,0.5965662,-0.442888409
 	mir = 1,1,1
 	symMethod = Mirror
-	autostrutMode = ForceHeaviest
+	autostrutMode = Heaviest
 	rigidAttachment = False
 	istg = 0
 	resPri = 0
@@ -4642,6 +5584,38 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -5008,6 +5982,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 140
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -5039,39 +6014,14 @@ PART
 	}
 	MODULE
 	{
-		name = ModuleWheelMotor
+		name = WBIPrinterRequirements
 		isEnabled = True
-		autoTorque = True
-		motorEnabled = True
-		motorInverted = False
-		driveLimiter = 100
-		tractionControlScale = 1
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-			MotorToggle
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			MotorEnable
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			MotorDisable
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
-			ActAutoTorqueToggle
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -5079,7 +6029,31 @@ PART
 	}
 	MODULE
 	{
-		name = WBIPrinterRequirements
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 600
+		currentMTBF = 2160000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVABotRepairs
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -5098,7 +6072,7 @@ PART
 	part = wbiTailFin_4293774054
 	partName = Part
 	persistentId = 414241875
-	pos = -1.08338547,10.3511505,-2.79178953
+	pos = -1.08338547,10.3511505,-2.79179311
 	attPos = 0,0,0
 	attPos0 = -1.08340418,-1.70773602,-0.351164609
 	rot = -0.39133665,-0.588944614,-0.450509846,-0.54501462
@@ -5141,13 +6115,45 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
 	}
 	MODULE
 	{
-		name = ModuleControlSurface
+		name = SyncModuleControlSurface
 		isEnabled = True
 		mirrorDeploy = True
 		usesMirrorDeploy = True
@@ -5286,7 +6292,7 @@ PART
 	part = wbiTailFin_4293773994
 	partName = Part
 	persistentId = 2449861462
-	pos = 1.08342314,10.3511505,-2.79178977
+	pos = 1.08342314,10.3511505,-2.79179335
 	attPos = 0,0,0
 	attPos0 = 1.08340442,-1.70773625,-0.351164609
 	rot = -0.450509787,-0.545014679,-0.39133659,-0.588944554
@@ -5329,13 +6335,45 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
 	}
 	MODULE
 	{
-		name = ModuleControlSurface
+		name = SyncModuleControlSurface
 		isEnabled = True
 		mirrorDeploy = False
 		usesMirrorDeploy = True
@@ -5474,7 +6512,7 @@ PART
 	part = wbiHydroScoop_4293823004
 	partName = Part
 	persistentId = 2706530499
-	pos = 0.787600338,9.40774536,-1.4823966
+	pos = 0.787600756,9.40774536,-1.48239946
 	attPos = 0.420577735,0.242821127,-0.0274317861
 	attPos0 = -1.63912716E-07,0.367416769,0.619671524
 	rot = -0.00669053756,0.999970198,0.00386330485,-3.61120328E-07
@@ -5517,6 +6555,36 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -5525,8 +6593,7 @@ PART
 	{
 		name = WBIModuleResourceHarvester
 		isEnabled = True
-		drillResources = Propellium,0.02;
-		isBroken = False
+		drillResources = Propellium,0.02;LqdHydrogen,0.02;
 		EfficiencyBonus = 1
 		IsActivated = False
 		stagingEnabled = True
@@ -5536,11 +6603,6 @@ PART
 		}
 		ACTIONS
 		{
-			StartConverterAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
 			StopResourceConverterAction
 			{
 				actionGroup = None
@@ -5577,6 +6639,30 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 600
+		currentMTBF = 2160000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 	RESOURCE
 	{
 		name = IntakeLqd
@@ -5594,7 +6680,7 @@ PART
 	part = wbiHydroScoop_4293773880
 	partName = Part
 	persistentId = 2928562054
-	pos = -0.787565172,9.40774727,-1.48240685
+	pos = -0.787565768,9.40774727,-1.48241115
 	attPos = -0.42057848,0.242821544,-0.0274320245
 	attPos0 = 2.98023167E-07,0.367416769,0.619671762
 	rot = 0.00669055711,0.999970317,0.00386300683,2.57510692E-07
@@ -5637,6 +6723,36 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -5645,8 +6761,7 @@ PART
 	{
 		name = WBIModuleResourceHarvester
 		isEnabled = True
-		drillResources = Propellium,0.02;
-		isBroken = False
+		drillResources = Propellium,0.02;LqdHydrogen,0.02;
 		EfficiencyBonus = 1
 		IsActivated = False
 		stagingEnabled = True
@@ -5656,11 +6771,6 @@ PART
 		}
 		ACTIONS
 		{
-			StartConverterAction
-			{
-				actionGroup = None
-				wasActiveBeforePartWasAdjusted = False
-			}
 			StopResourceConverterAction
 			{
 				actionGroup = None
@@ -5697,6 +6807,30 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIModuleEVARepairs
+		isEnabled = True
+		needsMaintenance = False
+		mtbf = 600
+		currentMTBF = 2160000
+		mtbfCurrentMultiplier = 1
+		partWornOut = False
+		lastUpdated = 0
+		reliability = 50
+		wheelStuckPosition = -1
+		actionGroupId = None
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 	RESOURCE
 	{
 		name = IntakeLqd
@@ -5714,7 +6848,7 @@ PART
 	part = wbiPlasmaContactor_4293773826
 	partName = Part
 	persistentId = 3318400999
-	pos = -1.10775912,9.99998665,-3.41944551
+	pos = -1.10775912,9.99998665,-3.41945052
 	attPos = 0,0.0584790707,7.15255567E-07
 	attPos0 = -1.10777783,-2.3938458,-3.57627812E-07
 	rot = 0.48523885,-0.485239685,0.514337897,-0.514336884
@@ -5758,6 +6892,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -5767,6 +6937,25 @@ PART
 		name = WBIResourceDischarger
 		isEnabled = True
 		lastUpdateTime = 1766163.7092172257
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleCargoPart
+		isEnabled = True
+		packedVolume = 12
+		beingAttached = False
+		beingSettled = False
+		reinitResourcesOnStoreInVessel = False
 		stagingEnabled = True
 		EVENTS
 		{
@@ -5793,13 +6982,28 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIPrinterRequirements
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 }
 PART
 {
 	part = wbiPlasmaContactor_4293773796
 	partName = Part
 	persistentId = 3779250426
-	pos = 1.10779679,9.99998665,-3.41944647
+	pos = 1.10779679,9.99998665,-3.41945148
 	attPos = 0,0.0584778786,7.15255567E-07
 	attPos0 = 1.10777807,-2.39384556,-3.57627812E-07
 	rot = -0.485238969,-0.485239744,0.514337838,0.514336824
@@ -5843,6 +7047,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -5852,6 +7092,25 @@ PART
 		name = WBIResourceDischarger
 		isEnabled = True
 		lastUpdateTime = 1766163.7092172257
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleCargoPart
+		isEnabled = True
+		packedVolume = 12
+		beingAttached = False
+		beingSettled = False
+		reinitResourcesOnStoreInVessel = False
 		stagingEnabled = True
 		EVENTS
 		{
@@ -5878,13 +7137,28 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIPrinterRequirements
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 }
 PART
 {
 	part = wbiPlasmaContactor_4293773766
 	partName = Part
 	persistentId = 2149962146
-	pos = -1.19198215,9.99998665,-3.39498377
+	pos = -1.19198215,9.99998665,-3.39498878
 	attPos = 0,0.0503139496,0
 	attPos0 = -1.19200087,-2.36121869,-3.57627812E-07
 	rot = -0.487337649,0.48733905,-0.512349725,0.512348175
@@ -5928,6 +7202,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -5937,6 +7247,25 @@ PART
 		name = WBIResourceDischarger
 		isEnabled = True
 		lastUpdateTime = 1766163.7092172257
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleCargoPart
+		isEnabled = True
+		packedVolume = 12
+		beingAttached = False
+		beingSettled = False
+		reinitResourcesOnStoreInVessel = False
 		stagingEnabled = True
 		EVENTS
 		{
@@ -5963,13 +7292,28 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIPrinterRequirements
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 }
 PART
 {
 	part = wbiPlasmaContactor_4293773736
 	partName = Part
 	persistentId = 2383076807
-	pos = 1.19201982,9.99998665,-3.39498281
+	pos = 1.19201982,9.99998665,-3.39498782
 	attPos = 0,0.0503144264,0
 	attPos0 = 1.1920011,-2.36121845,-3.57627812E-07
 	rot = -0.487337589,-0.487339199,0.512349725,0.512348115
@@ -6013,6 +7357,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -6022,6 +7402,25 @@ PART
 		name = WBIResourceDischarger
 		isEnabled = True
 		lastUpdateTime = 1766163.7092172257
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModuleCargoPart
+		isEnabled = True
+		packedVolume = 12
+		beingAttached = False
+		beingSettled = False
+		reinitResourcesOnStoreInVessel = False
 		stagingEnabled = True
 		EVENTS
 		{
@@ -6048,13 +7447,28 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = WBIPrinterRequirements
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 }
 PART
 {
 	part = wbiA51WingTank_4293773706
 	partName = Part
 	persistentId = 2387624441
-	pos = 0.469404817,9.99998665,-0.271025807
+	pos = 0.469404846,9.99998665,-0.271027088
 	attPos = 0,0,0
 	attPos0 = 0.469385833,0.270999908,-2.98023153E-08
 	rot = 0.612372458,0.353553474,-0.353553414,0.612372577
@@ -6072,7 +7486,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = -314.299988
+	modCost = -321.299988
 	modMass = 0
 	modSize = 0,0,0
 	link = telescopicLadder_4293773654
@@ -6098,9 +7512,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -6164,26 +7624,42 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceDistributor
+		name = WBIModuleFuelPump
 		isEnabled = True
-		isParticipating = False
-		sharesWithVessel = False
+		isActivated = False
+		pumpMode = distributeLocally
+		pumpRate = 10
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-		}
-		DISTRIBUTION
-		{
-			resourceName = Lead
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = StaticCharge
-			mode = 0
+			ActionFuelPumpOn
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpOff
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpLocal
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpRemoteSend
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpModeReceive
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -6193,6 +7669,22 @@ PART
 	{
 		name = ModuleConductionMultiplier
 		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModulePartVariants
+		isEnabled = True
+		useVariantMass = True
 		stagingEnabled = True
 		EVENTS
 		{
@@ -6222,6 +7714,21 @@ PART
 	MODULE
 	{
 		name = WBIResourceTweaker
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -6273,10 +7780,10 @@ PART
 	part = telescopicLadder_4293773654
 	partName = Part
 	persistentId = 3797664336
-	pos = 2.2762084,9.99998569,1.56142092
+	pos = 2.27620912,9.99998569,1.56142235
 	attPos = 0.00863873959,-0.0306875706,4.68617145E-10
 	attPos0 = -0.692136824,2.51161027,6.46328942E-07
-	rot = 5.96046448E-07,-0.92144382,1.75833702E-06,-0.388512254
+	rot = 7.00354576E-07,-0.921443701,1.7285347E-06,-0.388512373
 	attRot = 0.707106709,0,0,0.707106709
 	attRot0 = 0.563692391,-0.426906586,0.426908255,-0.563694119
 	mir = 1,1,1
@@ -6314,6 +7821,42 @@ PART
 		RemoveSameVesselInteraction
 		{
 			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
 			wasActiveBeforePartWasAdjusted = False
 		}
 	}
@@ -6355,6 +7898,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 50
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -6399,13 +7943,28 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = ModuleRestockDepthMask
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 }
 PART
 {
 	part = wbiA51WingTank_4293773432
 	partName = Part
 	persistentId = 2023539606
-	pos = -0.469366848,9.99998665,-0.271025807
+	pos = -0.469366878,9.99998665,-0.271027088
 	attPos = 0,0,0
 	attPos0 = -0.469385833,0.270999908,-2.98023153E-08
 	rot = 0.612372518,-0.353553385,0.353553325,0.612372518
@@ -6423,7 +7982,7 @@ PART
 	sepI = -1
 	attm = 0
 	sameVesselCollision = False
-	modCost = -314.299988
+	modCost = -321.299988
 	modMass = 0
 	modSize = 0,0,0
 	link = telescopicLadder_4293773380
@@ -6449,9 +8008,55 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
+	}
+	MODULE
+	{
+		name = ModuleKISInventory
+		isEnabled = True
+		invName = 
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
 	}
 	MODULE
 	{
@@ -6515,26 +8120,42 @@ PART
 	}
 	MODULE
 	{
-		name = WBIResourceDistributor
+		name = WBIModuleFuelPump
 		isEnabled = True
-		isParticipating = False
-		sharesWithVessel = False
+		isActivated = False
+		pumpMode = distributeLocally
+		pumpRate = 10
 		stagingEnabled = True
 		EVENTS
 		{
 		}
 		ACTIONS
 		{
-		}
-		DISTRIBUTION
-		{
-			resourceName = Lead
-			mode = 0
-		}
-		DISTRIBUTION
-		{
-			resourceName = StaticCharge
-			mode = 0
+			ActionFuelPumpOn
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpOff
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpLocal
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpRemoteSend
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
+			ActionFuelPumpModeReceive
+			{
+				actionGroup = None
+				wasActiveBeforePartWasAdjusted = False
+			}
 		}
 		UPGRADESAPPLIED
 		{
@@ -6544,6 +8165,22 @@ PART
 	{
 		name = ModuleConductionMultiplier
 		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = ModulePartVariants
+		isEnabled = True
+		useVariantMass = True
 		stagingEnabled = True
 		EVENTS
 		{
@@ -6573,6 +8210,21 @@ PART
 	MODULE
 	{
 		name = WBIResourceTweaker
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS
@@ -6624,7 +8276,7 @@ PART
 	part = telescopicLadder_4293773380
 	partName = Part
 	persistentId = 640530630
-	pos = -2.27615476,9.99998665,1.56140661
+	pos = -2.27615452,9.99998665,1.56140685
 	attPos = 0.00863873959,-0.0306875706,4.68617145E-10
 	attPos0 = -0.692136824,2.51161027,6.46328942E-07
 	rot = 1.84774399E-06,-0.388511866,-6.85453415E-07,-0.92144382
@@ -6667,6 +8319,42 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
@@ -6706,6 +8394,7 @@ PART
 	{
 		name = ModuleCargoPart
 		isEnabled = True
+		packedVolume = 50
 		beingAttached = False
 		beingSettled = False
 		reinitResourcesOnStoreInVessel = False
@@ -6750,13 +8439,28 @@ PART
 		{
 		}
 	}
+	MODULE
+	{
+		name = ModuleRestockDepthMask
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
 }
 PART
 {
 	part = wbiA51DockingPort_4293409844
 	partName = Part
 	persistentId = 3669813968
-	pos = 1.89931598E-05,10.6249866,-0.542028308
+	pos = 1.89931598E-05,10.6249866,-0.542030096
 	attPos = 0,0,0
 	attPos0 = 0,-5.96046199E-08,-0.624999821
 	rot = 0,1.00000012,0,0
@@ -6799,13 +8503,45 @@ PART
 			actionGroup = None
 			wasActiveBeforePartWasAdjusted = False
 		}
+		AutostrutOff
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutRoot
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutHeaviest
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		AutostrutGrandparent
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesEnableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
+		ResourcesDisableFlow
+		{
+			actionGroup = None
+			active = False
+			wasActiveBeforePartWasAdjusted = False
+		}
 	}
 	PARTDATA
 	{
 	}
 	MODULE
 	{
-		name = ModuleDockingNodeFixed
+		name = ModuleDockingNode
 		isEnabled = True
 		acquireForceTweak = 100
 		crossfeed = True
@@ -6905,7 +8641,7 @@ PART
 		{
 			ToggleAction
 			{
-				actionGroup = Custom01, Custom04
+				actionGroup = Custom01
 				wasActiveBeforePartWasAdjusted = False
 			}
 		}
@@ -6922,23 +8658,6 @@ PART
 				overrideIncremental2 = Pitch, Yaw, Roll, TranslateX, TranslateY, TranslateZ, WheelSteer, WheelThrottle, Custom01, Custom02, Custom03, Custom04
 				overrideIncremental3 = Pitch, Yaw, Roll, TranslateX, TranslateY, TranslateZ, WheelSteer, WheelThrottle, Custom01, Custom02, Custom03, Custom04
 			}
-		}
-		UPGRADESAPPLIED
-		{
-		}
-	}
-	MODULE
-	{
-		name = WBIDockingNodeHelper
-		isEnabled = True
-		watchForDocking = False
-		angleSnapOn = False
-		stagingEnabled = True
-		EVENTS
-		{
-		}
-		ACTIONS
-		{
 		}
 		UPGRADESAPPLIED
 		{
@@ -6978,10 +8697,26 @@ PART
 	}
 	MODULE
 	{
+		name = ModulePartVariants
+		isEnabled = True
+		useVariantMass = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
 		name = ModuleDockRotate
 		isEnabled = True
 		isDocked = False
-		Revision = 55
+		Revision = 56
 		rotationEnabled = False
 		rotationStep = 15
 		rotationSpeed = 5
@@ -7043,7 +8778,39 @@ PART
 	}
 	MODULE
 	{
+		name = ModuleKCTransfer
+		isEnabled = True
+		transferMode = ALL_VESSEL_BALANCE
+		lastUpdateTime = 0
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
 		name = WBIPartScrapper
+		isEnabled = True
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	MODULE
+	{
+		name = WBIModuleEVAFlagSwitch
 		isEnabled = True
 		stagingEnabled = True
 		EVENTS

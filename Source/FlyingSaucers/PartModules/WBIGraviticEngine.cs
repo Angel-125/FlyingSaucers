@@ -471,7 +471,7 @@ namespace WildBlueIndustries
             GUILayout.FlexibleSpace();
             if (GUILayout.Button(stopIcon, buttonOptions))
             {
-                setCrazyCruiseMode(true);
+                setWarpCruiseMode(true);
                 StopWarp();
             }
 
@@ -482,7 +482,7 @@ namespace WildBlueIndustries
                 buttonIcon = fwdIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
             {
-                setCrazyCruiseMode(true);
+                setWarpCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Forward);
                 updateWarpVector();
             }
@@ -493,7 +493,7 @@ namespace WildBlueIndustries
                 buttonIcon = revIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
             {
-                setCrazyCruiseMode(true);
+                setWarpCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Back);
                 updateWarpVector();
             }
@@ -505,7 +505,7 @@ namespace WildBlueIndustries
                 buttonIcon = leftIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
             {
-                setCrazyCruiseMode(true);
+                setWarpCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Left);
                 updateWarpVector();
             }
@@ -516,7 +516,7 @@ namespace WildBlueIndustries
                 buttonIcon = rightIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
             {
-                setCrazyCruiseMode(true);
+                setWarpCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Right);
                 updateWarpVector();
             }
@@ -527,7 +527,7 @@ namespace WildBlueIndustries
                 buttonIcon = upIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
             {
-                setCrazyCruiseMode(true);
+                setWarpCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Up);
                 updateWarpVector();
             }
@@ -538,7 +538,7 @@ namespace WildBlueIndustries
                 buttonIcon = dnIcon;
             if (GUILayout.Button(buttonIcon, buttonOptions))
             {
-                setCrazyCruiseMode(true);
+                setWarpCruiseMode(true);
                 SetWarpDirection(WBIWarpDirections.Down);
                 updateWarpVector();
             }
@@ -1621,7 +1621,7 @@ namespace WildBlueIndustries
             Events["ToggleHoverMode"].guiName = hoverIsActive ? "Disable Hover Mode" : "Enable Hover Mode";
         }
 
-        protected void setCrazyCruiseMode(bool enabled)
+        protected void setWarpCruiseMode(bool enabled)
         {
             warpModeEnabled = enabled;
             warpCruiseControlEnabled = enabled;
