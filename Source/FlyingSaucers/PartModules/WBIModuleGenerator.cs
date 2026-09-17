@@ -6,7 +6,6 @@ using UnityEngine;
 using KSP.IO;
 using KerbalActuators;
 using KSP.Localization;
-using WBIResources;
 
 /*
 Source code copyright 2019-2020, by Michael Billard (Angel-125)
@@ -22,25 +21,77 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 namespace WildBlueIndustries
 {
-    public class WBIModuleGenerator: WBIModuleResourceConverterFX
+    [KSPModule("Resource Converter")]
+    public class WBIModuleGenerator: ModuleResourceConverter
     {
         [KSPField]
         public bool guiVisible = true;
 
-        public List<ModuleResource> drainedResources;
+        [KSPField]
+        public string startEffect = string.Empty;
 
+        [KSPField]
+        public string stopEffect = string.Empty;
+
+        [KSPField]
+        public string runningEffect = string.Empty;
+
+        [KSPField(guiActiveEditor = true, guiName = "Particle Effects", isPersistant = true)]
+        [UI_Toggle(enabledText = "On", disabledText = "Off")]
+        public bool showParticleEffects = true;
+
+        [KSPField]
+        public bool affectsLights = true;
+
+        public List<ModuleResource> drainedResources = new List<ModuleResource>();
+
+        private Light[] lights;
+        private KSPParticleEmitter[] emitters;
+
+        /// <summary>
+        /// Clears resource references when the module is destroyed.
+        /// </summary>
         public void OnDestroy()
         {
+            if (drainedResources != null)
+                drainedResources.Clear();
+
+            lights = null;
+            emitters = null;
         }
 
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
+
+            Events["StartResourceConverter"].guiActive = guiVisible;
+            Events["StopResourceConverter"].guiActive = guiVisible;
+
+            if (!HighLogic.LoadedSceneIsFlight)
+                return;
+
+            lights = part.gameObject.GetComponentsInChildren<Light>();
+            emitters = part.GetComponentsInChildren<KSPParticleEmitter>();
+            setupLightsAndEmitters();
+
+            if (IsActivated)
+            {
+                part.InitializeEffects();
+                if (!string.IsNullOrEmpty(runningEffect))
+                    part.Effect(runningEffect, 1.0f);
+            }
+
+            Fields["showParticleEffects"].guiName = ConverterName + " effects";
         }
 
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
+
+            if (drainedResources == null)
+                drainedResources = new List<ModuleResource>();
+            else
+                drainedResources.Clear();
 
             ConfigNode[] nodes = null;
             ModuleResource resource;
@@ -49,10 +100,9 @@ namespace WildBlueIndustries
                 nodes = node.GetNodes("DRAINED_RESOURCE");
                 for (int index = 0; index < nodes.Length; index++)
                 {
-                    resource = new ModuleResource();
-                    resource.Load(nodes[index]);
-                    loadShutOffPercent(resource, nodes[index]);
-                    drainedResources.Add(resource);
+                    resource = loadDrainedResource(nodes[index]);
+                    if (resource != null)
+                        drainedResources.Add(resource);
                 }
             }
         }
@@ -63,6 +113,53 @@ namespace WildBlueIndustries
 
             if (HighLogic.LoadedSceneIsFlight && IsActivated == false)
                 drainResources();
+        }
+
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+            if (!HighLogic.LoadedSceneIsFlight || !IsActivated)
+                return;
+
+            if (!string.IsNullOrEmpty(runningEffect))
+                part.Effect(runningEffect, 1.0f);
+
+            if (emitters == null)
+                return;
+
+            for (int index = 0; index < emitters.Length; index++)
+            {
+                emitters[index].emit = showParticleEffects;
+                emitters[index].enabled = showParticleEffects;
+            }
+        }
+
+        public override void OnInactive()
+        {
+            base.OnInactive();
+            StopResourceConverter();
+        }
+
+        public override void StartResourceConverter()
+        {
+            base.StartResourceConverter();
+            setupLightsAndEmitters();
+
+            if (!string.IsNullOrEmpty(startEffect))
+                part.Effect(startEffect, 1.0f);
+            if (!string.IsNullOrEmpty(runningEffect))
+                part.Effect(runningEffect, 1.0f);
+        }
+
+        public override void StopResourceConverter()
+        {
+            base.StopResourceConverter();
+            setupLightsAndEmitters();
+
+            if (!string.IsNullOrEmpty(runningEffect))
+                part.Effect(runningEffect, 0.0f);
+            if (!string.IsNullOrEmpty(stopEffect))
+                part.Effect(stopEffect, 1.0f);
         }
 
         private void loadShutOffPercent(ModuleResource resource, ConfigNode node)
@@ -77,16 +174,98 @@ namespace WildBlueIndustries
 
         private void drainResources()
         {
+            if (drainedResources == null || drainedResources.Count <= 0 || part == null)
+                return;
+
             int count = drainedResources.Count;
             ModuleResource resource;
 
             for (int index = 0; index < count; index++)
             {
                 resource = drainedResources[index];
+                if (resource == null || string.IsNullOrEmpty(resource.name) || !part.Resources.Contains(resource.name))
+                    continue;
+
                 if (part.Resources[resource.name].amount <= 0)
                     return;
 
                 this.part.RequestResource(resource.name, resource.rate, resource.flowMode);
+            }
+        }
+
+        private void setupLightsAndEmitters()
+        {
+            if (lights != null && affectsLights)
+            {
+                for (int index = 0; index < lights.Length; index++)
+                    lights[index].intensity = IsActivated ? 1.0f : 0.0f;
+            }
+
+            if (emitters == null)
+                return;
+
+            for (int index = 0; index < emitters.Length; index++)
+            {
+                bool isEmitting = IsActivated && showParticleEffects;
+                emitters[index].emit = isEmitting;
+                emitters[index].enabled = isEmitting;
+            }
+        }
+
+        /// <summary>
+        /// Loads a drained resource definition while accepting both ModuleResource-style
+        /// fields (name/rate/resourceFlowMode) and older converter-style fields
+        /// (ResourceName/Ratio/FlowMode) used by existing FlyingSaucers configs.
+        /// </summary>
+        /// <param name="node">The DRAINED_RESOURCE config node to load.</param>
+        /// <returns>A configured ModuleResource, or null when the node is invalid.</returns>
+        private ModuleResource loadDrainedResource(ConfigNode node)
+        {
+            if (node == null)
+                return null;
+
+            string resourceName = node.GetValue("name");
+            if (string.IsNullOrEmpty(resourceName))
+                resourceName = node.GetValue("ResourceName");
+
+            if (string.IsNullOrEmpty(resourceName))
+            {
+                Debug.LogWarning("[WBIModuleGenerator] - Skipping DRAINED_RESOURCE with no name/ResourceName.");
+                return null;
+            }
+
+            string rate = node.GetValue("rate");
+            if (string.IsNullOrEmpty(rate))
+                rate = node.GetValue("Ratio");
+
+            string flowMode = node.GetValue("resourceFlowMode");
+            if (string.IsNullOrEmpty(flowMode))
+                flowMode = node.GetValue("FlowMode");
+
+            ConfigNode moduleResourceNode = new ConfigNode(node.name);
+            moduleResourceNode.AddValue("name", resourceName);
+            if (!string.IsNullOrEmpty(rate))
+                moduleResourceNode.AddValue("rate", rate);
+            if (!string.IsNullOrEmpty(flowMode))
+                moduleResourceNode.AddValue("resourceFlowMode", flowMode);
+            if (node.HasValue("amount"))
+                moduleResourceNode.AddValue("amount", node.GetValue("amount"));
+            if (node.HasValue("varyTime"))
+                moduleResourceNode.AddValue("varyTime", node.GetValue("varyTime"));
+            if (node.HasValue("useSI"))
+                moduleResourceNode.AddValue("useSI", node.GetValue("useSI"));
+
+            ModuleResource resource = new ModuleResource();
+            try
+            {
+                resource.Load(moduleResourceNode);
+                loadShutOffPercent(resource, node);
+                return resource;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning("[WBIModuleGenerator] - Unable to load DRAINED_RESOURCE " + resourceName + ": " + ex.Message);
+                return null;
             }
         }
     }

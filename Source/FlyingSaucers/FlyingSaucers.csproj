@@ -49,6 +49,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>..\..\..\..\..\..\KSPDev\KSP_x64_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>..\..\..\..\..\..\KSPDev\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
@@ -82,7 +85,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PartModules\WBIModuleConditionalMeshToggle.cs" />
+    <Compile Include="PartModules\WBIModuleAnimateGenericSFX.cs" />
     <Compile Include="PartModules\WBIModuleGenerator.cs" />
+    <Compile Include="PartModules\WBIModuleLight.cs" />
     <Compile Include="Utilities\WBIKFSUtils.cs" />
     <Compile Include="PartModules\WBIResourceDischarger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -97,10 +102,6 @@
     <ProjectReference Include="..\..\..\KerbalActuators\KerbalActuators\KerbalActuators.csproj">
       <Project>{691F7D23-82FA-4194-8357-0EF40092C050}</Project>
       <Name>KerbalActuators</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\WBIResources\Source\WBIResources.csproj">
-      <Project>{9e6c131f-3161-486a-84f3-9f16768b4d4b}</Project>
-      <Name>WBIResources</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

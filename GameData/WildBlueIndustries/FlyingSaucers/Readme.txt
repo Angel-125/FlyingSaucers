@@ -15,11 +15,15 @@ Northrop NS-97: (https://s-media-cache-ak0.pinimg.com/originals/53/f7/48/53f7489
 
 Copy the contents of the mod's GameData directory into your GameData folder.
 
---RELEASE NOTES---
+--CHANGES---
 
 Changes
 
-- Updated configs for WBIResources- kerbals matter!
+- Removed deprecated mothership parts.
+- Removed unused Propellium resource.
+- Removed hard dependency on WBIResources.
+
+---END CHANGES---
 
 ---ACKNOWLEDGEMENTS---
 Icons made by Freepik from www.flaticon.com
