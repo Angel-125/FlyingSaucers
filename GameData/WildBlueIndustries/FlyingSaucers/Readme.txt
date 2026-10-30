@@ -19,9 +19,8 @@ Copy the contents of the mod's GameData directory into your GameData folder.
 
 Changes
 
-- Removed deprecated mothership parts.
-- Removed unused Propellium resource.
-- Removed hard dependency on WBIResources.
+- Fixed NRE issues with the A-51 Landing Strut.
+- Updated Far Future Technologies Module Manager patch to include the size 3 gravitic engine.
 
 ---END CHANGES---
 
